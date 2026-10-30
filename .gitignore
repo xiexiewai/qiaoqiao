@@ -1,4 +1,7 @@
 .venv/
+.venv-build/
+releases/
+*-Dev.lnk
 __pycache__/
 *.py[cod]
 .pytest_cache/

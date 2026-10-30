@@ -11,6 +11,7 @@ from PySide6.QtWidgets import QApplication, QSystemTrayIcon
 
 from qiaoqiao.app import Controller, InstanceGuard
 from qiaoqiao.keys import PhysicalEvent
+from qiaoqiao.runtime import Runtime
 from qiaoqiao.storage import Database
 
 
@@ -139,6 +140,32 @@ class AppTests(unittest.TestCase):
         self.assertEqual(self.controller.window.keyboard.pressed, set())
         self.assertEqual(self.controller.window.total_label.text(), "1")
 
+    def test_window_and_tray_identify_development_mode(self):
+        self.assertIn("开发版", self.controller.window.windowTitle())
+        self.assertIn(self.controller.runtime.title, self.controller.tray.toolTip())
+
+    def test_production_history_is_not_modified_by_development_capture(self):
+        production = Database(Path(self.temp.name) / "production" / "counts.sqlite3")
+        production.initialize()
+        previous = {(date.today().isoformat(), "1e"): 123}
+        production.save(previous)
+        stable = Controller(
+            APPLICATION, production, FakeListener, Runtime(False, production.path.parent),
+        )
+        try:
+            stable.refresh()
+            self.assertEqual(stable.window.total_label.text(), "123")
+            self.assertNotIn("开发版", stable.window.windowTitle())
+            self.tap()
+            self.assertTrue(self.controller.persistence.flush())
+            self.assertEqual(production.load(), previous)
+            self.assertEqual(self.database.load()[(date.today().isoformat(), "1e")], 1)
+        finally:
+            stable.dispose()
+            stable.window.deleteLater()
+            stable.menu.deleteLater()
+            stable.deleteLater()
+
     def test_layout_stays_inside_keyboard_and_keys_never_overlap(self):
         self.controller.window.resize(1040, 570)
         APPLICATION.processEvents()
@@ -166,6 +193,18 @@ class AppTests(unittest.TestCase):
 
 
 class InstanceTests(unittest.TestCase):
+    def test_production_and_development_instances_run_independently(self):
+        with tempfile.TemporaryDirectory() as directory:
+            stable = InstanceGuard(Path(directory) / "Qiaoqiao")
+            development = InstanceGuard(Path(directory) / "Qiaoqiao-dev")
+            try:
+                self.assertTrue(stable.acquire())
+                self.assertTrue(development.acquire())
+                self.assertNotEqual(stable.name, development.name)
+            finally:
+                stable.close()
+                development.close()
+
     def test_second_instance_cannot_acquire_and_wakes_first(self):
         with tempfile.TemporaryDirectory() as directory:
             first = InstanceGuard(Path(directory))

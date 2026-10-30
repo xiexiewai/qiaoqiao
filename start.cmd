@@ -5,4 +5,4 @@ if not exist ".venv\Scripts\pythonw.exe" (
   pause
   exit /b 1
 )
-start "" "%~dp0.venv\Scripts\pythonw.exe" "%~dp0run.py"
+start "" "%~dp0.venv\Scripts\pythonw.exe" "%~dp0run.py" --dev

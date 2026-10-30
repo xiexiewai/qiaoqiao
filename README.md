@@ -4,8 +4,9 @@
 
 ## 开始使用
 
-1. 双击 `D:\qiaoqiao\敲敲.lnk`，看到右上角“正在统计”后即可正常使用键盘。
-   也可以双击 `D:\qiaoqiao\start.cmd`，它会短暂打开启动窗口。
+1. 日常使用请双击桌面的“敲敲”，或发布目录里的 `敲敲.exe`。
+   当前版本的建议位置是 `D:\Apps\Qiaoqiao\0.1.0\敲敲.exe`。
+   看到右上角“正在统计”后即可正常使用键盘。
 2. 默认查看今天。点击“日 / 周 / 月 / 全部”切换范围；通过日期或左右箭头查询历史。
    选择历史日期不影响当前日期的后台统计。
 3. 每个键显示该时段的次数，暖色越深代表该时段使用越多。鼠标悬停可查看键名和完整次数。
@@ -17,12 +18,29 @@
    退出前会保存剩余数据；保存失败时保留程序及内存数据并提示重试。
 6. 再次双击启动入口会唤回已有窗口，不会开启第二个统计实例。
 
-当前不需要再安装依赖。程序不会自动开机启动，也不需要单独安装数据库。
+发布版不需要安装 Python 或依赖，也不依赖 `D:\qiaoqiao` 开发目录。
+程序不会自动开机启动，也不需要单独安装数据库。
+
+## 发布版与开发版
+
+| 启动方式 | 模式 | 数据目录 |
+| --- | --- | --- |
+| 桌面的“敲敲” / 打包后的 `敲敲.exe` | 正式版 | `%LOCALAPPDATA%\Qiaoqiao` |
+| `start.cmd` / `敲敲-Dev.lnk` / 源码 `run.py` | 开发版 | `%LOCALAPPDATA%\Qiaoqiao-dev` |
+| `敲敲.exe --dev` | 发布包的开发测试模式 | `%LOCALAPPDATA%\Qiaoqiao-dev` |
+
+窗口标题和托盘提示包含版本号；开发版还会显示“开发版”。
+开发版与正式版可以同时运行，分别保存次数、日志和实例锁。每个模式内重复启动只唤醒已有窗口。
+项目内旧的 `敲敲.lnk` 在首次部署时改为指向发布版，以保留原来的正式使用入口。
+
+源码运行默认进入开发版，即使不写 `--dev` 也不会使用正式数据。
+首次切换到发布版前，原有统计已经属于正式数据；发布版会继续使用，不会迁移、清空或转成测试数据。
 
 ## 数据位置
 
 正式数据保存在 `%LOCALAPPDATA%\Qiaoqiao\counts.sqlite3`。
 本机对应 `C:\Users\12088\AppData\Local\Qiaoqiao\counts.sqlite3`，首次正式启动时创建。
+开发数据则保存在 `%LOCALAPPDATA%\Qiaoqiao-dev\counts.sqlite3`，不会自动复制正式历史。
 
 - 表中只有日期、物理键标识、累计次数。
 - 不保存输入文字、按键顺序、应用名称或逐次按键时间，不发送到网络。
@@ -65,11 +83,66 @@ cd D:\qiaoqiao
 .\.venv\Scripts\python.exe run.py
 ```
 
+也可双击 `start.cmd`，或运行 `powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\create_shortcut.ps1`
+生成项目内的 `敲敲-Dev.lnk`。这些入口均只写开发数据。
+
+指定独立的验收数据目录：
+
+```powershell
+.\.venv\Scripts\python.exe run.py --data-dir D:\qiaoqiao\work\acceptance
+```
+
+发布包验收时使用 `.\敲敲.exe --dev --data-dir D:\qiaoqiao\work\acceptance`。
+开发模式拒绝将数据目录设置为正式的 `%LOCALAPPDATA%\Qiaoqiao`。
+
 运行自动化测试：
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
+
+原生监听测试需要正常 Windows 桌面会话，不能使用 Qt 的 `offscreen` 平台。
+
+## 打包发布
+
+在项目目录执行：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\build.ps1
+```
+
+首次运行自动创建独立的 `.venv-build` 并安装构建依赖，不修改开发环境 `.venv`。
+脚本先运行全部测试，再打包 Windows x64 文件夹版 EXE。
+构建环境会排除其他工具的 DLL 和 Qt 路径；生成 ZIP 前，会在没有 Python 路径的环境中运行
+EXE 的 `--version`，确认打包后的运行依赖可以加载。此检查不替代实际键盘和托盘交互验收。
+如果还没有开发环境，可添加 `-Python C:\路径\python.exe` 指定 64 位 Python 3.15。
+下载源可用 `-IndexUrl` 指定；已有的 `work\wheels` 会优先用于运行时依赖。
+
+版本号统一维护在 `qiaoqiao\__init__.py`。每次发布先更新版本号，同版本产物存在时拒绝覆盖。
+以 `0.1.0` 为例，生成：
+
+- `releases\Qiaoqiao-0.1.0-windows-x64.zip`：可分发的程序包，包含 Python、Qt 和所需依赖。
+- `releases\Qiaoqiao-0.1.0-windows-x64-source.zip`：该次构建的源码、测试和构建脚本快照。
+- `releases\Qiaoqiao-0.1.0-windows-x64.sha256`：以上两个 ZIP 的校验值。
+
+程序包内 `release.json` 记录版本、构建时间、依赖版本、Git 提交、是否有未提交修改及源码 SHA-256。
+未提交状态构建时，Git 提交号只是基线，准确源码以配套源码快照为准。
+构建过程若发现源码发生变化会失败。程序包和源码快照都不包含个人数据库或日志。
+
+解压时保留完整文件夹，特别是 `_internal`，不能只复制 EXE。
+在解压后的文件夹内双击 `Create-Desktop-Shortcut.cmd`，即可创建或更新桌面“敲敲”入口。
+
+## 升级与回退
+
+1. 先用 `--dev --data-dir` 验收新包，确认启动、统计、托盘和退出正常。
+2. 从托盘正常退出正在使用的正式版，等待程序退出后备份 `counts.sqlite3`。
+   正式数据目录如仍有 `counts.sqlite3-wal` / `counts.sqlite3-shm`，一并保留；不要只复制正在写入的主文件。
+3. 把新版解压到新的版本目录，例如 `D:\Apps\Qiaoqiao\0.2.0`，不要覆盖正在使用的程序目录。
+4. 运行新版目录内的 `Create-Desktop-Shortcut.cmd` 更新桌面入口，然后启动新版。
+5. 正式数据路径保持不变，历史会继续累计。保留旧版本和升级前的备份。
+
+数据库结构兼容时，可以退出新版后切换回旧程序。若新版升级了数据库结构，不能保证直接回退；
+应使用兼容版本或在保留新版数据后恢复升级前备份，恢复备份会失去备份之后的新增统计。
 
 ## 实机验收
 
@@ -87,7 +160,7 @@ cd D:\qiaoqiao
 
 ## 已确认需求
 
-- 手动打开程序后开始统计，初版不做开机自启动或分发。
+- 手动打开程序后开始统计，不做开机自启动；支持独立 ZIP 发布包。
 - 按物理键统计，从按下到松开只计一次，忽略长按重复。
 - 区分左右修饰键、主键区数字和数字小键盘。
 - 按电脑本地日期保存，周按周一至周日，月按自然月。
@@ -100,7 +173,7 @@ cd D:\qiaoqiao
 
 ## 当前状态
 
-第一版功能已实现。实施拆分和进度见 `DEVELOPMENT.md`。
+第一版功能已实现，并增加了独立发布包及开发数据隔离。实施拆分和进度见 `DEVELOPMENT.md`。
 
 2026-10-30 完成的验证：
 
@@ -114,7 +187,7 @@ cd D:\qiaoqiao
 - MK3 各特殊键的真实对应关系需按上述清单确认。
 
 测试使用 `work` 目录或临时目录中的独立数据，不会写入正式统计数据库。
-交付时测试进程已退出，打开启动入口后才开始正式统计。
+上述 44 项及截图为第一版验证记录；发布流程新增验证见 `DEVELOPMENT.md`。
 
 由于官方文件源下载较慢，依赖包从清华镜像获取，并逐个与 PyPI 官方
 元数据中的 SHA-256 校验一致后安装。已校验的安装包位于 `work\wheels`。

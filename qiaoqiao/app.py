@@ -2,7 +2,6 @@
 
 import hashlib
 import logging
-import os
 import sys
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
@@ -15,14 +14,11 @@ from PySide6.QtWidgets import QApplication, QMenu, QMessageBox, QSystemTrayIcon
 
 from .core import CounterModel
 from .raw_input import RawInputListener
+from .runtime import Runtime, parse_runtime
 from .storage import Database, Persistence
 from .ui import STYLE, StatsWindow, application_icon
 
 LOGGER = logging.getLogger("qiaoqiao")
-
-
-def data_directory() -> Path:
-    return Path(os.environ["LOCALAPPDATA"]) / "Qiaoqiao"
 
 
 class InstanceGuard(QObject):
@@ -69,13 +65,15 @@ class InstanceGuard(QObject):
 
 
 class Controller(QObject):
-    def __init__(self, application, database, listener_factory=RawInputListener):
+    def __init__(self, application, database, listener_factory=RawInputListener, runtime=None):
         super().__init__()
         self.application = application
         self.database = database
+        self.runtime = runtime or Runtime(True, database.path.parent)
         self.model = CounterModel(database.load())
         self.persistence = Persistence(self.model, database)
         self.window = StatsWindow()
+        self.window.setWindowTitle(f"{self.runtime.title} - 键盘统计")
         self.window.setStyleSheet(STYLE)
         self.window.view_changed.connect(self.refresh)
         self.window.hidden_to_tray.connect(self._hidden)
@@ -133,7 +131,7 @@ class Controller(QObject):
             if self.persistence.error:
                 LOGGER.error("Save failed: %s", self.persistence.error)
                 self.tray.showMessage(
-                    "敲敲：暂时无法保存",
+                    f"{self.runtime.name}：暂时无法保存",
                     "统计仍在内存中，程序会自动重试。请打开主界面查看保存状态。",
                     QSystemTrayIcon.MessageIcon.Warning,
                 )
@@ -154,7 +152,7 @@ class Controller(QObject):
             state = "统计已停止"
         self.window.status_label.setText(state)
         self.window.status_label.setToolTip(self.listener.last_error or "" if self.listener else "")
-        self.tray.setToolTip(f"敲敲 · {state}")
+        self.tray.setToolTip(f"{self.runtime.title} · {state}")
         if self.persistence.error:
             saved = "保存失败，正在重试"
         elif self.model.dirty or self.persistence.future is not None:
@@ -174,7 +172,7 @@ class Controller(QObject):
     def _hidden(self):
         if not self._tray_tip_shown:
             self.tray.showMessage(
-                "敲敲仍在统计", "可通过托盘图标打开窗口，或选择“退出程序”。",
+                f"{self.runtime.name}仍在统计", "可通过托盘图标打开窗口，或选择“退出程序”。",
                 QSystemTrayIcon.MessageIcon.Information, 3000,
             )
             self._tray_tip_shown = True
@@ -239,10 +237,11 @@ class Controller(QObject):
         self.closed = True
 
 
-def main() -> int:
-    application = QApplication(sys.argv)
-    application.setApplicationName("Qiaoqiao")
-    application.setApplicationDisplayName("敲敲")
+def main(argv=None) -> int:
+    runtime = parse_runtime(argv)
+    application = QApplication([sys.argv[0]])
+    application.setApplicationName("Qiaoqiao-dev" if runtime.development else "Qiaoqiao")
+    application.setApplicationDisplayName(runtime.title)
     application.setOrganizationName("Qiaoqiao")
     application.setQuitOnLastWindowClosed(False)
     application.setStyle("Fusion")
@@ -250,12 +249,15 @@ def main() -> int:
     application.setWindowIcon(application_icon())
     guard = None
     controller = None
+    handler = None
     try:
-        directory = data_directory()
+        directory = runtime.directory
         guard = InstanceGuard(directory)
         if not guard.acquire():
             if not guard.notify_existing():
-                QMessageBox.information(None, "敲敲已在运行", "程序已经打开或正在启动，请通过托盘图标打开主界面。")
+                QMessageBox.information(
+                    None, f"{runtime.name}已在运行", "程序已经打开或正在启动，请通过托盘图标打开主界面。",
+                )
             return 0
         handler = RotatingFileHandler(directory / "app.log", maxBytes=256_000, backupCount=1, encoding="utf-8")
         handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
@@ -263,13 +265,13 @@ def main() -> int:
         LOGGER.setLevel(logging.WARNING)
         database = Database(directory / "counts.sqlite3")
         database.initialize()
-        controller = Controller(application, database)
+        controller = Controller(application, database, runtime=runtime)
         guard.activated.connect(controller.window.restore)
         controller.start()
         return application.exec()
     except Exception as error:
         LOGGER.exception("Startup failed")
-        QMessageBox.critical(None, "敲敲启动失败", f"无法启动程序：\n{error}")
+        QMessageBox.critical(None, f"{runtime.name}启动失败", f"无法启动程序：\n{error}")
         return 1
     finally:
         if controller and not controller.closed:
@@ -280,6 +282,9 @@ def main() -> int:
                 controller.dispose()
         if guard:
             guard.close()
+        if handler:
+            LOGGER.removeHandler(handler)
+            handler.close()
 
 
 if __name__ == "__main__":
