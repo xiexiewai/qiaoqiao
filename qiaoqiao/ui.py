@@ -2,16 +2,20 @@
 
 import math
 from datetime import date
+from pathlib import Path
 
-from PySide6.QtCore import QDate, QEvent, QRectF, QSize, Qt, QTimer, Signal
-from PySide6.QtGui import QColor, QFont, QFontMetricsF, QIcon, QPainter, QPen, QPixmap
+from PySide6.QtCore import QDate, QEvent, QRectF, QSettings, QSize, Qt, QTimer, Signal
+from PySide6.QtGui import QActionGroup, QColor, QFont, QFontMetricsF, QIcon, QPainter, QPen
 from PySide6.QtWidgets import (
-    QButtonGroup, QDateEdit, QHBoxLayout, QLabel, QMainWindow, QPushButton,
+    QButtonGroup, QDateEdit, QHBoxLayout, QLabel, QMainWindow, QMenu, QPushButton,
     QScrollArea, QSizePolicy, QStyle, QToolButton, QToolTip, QVBoxLayout, QWidget,
 )
 
 from .core import CounterModel, date_range, move_date
-from .keys import KEYS, KEY_BY_ID, key_name
+from .keys import key_name
+from .layouts import DEFAULT_LAYOUT, LAYOUTS, LAYOUT_BY_ID
+
+SHORT_ARROW_LABELS = {"e0_48": "\u2191", "e0_50": "\u2193"}
 
 STYLE = """
 QWidget { font-family: "Microsoft YaHei UI"; font-size: 10pt; color: #20262B; }
@@ -40,69 +44,78 @@ QMenu::item:selected { background: #E4EEEA; }
 
 
 def application_icon() -> QIcon:
-    icon = QIcon()
-    for size in (16, 32, 64, 128):
-        pixmap = QPixmap(size, size)
-        pixmap.fill(Qt.GlobalColor.transparent)
-        painter = QPainter(pixmap)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.scale(size / 64, size / 64)
-        painter.setPen(Qt.PenStyle.NoPen)
-        painter.setBrush(QColor("#147D68"))
-        painter.drawRoundedRect(QRectF(2, 10, 60, 44), 7, 7)
-        painter.setBrush(QColor("#FFFFFF"))
-        for row in range(2):
-            for col in range(5):
-                painter.drawRoundedRect(QRectF(9 + col * 10, 18 + row * 10, 6, 6), 1, 1)
-        painter.drawRoundedRect(QRectF(19, 39, 26, 6), 1, 1)
-        painter.end()
-        icon.addPixmap(pixmap)
-    return icon
+    # PyInstaller preserves this relative layout inside the bundled data directory.
+    return QIcon(str(Path(__file__).resolve().parents[1] / "assets" / "qiaoqiao.ico"))
 
 
 class KeyboardWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setMinimumSize(970, 300)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.setMouseTracking(True)
-        self.setAccessibleName("104 键键盘统计图")
+        self.keyboard_layout = DEFAULT_LAYOUT
         self.counts = {}
         self.pressed = set()
+        self.set_keyboard_layout(DEFAULT_LAYOUT)
 
     def sizeHint(self):
-        return QSize(1170, 365)
+        return QSize(math.ceil(self.keyboard_layout.width * 50 + 4), 365)
+
+    def set_keyboard_layout(self, layout):
+        self.keyboard_layout = layout
+        self.setAccessibleName(f"{layout.name}键盘统计图")
+        self._update_minimum_size()
+        QToolTip.hideText()
+        self.updateGeometry()
+        self.update()
 
     def key_rects(self) -> list[tuple[object, QRectF]]:
-        unit = min((self.width() - 4) / 23, (self.height() - 4) / 6.5)
-        left, top = (self.width() - 23 * unit) / 2, (self.height() - 6.5 * unit) / 2
+        width, height = self.keyboard_layout.width, self.keyboard_layout.height
+        unit = min((self.width() - 4) / width, (self.height() - 4) / height)
+        left, top = (self.width() - width * unit) / 2, (self.height() - height * unit) / 2
         return [
             (key, QRectF(left + key.x * unit + 2, top + key.y * unit + 2,
                          key.width * unit - 5, key.height * unit - 5))
-            for key in KEYS
+            for key in self.keyboard_layout.keys
         ]
+
+    def _update_minimum_size(self):
+        metrics = QFontMetricsF(QFont("Segoe UI", 7, QFont.Weight.DemiBold))
+        unit = 42
+        for key in self.keyboard_layout.keys:
+            if key.key_id is None:
+                continue
+            content_width = metrics.horizontalAdvance(f"{self.counts.get(key.key_id, 0):,}") + 15
+            if key.height < 1:
+                content_width += metrics.horizontalAdvance(SHORT_ARROW_LABELS[key.key_id]) + 10
+            unit = max(unit, content_width / key.width)
+        # Both dimensions grow together, including for half-height laptop arrows.
+        self.setMinimumSize(
+            max(600, math.ceil(unit * self.keyboard_layout.width + 4)),
+            max(300, math.ceil(unit * self.keyboard_layout.height + 4)),
+        )
 
     def set_counts(self, counts, pressed):
         if self.counts != counts or self.pressed != pressed:
-            if self.counts != counts:
-                metrics = QFontMetricsF(QFont("Segoe UI", 7, QFont.Weight.DemiBold))
-                # Grow the scrollable keyboard before large exact totals would clip.
-                unit = max(
-                    (metrics.horizontalAdvance(f"{counts.get(key.key_id, 0):,}") + 15) / key.width
-                    for key in KEYS
-                )
-                self.setMinimumSize(max(970, math.ceil(unit * 23 + 4)), max(300, math.ceil(unit * 6.5 + 4)))
+            changed = self.counts != counts
             self.counts = dict(counts)
             self.pressed = set(pressed)
+            if changed:
+                self._update_minimum_size()
             self.update()
+
+    def heat_maximum(self):
+        return max((self.counts.get(key_id, 0) for key_id in self.keyboard_layout.key_ids), default=0)
 
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        maximum = max(self.counts.values(), default=0)
+        maximum = self.heat_maximum()
         for key, rect in self.key_rects():
             count = self.counts.get(key.key_id, 0)
-            if count and maximum:
+            if key.key_id is None:
+                fill = QColor("#EDF0F2")
+            elif count and maximum:
                 ratio = math.log1p(count) / math.log1p(maximum)
                 fill = QColor.fromRgbF(0.98, 0.96 - ratio * 0.22, 0.88 - ratio * 0.42)
             else:
@@ -112,6 +125,21 @@ class KeyboardWidget(QWidget):
             painter.setBrush(fill)
             painter.drawRoundedRect(rect, 5, 5)
             painter.setPen(QColor("#465059"))
+            if key.key_id is None:
+                painter.setFont(QFont("Segoe UI", 9))
+                painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, key.label)
+                continue
+            if key.height < 1:
+                # Short laptop arrows keep the label and exact count on one line.
+                painter.setFont(QFont("Segoe UI", 7, QFont.Weight.DemiBold))
+                text_rect = rect.adjusted(5, 0, -5, 0)
+                painter.drawText(
+                    text_rect, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
+                    SHORT_ARROW_LABELS[key.key_id],
+                )
+                painter.setPen(QColor("#20262B" if count else "#939CA4"))
+                painter.drawText(text_rect, Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter, f"{count:,}")
+                continue
             label_font = QFont("Segoe UI", 8 if len(key.label) > 5 else 9)
             painter.setFont(label_font)
             label_rect = rect.adjusted(5, 5, -4, -rect.height() + 21)
@@ -135,7 +163,8 @@ class KeyboardWidget(QWidget):
             if rect.contains(event.position()):
                 QToolTip.showText(
                     event.globalPosition().toPoint(),
-                    f"{key_name(key.key_id)}\n{self.counts.get(key.key_id, 0):,} 次", self,
+                    f"{key_name(key.key_id)}\n{self.counts.get(key.key_id, 0):,} 次"
+                    if key.key_id is not None else "Fn\n此键位不单独统计", self,
                 )
                 return
         QToolTip.hideText()
@@ -148,7 +177,7 @@ class StatsWindow(QMainWindow):
     view_changed = Signal()
     hidden_to_tray = Signal()
 
-    def __init__(self):
+    def __init__(self, settings: QSettings | None = None):
         super().__init__()
         self.setWindowTitle("敲敲 - 键盘统计")
         self.setWindowIcon(application_icon())
@@ -160,6 +189,11 @@ class StatsWindow(QMainWindow):
         self.last_today = date.today()
         self.allow_close = False
         self._render_key = None
+        self.settings = settings
+        saved_layout = settings.value("keyboard/layout", "full") if settings is not None else "full"
+        self.keyboard_layout = (
+            LAYOUT_BY_ID.get(saved_layout, DEFAULT_LAYOUT) if isinstance(saved_layout, str) else DEFAULT_LAYOUT
+        )
         self._build()
 
     def _build(self):
@@ -238,6 +272,7 @@ class StatsWindow(QMainWindow):
         layout.addLayout(summary)
 
         self.keyboard = KeyboardWidget()
+        self.keyboard.set_keyboard_layout(self.keyboard_layout)
         keyboard_scroll = QScrollArea()
         keyboard_scroll.setWidgetResizable(True)
         keyboard_scroll.setWidget(self.keyboard)
@@ -249,7 +284,28 @@ class StatsWindow(QMainWindow):
         layout.addWidget(self.other_label)
 
         footer = QHBoxLayout()
-        info = QLabel("104 键  /  所有键盘")
+        self.layout_button = QToolButton()
+        self.layout_button.setAccessibleName("切换键盘布局")
+        self.layout_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+        self.layout_menu = QMenu(self.layout_button)
+        self.layout_group = QActionGroup(self)
+        self.layout_group.setExclusive(True)
+        self.layout_actions = {}
+        for preset in LAYOUTS:
+            action = self.layout_menu.addAction(preset.name)
+            action.setCheckable(True)
+            action.setChecked(preset == self.keyboard_layout)
+            action.triggered.connect(lambda checked=False, layout_id=preset.layout_id: self.set_keyboard_layout(layout_id))
+            self.layout_group.addAction(action)
+            self.layout_actions[preset.layout_id] = action
+        self.layout_button.setMenu(self.layout_menu)
+        self.layout_button.setText(f"键盘布局：{self.keyboard_layout.name}")
+        layout_metrics = QFontMetricsF(QFont("Microsoft YaHei UI", 10))
+        self.layout_button.setFixedWidth(
+            math.ceil(max(layout_metrics.horizontalAdvance(f"键盘布局：{preset.name}") for preset in LAYOUTS)) + 48
+        )
+        footer.addWidget(self.layout_button)
+        info = QLabel("所有键盘")
         info.setObjectName("muted")
         footer.addWidget(info)
         footer.addStretch()
@@ -258,6 +314,23 @@ class StatsWindow(QMainWindow):
         footer.addWidget(self.save_label)
         layout.addLayout(footer)
         self._update_controls()
+
+    def set_keyboard_layout(self, layout_id):
+        preset = LAYOUT_BY_ID.get(layout_id, DEFAULT_LAYOUT)
+        if preset == self.keyboard_layout:
+            return
+        self.keyboard_layout = preset
+        self.keyboard.set_keyboard_layout(preset)
+        self.layout_actions[preset.layout_id].setChecked(True)
+        self.layout_button.setText(f"键盘布局：{preset.name}")
+        self.layout_button.setToolTip("")
+        if self.settings is not None:
+            self.settings.setValue("keyboard/layout", preset.layout_id)
+            self.settings.sync()
+            if self.settings.status() != QSettings.Status.NoError:
+                self.layout_button.setToolTip("布局偏好保存失败，下次启动可能需要重新选择")
+        self._render_key = None
+        self.view_changed.emit()
 
     def _arrow(self, icon, tooltip):
         button = QToolButton()
@@ -304,7 +377,7 @@ class StatsWindow(QMainWindow):
             if self.follow_today:
                 self.go_today()
             self._update_controls()
-        render_key = (model.revision, self.period, self.anchor)
+        render_key = (model.revision, self.period, self.anchor, self.keyboard_layout.layout_id)
         if render_key != self._render_key:
             totals = model.totals(self.period, self.anchor)
             start, end = date_range(self.period, self.anchor)
@@ -324,8 +397,11 @@ class StatsWindow(QMainWindow):
             self.total_label.setText(f"{sum(totals.values()):,}")
             used = sum(1 for count in totals.values() if count)
             self.active_label.setText(f"已使用 {used} 个按键")
-            other = [(key, count) for key, count in totals.items() if key not in KEY_BY_ID and count]
-            self.other_label.setText("其他按键  " + "    ".join(f"{key_name(key)}: {count:,}" for key, count in sorted(other)))
+            visible_ids = self.keyboard_layout.key_ids
+            other = [(key, count) for key, count in totals.items() if key not in visible_ids and count]
+            self.other_label.setText("布局外按键  " + "    ".join(
+                key_name(key).replace(" ", "\u00a0") + f":\u00a0{count:,}" for key, count in sorted(other)
+            ))
             self.other_label.setVisible(bool(other))
             self.keyboard.set_counts(totals, {key for _, key in model.pressed})
             self._render_key = render_key

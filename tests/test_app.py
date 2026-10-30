@@ -4,15 +4,17 @@ from datetime import date, timedelta
 from pathlib import Path
 from unittest.mock import patch
 
-from PySide6.QtCore import QDate
+from PySide6.QtCore import QDate, QSettings, Qt, QTimer
 from PySide6.QtGui import QFont, QFontMetricsF
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication, QSystemTrayIcon
 
 from qiaoqiao.app import Controller, InstanceGuard
 from qiaoqiao.keys import PhysicalEvent
+from qiaoqiao.layouts import LAYOUTS
 from qiaoqiao.runtime import Runtime
 from qiaoqiao.storage import Database
+from qiaoqiao.ui import SHORT_ARROW_LABELS, StatsWindow
 
 
 APPLICATION = QApplication.instance() or QApplication([])
@@ -190,6 +192,159 @@ class AppTests(unittest.TestCase):
         for key, rect in self.controller.window.keyboard.key_rects():
             count = self.controller.window.keyboard.counts.get(key.key_id, 0)
             self.assertLessEqual(metrics.horizontalAdvance(f"{count:,}"), rect.width() - 8)
+
+    def test_menu_click_switches_layout_without_changing_totals_or_capture(self):
+        self.tap("1e")
+        self.tap("47")
+        self.controller.refresh()
+        window = self.controller.window
+
+        def select_tkl():
+            action = window.layout_actions["tkl"]
+            QTest.mouseMove(window.layout_menu, window.layout_menu.actionGeometry(action).center())
+            QTest.mouseClick(window.layout_menu, Qt.MouseButton.LeftButton,
+                             pos=window.layout_menu.actionGeometry(action).center())
+
+        timeout = QTimer(window)
+        timeout.setSingleShot(True)
+        timeout.timeout.connect(window.layout_menu.close)
+        timeout.start(1500)
+        QTimer.singleShot(50, select_tkl)
+        QTest.mouseClick(window.layout_button, Qt.MouseButton.LeftButton)
+        QTest.qWait(100)
+        timeout.stop()
+        self.assertEqual(window.keyboard.keyboard_layout.layout_id, "tkl")
+        self.assertTrue(window.layout_actions["tkl"].isChecked())
+        self.assertFalse(window.layout_actions["full"].isChecked())
+        self.assertEqual(window.total_label.text(), "2")
+        self.assertIn("Num 7: 1", window.other_label.text().replace("\u00a0", " "))
+        self.assertFalse(window.other_label.isHidden())
+        self.tap("47")
+        self.controller.refresh()
+        self.assertEqual(window.total_label.text(), "3")
+        self.assertIn("Num 7: 2", window.other_label.text().replace("\u00a0", " "))
+        window.layout_actions["full"].trigger()
+        self.assertTrue(window.other_label.isHidden())
+        self.assertEqual(window.keyboard.counts["47"], 2)
+
+    def test_layout_preference_and_counts_survive_window_recreation(self):
+        self.tap()
+        self.controller.window.set_keyboard_layout("laptop")
+        self.assertTrue(self.controller.persistence.flush())
+        restored = Controller(APPLICATION, self.database, FakeListener)
+        try:
+            restored.refresh()
+            self.assertEqual(restored.window.keyboard.keyboard_layout.layout_id, "laptop")
+            self.assertTrue(restored.window.layout_actions["laptop"].isChecked())
+            self.assertEqual(restored.window.total_label.text(), "1")
+            self.assertEqual(restored.window.keyboard.counts["1e"], 1)
+            preferences = QSettings(str(self.database.path.parent / "preferences.ini"), QSettings.Format.IniFormat)
+            self.assertEqual(preferences.value("keyboard/layout"), "laptop")
+        finally:
+            restored.dispose()
+            restored.window.deleteLater()
+            restored.menu.deleteLater()
+            restored.deleteLater()
+
+    def test_invalid_saved_layout_falls_back_to_full(self):
+        for saved in ("unknown-layout", ["60", "65"]):
+            with self.subTest(saved=saved):
+                self.controller.settings.setValue("keyboard/layout", saved)
+                window = StatsWindow(self.controller.settings)
+                try:
+                    self.assertEqual(window.keyboard.keyboard_layout.layout_id, "full")
+                    self.assertTrue(window.layout_actions["full"].isChecked())
+                finally:
+                    window.allow_close = True
+                    window.close()
+                    window.deleteLater()
+
+    def test_preference_failure_keeps_layout_and_counting_usable(self):
+        with patch.object(self.controller.settings, "status", return_value=QSettings.Status.AccessError):
+            self.controller.window.set_keyboard_layout("65")
+        self.assertTrue(self.controller.window.layout_button.toolTip())
+        self.tap()
+        self.controller.refresh()
+        self.assertEqual(self.controller.window.keyboard.keyboard_layout.layout_id, "65")
+        self.assertEqual(self.controller.window.total_label.text(), "1")
+
+    def test_switch_recomputes_heat_from_visible_keys_and_preserves_pressed_state(self):
+        window = self.controller.window
+        self.controller.model.counts[(date.today().isoformat(), "47")] = 1000
+        self.controller.listener.on_key(PhysicalEvent(1, "1e", True))
+        self.controller.refresh()
+        self.assertEqual(window.keyboard.heat_maximum(), 1000)
+        window.set_keyboard_layout("tkl")
+        self.assertEqual(window.keyboard.heat_maximum(), 1)
+        self.assertEqual(window.keyboard.pressed, {"1e"})
+        self.assertEqual(window.total_label.text(), "1,001")
+        self.assertEqual(window.keyboard.counts["47"], 1000)
+        self.controller.listener.on_key(PhysicalEvent(1, "1e", False))
+        self.controller.refresh()
+        self.assertFalse(window.keyboard.pressed)
+
+    def test_layout_switch_preserves_historical_range_and_unknown_keys(self):
+        yesterday = date.today() - timedelta(days=1)
+        self.controller.model.counts[(yesterday.isoformat(), "e0_64")] = 3
+        self.controller.model.revision += 1
+        window = self.controller.window
+        window.date_edit.setDate(QDate(yesterday.year, yesterday.month, yesterday.day))
+        window.set_keyboard_layout("60")
+        self.tap()
+        self.controller.refresh()
+        self.assertEqual(window.anchor, yesterday)
+        self.assertEqual(window.total_label.text(), "3")
+        self.assertIn("Scan E0_64: 3", window.other_label.text().replace("\u00a0", " "))
+        window.go_today()
+        self.assertEqual(window.total_label.text(), "1")
+        self.assertTrue(window.other_label.isHidden())
+        self.assertEqual(window.keyboard.keyboard_layout.layout_id, "60")
+
+    def test_every_layout_fits_and_heatmap_pixels_reflect_counts(self):
+        window = self.controller.window
+        for layout in LAYOUTS:
+            for size in ((1040, 570), (1260, 680)):
+                with self.subTest(layout=layout.layout_id, size=size):
+                    window.resize(*size)
+                    window.set_keyboard_layout(layout.layout_id)
+                    window.keyboard.set_counts({"1e": 100, "30": 1, "47": 10000}, set())
+                    APPLICATION.processEvents()
+                    keyboard = window.keyboard
+                    rects = keyboard.key_rects()
+                    image = keyboard.grab().toImage()
+                    colors = {}
+                    for index, (key, rect) in enumerate(rects):
+                        self.assertGreaterEqual(rect.left(), 0)
+                        self.assertGreaterEqual(rect.top(), 0)
+                        self.assertLessEqual(rect.right(), keyboard.width())
+                        self.assertLessEqual(rect.bottom(), keyboard.height())
+                        for _, other in rects[index + 1:]:
+                            self.assertFalse(rect.intersects(other))
+                        colors[key.key_id] = image.pixelColor(
+                            round((rect.left() + 7) * image.devicePixelRatio()),
+                            round((rect.top() + rect.height() * 0.55) * image.devicePixelRatio()),
+                        )
+                    self.assertEqual(colors["2e"].name(), "#ffffff")
+                    self.assertLess(colors["1e"].blue(), colors["30"].blue())
+                    self.assertLess(colors["30"].blue(), colors["2e"].blue())
+
+    def test_extreme_counts_fit_all_layouts_including_half_height_arrows(self):
+        window = self.controller.window
+        window.resize(1040, 570)
+        metrics = QFontMetricsF(QFont("Segoe UI", 7, QFont.Weight.DemiBold))
+        for layout in LAYOUTS:
+            with self.subTest(layout=layout.layout_id):
+                window.set_keyboard_layout(layout.layout_id)
+                window.keyboard.set_counts({key: 123456789012 for key in layout.key_ids}, set())
+                APPLICATION.processEvents()
+                for key, rect in window.keyboard.key_rects():
+                    if key.key_id is None:
+                        continue
+                    text_width = metrics.horizontalAdvance("123,456,789,012")
+                    if key.height < 1:
+                        text_width += metrics.horizontalAdvance(SHORT_ARROW_LABELS[key.key_id]) + 10
+                        self.assertLessEqual(metrics.height(), rect.height())
+                    self.assertLessEqual(text_width, rect.width() - 10)
 
 
 class InstanceTests(unittest.TestCase):

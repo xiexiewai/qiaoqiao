@@ -33,7 +33,9 @@ def source_files():
             "requirements-build.txt", "README.md", "DEVELOPMENT.md", ".gitignore",
         )
     ]
-    for folder, pattern in (("qiaoqiao", "*.py"), ("tests", "*.py"), ("assets", "*.ico")):
+    for folder, pattern in (
+        ("qiaoqiao", "*.py"), ("tests", "*.py"), ("assets", "*.ico"), ("assets", "*.png"),
+    ):
         files.extend((ROOT / folder).rglob(pattern))
     files.extend(path for path in (ROOT / "tools").iterdir() if path.suffix in (".py", ".ps1", ".txt"))
     return sorted(files)
@@ -72,9 +74,10 @@ def main():
     staging = ROOT / "work" / "build" / stamp
     work = staging / "pyinstaller" / "qiaoqiao"
     work.mkdir(parents=True)
+    environment = isolated_environment()
+    run(sys.executable, str(ROOT / "tools" / "build_icon.py"), env=environment)
     files = source_files()
     hashes = {path.relative_to(ROOT).as_posix(): sha256(path) for path in files}
-    environment = isolated_environment()
     # Raw Input tests need real HWNDs; Qt's offscreen plugin cannot register WTS notifications.
     run(sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v", env=environment)
 

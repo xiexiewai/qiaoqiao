@@ -7,7 +7,7 @@ a = Analysis(
     [str(root / "run.py")],
     pathex=[str(root)],
     binaries=[],
-    datas=[],
+    datas=[(str(root / "assets" / "qiaoqiao.ico"), "assets")],
     hiddenimports=[],
     hookspath=[],
     runtime_hooks=[],

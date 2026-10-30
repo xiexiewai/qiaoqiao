@@ -39,7 +39,7 @@ def normalize(device: int, make_code: int, flags: int, vkey: int) -> PhysicalEve
 
 @dataclass(frozen=True)
 class Key:
-    key_id: str
+    key_id: str | None
     label: str
     x: float
     y: float

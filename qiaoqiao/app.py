@@ -7,7 +7,7 @@ from datetime import datetime
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from PySide6.QtCore import QLockFile, QObject, QTimer, Signal
+from PySide6.QtCore import QLockFile, QObject, QSettings, QTimer, Signal
 from PySide6.QtGui import QAction, QFont
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
 from PySide6.QtWidgets import QApplication, QMenu, QMessageBox, QSystemTrayIcon
@@ -72,7 +72,8 @@ class Controller(QObject):
         self.runtime = runtime or Runtime(True, database.path.parent)
         self.model = CounterModel(database.load())
         self.persistence = Persistence(self.model, database)
-        self.window = StatsWindow()
+        self.settings = QSettings(str(self.runtime.directory / "preferences.ini"), QSettings.Format.IniFormat)
+        self.window = StatsWindow(self.settings)
         self.window.setWindowTitle(f"{self.runtime.title} - 键盘统计")
         self.window.setStyleSheet(STYLE)
         self.window.view_changed.connect(self.refresh)
