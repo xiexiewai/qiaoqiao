@@ -16,7 +16,8 @@ from .core import CounterModel
 from .raw_input import RawInputListener
 from .runtime import Runtime, parse_runtime
 from .storage import Database, Persistence
-from .ui import STYLE, StatsWindow, application_icon
+from .theme import STYLE, palette, set_state
+from .ui import StatsWindow, application_icon
 
 LOGGER = logging.getLogger("qiaoqiao")
 
@@ -75,11 +76,12 @@ class Controller(QObject):
         self.settings = QSettings(str(self.runtime.directory / "preferences.ini"), QSettings.Format.IniFormat)
         self.window = StatsWindow(self.settings)
         self.window.setWindowTitle(f"{self.runtime.title} - 键盘统计")
-        self.window.setStyleSheet(STYLE)
         self.window.view_changed.connect(self.refresh)
         self.window.hidden_to_tray.connect(self._hidden)
         self.tray = QSystemTrayIcon(application_icon(), self)
         self.menu = QMenu()
+        self.menu.setPalette(palette())
+        self.menu.setStyleSheet(STYLE)
         self.open_action = QAction("打开主界面", self)
         self.open_action.triggered.connect(self.window.restore)
         self.exit_action = QAction("退出程序", self)
@@ -119,7 +121,10 @@ class Controller(QObject):
         self.window.show()
 
     def _key(self, event):
-        self.model.accept(event, datetime.now().date())
+        if self.model.accept(event, datetime.now().date()):
+            # Feedback follows accepted physical presses, so key repeat never
+            # retriggers it. The UI coalesces redraws without changing storage.
+            self.window.keyboard.flash_key(event.key_id)
 
     def _input_error(self, message):
         LOGGER.error("Keyboard listener: %s", message)
@@ -152,6 +157,9 @@ class Controller(QObject):
         else:
             state = "统计已停止"
         self.window.status_label.setText(state)
+        set_state(self.window.status_label, "error" if state == "监听异常" else (
+            "normal" if state == "正在统计" else "paused"
+        ))
         self.window.status_label.setToolTip(self.listener.last_error or "" if self.listener else "")
         self.tray.setToolTip(f"{self.runtime.title} · {state}")
         if self.persistence.error:
@@ -164,7 +172,7 @@ class Controller(QObject):
             saved = "数据已保存在本机"
         self.window.save_label.setText(saved)
         self.window.save_label.setToolTip(self.persistence.error or str(self.database.path))
-        self.window.save_label.setStyleSheet("color: #A43B28;" if self.persistence.error else "")
+        set_state(self.window.save_label, "error" if self.persistence.error else "muted")
 
     def _tray_activated(self, reason):
         if reason in (QSystemTrayIcon.ActivationReason.Trigger, QSystemTrayIcon.ActivationReason.DoubleClick):

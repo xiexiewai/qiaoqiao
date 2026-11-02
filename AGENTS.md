@@ -54,6 +54,7 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 | --- | --- |
 | `run.py` | 启动入口，调用 `qiaoqiao.app.main`，保持轻量 |
 | `start.cmd` | 开发版双击启动入口 |
+| `build.cmd` | 双击打包入口，调用现有 PowerShell 流程并保留结果和退出码 |
 | `qiaoqiao/__init__.py` | 应用版本号的唯一来源 `__version__` |
 | `qiaoqiao/runtime.py` | 参数解析、开发/正式模式、数据路径和版本标题 |
 | `qiaoqiao/keys.py` | 扫描码归一化、物理键标识、标准 104 键基础数据 |
@@ -61,7 +62,8 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 | `qiaoqiao/core.py` | 纯计数、长按去重、设备按住状态、日期聚合 |
 | `qiaoqiao/storage.py` | 数据库结构、事务、批量保存和失败恢复 |
 | `qiaoqiao/raw_input.py` | Windows 原生消息、输入解析、设备和会话事件 |
-| `qiaoqiao/ui.py` | Qt 控件、主题样式、键盘绘制、日期和布局交互 |
+| `qiaoqiao/theme.py` | 共享调色板、QSS、像素绘制方法及保留原生交互的主题控件 |
+| `qiaoqiao/ui.py` | 窗口布局、键盘绘制、短暂敲击反馈、日期和布局交互 |
 | `qiaoqiao/app.py` | 组装模型/监听/UI/存储，托盘、单实例和退出生命周期 |
 | `assets/` | 像素图原稿及应用 ICO |
 | `tests/` | 对应模块的自动化测试 |
@@ -80,6 +82,7 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 - 计数和日期规则复用 `CounterModel`、`date_range()`、`move_date()`。
 - 数据写入统一经过 `Database` / `Persistence`；路径选择统一经过 `Runtime` / `parse_runtime()`。
 - 应用图标复用 `application_icon()` 和 `assets/qiaoqiao.ico`。
+- 主题复用 `theme.py` 的 `STYLE`、`palette()`、`pixel_shape()` 和像素控件；主题模块不依赖计数模型或应用控制器。
 - `core.py`、`keys.py`、`layouts.py` 保持不依赖 Qt、原生监听或应用控制器。
 - `app.py` 负责协调；UI 不直接写数据库，存储层不反向依赖 UI。
 - 只有出现实际复用需求才提取新模块，并同步本文件中的目录职责。
@@ -112,6 +115,7 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 - 系统关闭使用现有专门分支，不承诺系统强制结束时仍能阻止退出或保证落盘。
 - 单实例以解析后的数据目录为边界；相同目录重复启动唤醒已有窗口，不同目录可独立运行。
 - UI 当前每约 250 ms 刷新，保存每约 1 s 尝试一批；不要改成逐键刷盘或无节制重绘。
+- 短暂敲击反馈独立使用 33 ms 定时器、180 ms 到期状态；仅在可见窗口有反馈时运行，到期或隐藏后停止，不改变统计及保存频率。
 
 ## 5. 数据、隐私与线程
 
@@ -136,36 +140,42 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 
 ## 6. 样式与主题规范
 
-保持浅色、紧凑的桌面工作窗口，以键盘和统计为主体。
+采用已确认的暗色赛博朋克像素风，保持紧凑的桌面工作窗口，以键盘和统计为主体。
 不添加宣传页、装饰性大卡片、嵌套卡片或无关视觉效果。
-现有主题入口是 `qiaoqiao/ui.py` 的 `STYLE`，键盘使用 `KeyboardWidget.paintEvent()` 自绘。
+主题入口为 `qiaoqiao/theme.py` 的 `STYLE` 和 `palette()`；键盘使用 `KeyboardWidget.paintEvent()` 自绘，
+共享同一调色板及像素绘制方法。保持 Qt Widgets / QPainter，不引入 Web UI 或第三方皮肤库。
 
 | 用途 | 现有约定 |
 | --- | --- |
-| 页面背景 | `#F3F5F7` |
-| 普通键面 / 控件背景 | `#FFFFFF` |
-| 正文 | `#20262B` |
-| 次要文字 | `#6B7279` |
-| 主交互、选中、按住边框、正常状态 | `#147D68` |
-| 控件边框 / 键面边框 | `#D5DBE0` / `#D3DAE0` |
-| 悬停背景 / 悬停边框 | `#E7EEEC` / `#93B5AA` |
-| 禁用或 Fn 背景 | `#EDF0F2` |
-| 保存错误 | `#A43B28`，现位于 `app.py` 的状态样式 |
-| 热度 | 暖黄色系，按现有 `log1p` 比例和 `QColor.fromRgbF` 计算，不替换为单一固定色 |
-| 圆角 | 现有控件和键面均为 5 px，新增同类元素保持一致 |
+| 页面 / 键盘背景 | `#171522` / `#1D1928` |
+| 零次键面 / 控件背景 | `#2C283B` / `#24202F` |
+| 正文 / 次要文字 | `#F2EBF4` / `#A49AB4` |
+| 总次数、按住与短暂反馈边框、焦点、正常状态 | 薄荷绿 `#97E4C2` |
+| 选中、悬停边框 | 粉色 `#E59AAC` |
+| 控件及零次键面边框 | `#54465F` |
+| 悬停 / 选中控件背景 | `#30283E` / `#342A40` |
+| Fn 背景 / 禁用控件背景 | `#252230` / `#211E2D` |
+| 保存及监听错误 | `#FF9E91`，由 `state` 属性驱动，配合错误文案 |
+| 热度 | `#4C355E` → `#8A517C` → `#C47D98` → `#FFE6B5`；颜色停靠点为 0、0.4、0.7、1，沿用 `log1p` 归一化 |
+| 边角及阴影 | 正交台阶切角、硬边阴影 `#0D0C14`；不使用圆角、柔光或渐变阴影 |
 
-`DEVELOPMENT.md` 中的 `#DF9F39` 是暖黄色的设计参考，实际热度值以绘制代码为准。
+热度填充由 `heat_color()` 统一计算；`key_ink()` 根据背景选择对比更高的浅色或深色文字。
+零次与 Fn 有独立底色；薄荷绿表示实时按键状态，不参与历史热度计算。
 
-- 中文界面使用 `Microsoft YaHei UI`，基准 10 pt；键名和数字使用 `Segoe UI`。
+- 中文界面使用 `Microsoft YaHei UI`，基准 10 pt；键名和键面数字使用 `Consolas`，总数使用固定 4 px 单元绘制像素数字。
 - 总次数保持完整整数及千位分隔，不以 `1.2k` 等缩写替代；悬停保留键名和完整次数。
 - 使用固定字号，不按窗口宽度等比缩放字体。现有键面可按文字宽度缩小至 7 pt，下限仍不足时扩大内容区域并滚动。
 - 默认窗口为 `1260 × 680`，最小为 `1040 × 570`；键盘通过 `QScrollArea` 处理窄窗口和极大数值。
+- 总数保留 `QLabel` 的完整文本与可访问名称，超大数值在固定宽度区域水平滚动，不撑宽窗口。
 - 沿用上部时间/日期/统计、中部键盘、底部布局/保存状态的顺序；布局切换不应使工具栏跳动。
 - 图标按钮优先使用 Qt `QStyle.StandardPixmap`，并提供 tooltip 和可访问名称。
-- 时段使用互斥可选按钮，日期使用 `QDateEdit`，布局使用互斥菜单，不用自由文本输入替代这些控件。
+- 时段、导航和日期使用原生 Qt 控件的像素绘制子类，只替换外观，保留互斥选择、键盘激活、日期编辑及日历弹窗。
+- 布局使用互斥菜单，不用自由文本输入替代。菜单、日历、滚动条和托盘菜单同步使用暗色主题。
 - 保留 hover、checked、disabled、focus 及错误状态；错误不能只用颜色表达。
-- 新样式优先加入现有 `STYLE` 并复用语义对象名，避免到处添加重复的局部 `setStyleSheet()`。
-- 如确需拆出主题模块，应同时覆盖 QSS 与自绘颜色，避免只改控件而漏改键盘。
+- 新样式集中到 `theme.py`，复用语义对象名与 `set_state()`，避免到处添加重复的局部 `setStyleSheet()`。
+- 像素边角复用 `pixel_shape()`，按设备像素比对齐，不对台阶轮廓抗锯齿；文字可抗锯齿。
+- 敲击反馈只为模型接纳的新按下触发，长按重复不重触发；仅保存每键一个短暂截止值，不保存事件序列、不落盘。
+- 背景点阵保持静态、低对比；隐藏窗口停止反馈定时器，不增加常驻装饰动画。
 - 图标原稿为 `assets/qiaoqiao-pixel.png`，通过 `tools/build_icon.py` 导出 ICO；保持最近邻缩放和像素边缘。
 - 窗口、托盘、EXE 和快捷方式共用应用图标，不分别维护不同图案。
 
@@ -230,7 +240,8 @@ git diff --check
 
 ## 9. 打包与交付
 
-仅当任务涉及发布或确需验证打包行为时执行：
+仅当任务涉及发布或确需验证打包行为时执行。可双击根目录 `build.cmd`；
+它复用以下流程并支持转发 `-Python` / `-IndexUrl` 参数，完成后保留结果窗口：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\build.ps1

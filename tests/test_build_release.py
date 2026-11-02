@@ -1,10 +1,14 @@
+import json
 import os
+import shutil
+import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from tools.build_release import isolated_environment
+from tools.build_release import ROOT, isolated_environment, source_files
 
 
 class BuildEnvironmentTests(unittest.TestCase):
@@ -33,6 +37,46 @@ class BuildEnvironmentTests(unittest.TestCase):
         self.assertEqual(
             environment["PATH"].split(os.pathsep), [str(windows / "System32"), str(windows)],
         )
+
+
+@unittest.skipUnless(sys.platform == "win32", "The double-click launcher uses Windows cmd.")
+class BuildLauncherTests(unittest.TestCase):
+    def test_launcher_is_in_source_snapshot(self):
+        self.assertIn(ROOT / "build.cmd", source_files())
+
+    def test_launcher_forwards_arguments_and_preserves_exit_code(self):
+        # Exercise the real launcher against a stub builder, without installing or publishing.
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "project space (check)!"
+            (root / "tools").mkdir(parents=True)
+            shutil.copy2(ROOT / "build.cmd", root / "build.cmd")
+            (root / "tools" / "build.ps1").write_text(
+                "param([string]$Python, [string]$IndexUrl)\n"
+                "@{ directory = $PWD.Path; python = $Python; index = $IndexUrl } "
+                "| ConvertTo-Json -Compress\n"
+                "exit ([int]$env:QIAOQIAO_TEST_BUILD_EXIT)\n",
+                encoding="ascii",
+            )
+            python = r"C:\Python Tools\python.exe"
+            index = "https://packages.example.test/simple"
+            command = (
+                f'"{os.environ["ComSpec"]}" /d /s /c '
+                f'""{root / "build.cmd"}" -Python "{python}" -IndexUrl "{index}""'
+            )
+            for code, message in ((0, "[SUCCESS]"), (23, "[ERROR]")):
+                with self.subTest(exit_code=code):
+                    result = subprocess.run(
+                        command, cwd=directory,
+                        env={**os.environ, "QIAOQIAO_TEST_BUILD_EXIT": str(code)},
+                        input=b"\n", capture_output=True, timeout=30,
+                    )
+                    self.assertEqual(result.returncode, code, result.stdout + result.stderr)
+                    output = result.stdout.decode("ascii", errors="replace")
+                    self.assertIn(message, output)
+                    payload = json.loads(next(line for line in output.splitlines() if line.startswith("{")))
+                    self.assertEqual(payload, {"directory": str(root), "python": python, "index": index})
+                    if code:
+                        self.assertNotIn("[SUCCESS]", output)
 
 
 if __name__ == "__main__":

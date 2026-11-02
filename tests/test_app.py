@@ -1,19 +1,21 @@
+import math
 import tempfile
 import unittest
 from datetime import date, timedelta
 from pathlib import Path
 from unittest.mock import patch
 
-from PySide6.QtCore import QDate, QSettings, Qt, QTimer
+from PySide6.QtCore import QDate, QPoint, QSettings, Qt, QTimer
 from PySide6.QtGui import QFont, QFontMetricsF
 from PySide6.QtTest import QTest
-from PySide6.QtWidgets import QApplication, QSystemTrayIcon
+from PySide6.QtWidgets import QAbstractItemView, QApplication, QSystemTrayIcon
 
 from qiaoqiao.app import Controller, InstanceGuard
 from qiaoqiao.keys import PhysicalEvent
 from qiaoqiao.layouts import LAYOUTS
 from qiaoqiao.runtime import Runtime
 from qiaoqiao.storage import Database
+from qiaoqiao.theme import ERROR, KEY_IDLE, MINT, MUTED, heat_color
 from qiaoqiao.ui import SHORT_ARROW_LABELS, StatsWindow
 
 
@@ -188,7 +190,7 @@ class AppTests(unittest.TestCase):
         self.controller.model.revision += 1
         self.controller.refresh()
         APPLICATION.processEvents()
-        metrics = QFontMetricsF(QFont("Segoe UI", 7, QFont.Weight.DemiBold))
+        metrics = QFontMetricsF(QFont("Consolas", 7, QFont.Weight.DemiBold))
         for key, rect in self.controller.window.keyboard.key_rects():
             count = self.controller.window.keyboard.counts.get(key.key_id, 0)
             self.assertLessEqual(metrics.horizontalAdvance(f"{count:,}"), rect.width() - 8)
@@ -324,14 +326,17 @@ class AppTests(unittest.TestCase):
                             round((rect.left() + 7) * image.devicePixelRatio()),
                             round((rect.top() + rect.height() * 0.55) * image.devicePixelRatio()),
                         )
-                    self.assertEqual(colors["2e"].name(), "#ffffff")
-                    self.assertLess(colors["1e"].blue(), colors["30"].blue())
-                    self.assertLess(colors["30"].blue(), colors["2e"].blue())
+                    self.assertEqual(colors["2e"].name(), KEY_IDLE.lower())
+                    self.assertGreater(colors["1e"].red(), colors["30"].red())
+                    self.assertGreater(colors["30"].red(), colors["2e"].red())
+                    self.assertEqual(
+                        colors["1e"], heat_color(math.log1p(100) / math.log1p(keyboard.heat_maximum())),
+                    )
 
     def test_extreme_counts_fit_all_layouts_including_half_height_arrows(self):
         window = self.controller.window
         window.resize(1040, 570)
-        metrics = QFontMetricsF(QFont("Segoe UI", 7, QFont.Weight.DemiBold))
+        metrics = QFontMetricsF(QFont("Consolas", 7, QFont.Weight.DemiBold))
         for layout in LAYOUTS:
             with self.subTest(layout=layout.layout_id):
                 window.set_keyboard_layout(layout.layout_id)
@@ -345,6 +350,117 @@ class AppTests(unittest.TestCase):
                         text_width += metrics.horizontalAdvance(SHORT_ARROW_LABELS[key.key_id]) + 10
                         self.assertLessEqual(metrics.height(), rect.height())
                     self.assertLessEqual(text_width, rect.width() - 10)
+
+    def test_fast_tap_feedback_expires_without_changing_count_or_heat(self):
+        self.controller.timer.stop()
+        keyboard = self.controller.window.keyboard
+        with patch("qiaoqiao.ui.monotonic", return_value=10):
+            self.tap()
+        self.controller.refresh()
+        self.assertFalse(keyboard.pressed)
+        self.assertIn("1e", keyboard._flashes)
+        self.assertTrue(keyboard._feedback_timer.isActive())
+        rect = next(rect for key, rect in keyboard.key_rects() if key.key_id == "1e")
+        image = keyboard.grab().toImage()
+        dpr = image.devicePixelRatio()
+        self.assertEqual(image.pixelColor(round(rect.center().x() * dpr), round(rect.top() * dpr)).name(),
+                         MINT.lower())
+        with patch("qiaoqiao.ui.monotonic", return_value=10.2):
+            keyboard._advance_feedback()
+        self.assertFalse(keyboard._flashes)
+        self.assertFalse(keyboard._feedback_timer.isActive())
+        self.assertEqual(keyboard.counts["1e"], 1)
+        self.assertEqual(keyboard.heat_maximum(), 1)
+
+    def test_repeat_does_not_restart_feedback_and_hidden_window_stops_it(self):
+        keyboard = self.controller.window.keyboard
+        with patch("qiaoqiao.ui.monotonic", return_value=10):
+            self.controller.listener.on_key(PhysicalEvent(1, "1e", True))
+        original = dict(keyboard._flashes)
+        with patch("qiaoqiao.ui.monotonic", return_value=11):
+            self.controller.listener.on_key(PhysicalEvent(1, "1e", True))
+        self.assertEqual(keyboard._flashes, original)
+        self.controller.window.hide()
+        self.assertFalse(keyboard._feedback_timer.isActive())
+        self.assertFalse(keyboard._flashes)
+        self.tap("30")
+        self.assertFalse(keyboard._feedback_timer.isActive())
+        self.assertFalse(keyboard._flashes)
+
+    def test_layout_switch_drops_hidden_feedback_and_fn_never_flashes(self):
+        window = self.controller.window
+        self.tap("47")
+        self.assertIn("47", window.keyboard._flashes)
+        window.set_keyboard_layout("laptop")
+        self.assertNotIn("47", window.keyboard._flashes)
+        self.tap("47")
+        self.assertNotIn("47", window.keyboard._flashes)
+        self.assertEqual(window.total_label.text(), "1")
+        self.controller.refresh()
+        self.assertEqual(window.total_label.text(), "2")
+        self.assertIsNone(next(key for key in window.keyboard.keyboard_layout.keys if key.label == "Fn").key_id)
+
+    def test_pixel_buttons_keep_keyboard_activation_and_disabled_date_controls(self):
+        window = self.controller.window
+        week = window.period_buttons["week"]
+        week.setFocus()
+        QTest.keyClick(week, Qt.Key.Key_Space)
+        self.assertEqual(window.period, "week")
+        self.assertTrue(week.isChecked())
+        self.assertFalse(window.period_buttons["day"].isChecked())
+        QTest.mouseClick(window.period_buttons["all"], Qt.MouseButton.LeftButton)
+        self.assertFalse(window.previous.isEnabled())
+        self.assertFalse(window.next.isEnabled())
+        self.assertFalse(window.date_edit.isEnabled())
+        self.assertFalse(window.today_button.isEnabled())
+        self.assertTrue(window.layout_button.isEnabled())
+
+    def test_error_theme_recovers_without_leaving_local_styles(self):
+        window = self.controller.window
+        self.controller.persistence.error = "disk full"
+        self.controller.listener.last_error = "input error"
+        self.controller.refresh()
+        APPLICATION.processEvents()
+        self.assertEqual(window.save_label.property("state"), "error")
+        self.assertEqual(window.status_label.property("state"), "error")
+        self.assertEqual(window.save_label.palette().color(window.save_label.foregroundRole()).name(), ERROR.lower())
+        self.assertIn("保存失败", window.save_label.text())
+        self.controller.persistence.error = None
+        self.controller.listener.last_error = None
+        self.controller.refresh()
+        APPLICATION.processEvents()
+        self.assertEqual(window.status_label.property("state"), "normal")
+        self.assertEqual(window.save_label.palette().color(window.save_label.foregroundRole()).name(), MUTED.lower())
+        self.assertFalse(window.save_label.styleSheet())
+
+    def test_pixel_date_popup_keeps_keyboard_selection_and_today_navigation(self):
+        window = self.controller.window
+        edit = window.date_edit
+        QTest.mouseClick(edit, Qt.MouseButton.LeftButton, pos=QPoint(edit.width() - 12, edit.height() // 2))
+        APPLICATION.processEvents()
+        calendar = edit.calendarWidget()
+        self.assertTrue(calendar.isVisible())
+        view = calendar.findChild(QAbstractItemView)
+        QTest.keyClick(view, Qt.Key.Key_Left)
+        QTest.keyClick(view, Qt.Key.Key_Return)
+        APPLICATION.processEvents()
+        self.assertEqual(window.anchor, date.today() - timedelta(days=1))
+        self.assertFalse(calendar.isVisible())
+        QTest.mouseClick(window.today_button, Qt.MouseButton.LeftButton)
+        self.assertEqual(window.anchor, date.today())
+
+    def test_very_large_total_scrolls_without_widening_the_window(self):
+        window = self.controller.window
+        window.resize(1040, 570)
+        number = 10 ** 30
+        self.controller.model.counts[(date.today().isoformat(), "1e")] = number
+        self.controller.model.revision += 1
+        self.controller.refresh()
+        APPLICATION.processEvents()
+        self.assertEqual(window.total_label.text(), f"{number:,}")
+        self.assertEqual(window.width(), 1040)
+        self.assertGreater(window.total_scroll.horizontalScrollBar().maximum(), 0)
+        self.assertGreaterEqual(window.total_label.width(), window.total_label.sizeHint().width())
 
 
 class InstanceTests(unittest.TestCase):

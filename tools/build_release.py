@@ -29,7 +29,7 @@ def sha256(path):
 def source_files():
     files = [
         ROOT / name for name in (
-            "run.py", "start.cmd", "qiaoqiao.spec", "requirements.txt",
+            "run.py", "start.cmd", "build.cmd", "qiaoqiao.spec", "requirements.txt",
             "requirements-build.txt", "README.md", "DEVELOPMENT.md", ".gitignore",
         )
     ]
