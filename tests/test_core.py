@@ -1,7 +1,7 @@
 import unittest
 from datetime import date
 
-from qiaoqiao.core import CounterModel, date_range, move_date
+from qiaoqiao.core import CounterModel, MilestoneTracker, date_range, move_date
 from qiaoqiao.keys import KEYS, PhysicalEvent, normalize
 
 
@@ -70,6 +70,80 @@ class CountingTests(unittest.TestCase):
         self.assertEqual(model.totals("week", self.day)["1e"], 4)
         self.assertEqual(model.totals("month", self.day)["1e"], 4)
         self.assertEqual(model.totals("all", self.day)["1e"], 14)
+
+
+class MilestoneTests(unittest.TestCase):
+    def setUp(self):
+        self.day = date(2026, 11, 2)
+
+    def test_threshold_is_consumed_only_once(self):
+        tracker = MilestoneTracker(self.day, 998)
+        tracker.record_press()
+        self.assertIsNone(tracker.take_pending())
+        tracker.record_press()
+        self.assertEqual(tracker.take_pending(), 1000)
+        self.assertIsNone(tracker.take_pending())
+        tracker.record_press()
+        self.assertIsNone(tracker.pending)
+
+    def test_existing_counts_start_at_next_absolute_thousand(self):
+        tracker = MilestoneTracker(self.day, 4320)
+        self.assertIsNone(tracker.pending)
+        for _ in range(679):
+            tracker.record_press()
+        self.assertIsNone(tracker.pending)
+        tracker.record_press()
+        self.assertEqual(tracker.take_pending(), 5000)
+
+    def test_backlog_keeps_only_highest_threshold(self):
+        tracker = MilestoneTracker(self.day, 999)
+        for _ in range(2002):
+            tracker.record_press()
+        self.assertEqual(tracker.total, 3001)
+        self.assertEqual(tracker.take_pending(), 3000)
+        self.assertIsNone(tracker.take_pending())
+
+    def test_toggling_discards_pending_and_disabled_thresholds(self):
+        tracker = MilestoneTracker(self.day, 999)
+        tracker.record_press()
+        tracker.set_enabled(False)
+        self.assertIsNone(tracker.pending)
+        for _ in range(1000):
+            tracker.record_press()
+        tracker.set_enabled(True)
+        self.assertIsNone(tracker.pending)
+        for _ in range(1000):
+            tracker.record_press()
+        self.assertEqual(tracker.take_pending(), 3000)
+
+    def test_reset_drops_previous_day_pending_and_preserves_toggle(self):
+        tracker = MilestoneTracker(self.day, 999)
+        tracker.record_press()
+        tracker.reset(date(2026, 11, 3), 999)
+        self.assertIsNone(tracker.pending)
+        tracker.record_press()
+        self.assertEqual(tracker.take_pending(), 1000)
+        tracker.set_enabled(False)
+        tracker.reset(date(2026, 11, 4), 0)
+        self.assertFalse(tracker.enabled)
+        self.assertEqual(tracker.handled, 0)
+
+    def test_saved_checkpoint_can_be_ahead_of_database(self):
+        tracker = MilestoneTracker(self.day, 999, handled=1000)
+        tracker.record_press()
+        self.assertIsNone(tracker.pending)
+        for _ in range(1000):
+            tracker.record_press()
+        self.assertEqual(tracker.take_pending(), 2000)
+
+    def test_reenabling_preserves_checkpoint_ahead_of_total(self):
+        tracker = MilestoneTracker(self.day, 999, handled=2000)
+        tracker.set_enabled(False)
+        tracker.set_enabled(True)
+        for _ in range(1001):
+            tracker.record_press()
+        self.assertIsNone(tracker.pending)
+        self.assertEqual(tracker.handled, 2000)
 
 
 class KeyMappingTests(unittest.TestCase):

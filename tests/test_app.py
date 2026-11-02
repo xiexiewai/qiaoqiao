@@ -1,7 +1,7 @@
 import math
 import tempfile
 import unittest
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from unittest.mock import patch
 
@@ -10,7 +10,7 @@ from PySide6.QtGui import QFont, QFontMetricsF
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QAbstractItemView, QApplication, QSystemTrayIcon
 
-from qiaoqiao.app import Controller, InstanceGuard
+from qiaoqiao.app import Controller, InstanceGuard, milestone_message
 from qiaoqiao.keys import PhysicalEvent
 from qiaoqiao.layouts import LAYOUTS
 from qiaoqiao.runtime import Runtime
@@ -461,6 +461,411 @@ class AppTests(unittest.TestCase):
         self.assertEqual(window.width(), 1040)
         self.assertGreater(window.total_scroll.horizontalScrollBar().maximum(), 0)
         self.assertGreaterEqual(window.total_label.width(), window.total_label.sizeHint().width())
+
+
+class MilestoneAppTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.database = Database(Path(self.temp.name) / "counts.sqlite3")
+        self.database.initialize()
+        self.settings = QSettings(str(self.database.path.parent / "preferences.ini"), QSettings.Format.IniFormat)
+        self.controllers = []
+        self.today = date.today()
+        self.now = datetime.combine(self.today, datetime.min.time()).replace(hour=12)
+        patches = {
+            "clock": patch("qiaoqiao.app.datetime"),
+            "monotonic": patch("qiaoqiao.app.monotonic", return_value=100.0),
+            "notifications": patch.object(QSystemTrayIcon, "showMessage"),
+            "supports_messages": patch.object(QSystemTrayIcon, "supportsMessages", return_value=True),
+            "tray_available": patch.object(QSystemTrayIcon, "isSystemTrayAvailable", return_value=True),
+        }
+        for name, patcher in patches.items():
+            setattr(self, name, patcher.start())
+            self.addCleanup(patcher.stop)
+        self.clock.now.return_value = self.now
+
+    def tearDown(self):
+        for controller in self.controllers:
+            controller.dispose()
+            controller.window.deleteLater()
+            controller.menu.deleteLater()
+            controller.deleteLater()
+        APPLICATION.processEvents()
+        self.temp.cleanup()
+
+    def make_controller(self, total=None):
+        if total is not None:
+            self.database.save({(self.today.isoformat(), "1e"): total})
+        controller = Controller(APPLICATION, self.database, FakeListener)
+        self.controllers.append(controller)
+        controller._tray_tip_shown = True
+        controller.start()
+        # Tests drive the existing timer explicitly; no OS notifications escape
+        # the mock and no real keyboard input is generated.
+        controller.timer.stop()
+        return controller
+
+    def tap(self, controller, count=1, key="1e", device=1):
+        for _ in range(count):
+            controller.listener.on_key(PhysicalEvent(device, key, True))
+            controller.listener.on_key(PhysicalEvent(device, key, False))
+
+    def test_hidden_threshold_waits_for_tick_without_callback_io_or_history_scan(self):
+        controller = self.make_controller(999)
+        controller.window.close()
+        with patch.object(controller.settings, "sync") as sync:
+            with patch.object(controller.model, "totals") as totals:
+                self.tap(controller)
+                self.tap(controller, key="30")
+                totals.assert_not_called()
+            sync.assert_not_called()
+        self.notifications.assert_not_called()
+        controller.tick()
+        controller.tick()
+        self.notifications.assert_called_once()
+        self.assertIn("今日敲击已达 1,000 次", self.notifications.call_args.args[1])
+        self.assertFalse(controller.window.isVisible())
+        self.assertEqual(controller.settings.value("milestones/last_threshold"), 1000)
+        self.assertEqual(controller.settings.value("milestones/last_day"), self.today.isoformat())
+
+    def test_repeat_and_release_do_not_retrigger_but_other_device_counts(self):
+        controller = self.make_controller(998)
+        down = PhysicalEvent(1, "1e", True)
+        for _ in range(10):
+            controller.listener.on_key(down)
+        controller.tick()
+        self.notifications.assert_not_called()
+        controller.listener.on_key(PhysicalEvent(2, "1e", True))
+        controller.tick()
+        for _ in range(10):
+            controller.listener.on_key(down)
+        controller.listener.on_key(PhysicalEvent(1, "1e", False))
+        self.monotonic.return_value = 110
+        controller.tick()
+        self.notifications.assert_called_once()
+        self.assertEqual(controller.milestones.total, 1000)
+
+    def test_visible_window_gets_each_thousand_after_notification_spacing(self):
+        controller = self.make_controller(999)
+        self.tap(controller)
+        controller.tick()
+        self.tap(controller, 1000)
+        controller.tick()
+        self.notifications.assert_called_once()
+        self.monotonic.return_value = 106
+        controller.tick()
+        self.assertEqual(self.notifications.call_count, 2)
+        self.assertIn("2,000", self.notifications.call_args.args[1])
+        self.assertTrue(controller.window.isVisible())
+
+    def test_startup_does_not_backfill_and_uses_absolute_daily_threshold(self):
+        controller = self.make_controller(4320)
+        controller.tick()
+        self.tap(controller, 679)
+        controller.tick()
+        self.notifications.assert_not_called()
+        self.tap(controller)
+        controller.tick()
+        self.assertIn("5,000", self.notifications.call_args.args[1])
+
+    def test_restart_restores_attempted_checkpoint_even_before_counts_save(self):
+        controller = self.make_controller(999)
+        self.tap(controller)
+        # Exercise the crash-window case without touching production data:
+        # the notification checkpoint is saved, but counts stay at 999 on disk.
+        with patch.object(controller.persistence, "tick"):
+            controller.tick()
+        controller.dispose()
+        restored = self.make_controller()
+        self.notifications.reset_mock()
+        self.tap(restored)
+        restored.tick()
+        self.notifications.assert_not_called()
+        self.tap(restored, 1000)
+        restored.tick()
+        self.assertIn("2,000", self.notifications.call_args.args[1])
+
+    def test_saved_restart_skips_existing_threshold_and_old_date_checkpoint(self):
+        self.settings.setValue("milestones/last_day", (self.today - timedelta(days=1)).isoformat())
+        self.settings.setValue("milestones/last_threshold", 50000)
+        self.settings.sync()
+        controller = self.make_controller(999)
+        self.tap(controller)
+        controller.tick()
+        self.assertIn("1,000", self.notifications.call_args.args[1])
+        self.assertTrue(controller.persistence.flush())
+        controller.dispose()
+        restored = self.make_controller()
+        self.notifications.reset_mock()
+        restored.tick()
+        self.notifications.assert_not_called()
+        self.tap(restored, 1000)
+        restored.tick()
+        self.assertIn("2,000", self.notifications.call_args.args[1])
+
+    def test_tray_menu_mouse_click_toggles_and_persists_preference(self):
+        controller = self.make_controller(0)
+        action = controller.milestone_action
+        self.assertTrue(action.isChecked())
+        for enabled in (False, True):
+            controller.menu.popup(controller.window.mapToGlobal(QPoint(30, 30)))
+            QTest.qWait(30)
+            position = controller.menu.actionGeometry(action).center()
+            QTest.mouseMove(controller.menu, position)
+            QTest.mouseClick(controller.menu, Qt.MouseButton.LeftButton, pos=position)
+            self.assertEqual(action.isChecked(), enabled)
+            self.assertEqual(controller.milestones.enabled, enabled)
+            self.settings.sync()
+            self.assertEqual(self.settings.value("milestones/enabled", type=bool), enabled)
+            self.assertFalse(controller.menu.isVisible())
+
+    def test_toggling_discards_backlog_and_persists_disabled_preference(self):
+        controller = self.make_controller(999)
+        self.tap(controller)
+        controller.milestone_action.trigger()
+        self.assertFalse(controller.milestone_action.isChecked())
+        self.tap(controller, 1000)
+        controller.milestone_action.trigger()
+        controller.tick()
+        self.notifications.assert_not_called()
+        self.tap(controller, 1000)
+        controller.tick()
+        self.assertIn("3,000", self.notifications.call_args.args[1])
+        controller.milestone_action.trigger()
+        self.assertTrue(controller.persistence.flush())
+        controller.dispose()
+        restored = self.make_controller()
+        self.assertFalse(restored.milestones.enabled)
+        self.assertFalse(restored.milestone_action.isChecked())
+
+    def test_midnight_discards_old_pending_and_does_not_recount_held_key(self):
+        controller = self.make_controller(999)
+        down = PhysicalEvent(1, "1e", True)
+        controller.listener.on_key(down)
+        self.clock.now.return_value = self.now + timedelta(days=1)
+        controller.tick()
+        controller.listener.on_key(down)
+        self.assertEqual(controller.milestones.total, 0)
+        self.notifications.assert_not_called()
+        controller.listener.on_key(PhysicalEvent(1, "1e", False))
+        self.tap(controller, 1000)
+        controller.tick()
+        self.notifications.assert_called_once()
+        self.assertEqual(controller.settings.value("milestones/last_day"),
+                         (self.today + timedelta(days=1)).isoformat())
+
+    def test_first_event_after_date_change_is_not_swallowed_into_baseline(self):
+        tomorrow = self.today + timedelta(days=1)
+        self.database.save({(tomorrow.isoformat(), "1e"): 999})
+        controller = self.make_controller(5000)
+        self.clock.now.return_value = self.now + timedelta(days=1)
+        self.tap(controller)
+        controller.tick()
+        self.notifications.assert_called_once()
+        self.assertIn("1,000", self.notifications.call_args.args[1])
+        self.assertEqual(controller.milestones.total, 1000)
+
+    def test_history_period_and_layout_do_not_filter_today_milestone(self):
+        yesterday = self.today - timedelta(days=1)
+        self.database.save({
+            (self.today.isoformat(), "47"): 998,
+            (self.today.isoformat(), "e0_64"): 1,
+            (yesterday.isoformat(), "1e"): 3000,
+        })
+        controller = self.make_controller()
+        window = controller.window
+        window.date_edit.setDate(QDate(yesterday.year, yesterday.month, yesterday.day))
+        window.set_keyboard_layout("60")
+        self.tap(controller, key="47")
+        controller.tick()
+        self.assertIn("1,000", self.notifications.call_args.args[1])
+        self.assertEqual(window.total_label.text(), "3,000")
+        window.set_period("all")
+        self.monotonic.return_value = 110
+        controller.tick()
+        self.notifications.assert_called_once()
+
+    def test_paused_or_failed_listener_defers_pending_until_recovery(self):
+        controller = self.make_controller(999)
+        self.tap(controller)
+        for name, value, restored in (
+            ("locked", True, False), ("suspended", True, False),
+            ("active", False, True), ("last_error", "input error", None),
+        ):
+            with self.subTest(state=name):
+                setattr(controller.listener, name, value)
+                controller.tick()
+                self.notifications.assert_not_called()
+                setattr(controller.listener, name, restored)
+        controller.tick()
+        self.notifications.assert_called_once()
+
+    def test_save_warning_has_priority_and_recovery_coalesces_backlog(self):
+        controller = self.make_controller(999)
+        self.tap(controller)
+        with patch.object(controller.persistence, "tick"):
+            controller.persistence.error = "disk full"
+            with self.assertLogs("qiaoqiao", level="ERROR"):
+                controller.tick()
+            self.assertEqual(self.notifications.call_args.args[2], QSystemTrayIcon.MessageIcon.Warning)
+            self.tap(controller, 2000)
+            controller.tick()
+            self.notifications.assert_called_once()
+            controller.persistence.error = None
+            controller.tick()
+            self.notifications.assert_called_once()
+            self.monotonic.return_value = 106
+            controller.tick()
+        self.assertEqual(self.notifications.call_count, 2)
+        self.assertIn("3,000", self.notifications.call_args.args[1])
+
+    def test_first_hide_tip_is_not_immediately_replaced(self):
+        controller = self.make_controller(999)
+        controller._tray_tip_shown = False
+        self.tap(controller)
+        controller.window.close()
+        controller.tick()
+        self.notifications.assert_called_once()
+        self.assertIn("仍在统计", self.notifications.call_args.args[0])
+        self.monotonic.return_value = 104
+        controller.tick()
+        self.assertEqual(self.notifications.call_count, 2)
+        self.assertIn("1,000", self.notifications.call_args.args[1])
+
+    def test_first_hide_tip_does_not_shorten_existing_milestone_cooldown(self):
+        controller = self.make_controller(999)
+        controller._tray_tip_shown = False
+        self.tap(controller)
+        controller.tick()
+        self.monotonic.return_value = 101
+        controller.window.close()
+        self.tap(controller, 1000)
+        self.monotonic.return_value = 104
+        controller.tick()
+        self.assertEqual(self.notifications.call_count, 2)
+        self.assertEqual(controller.milestones.pending, 2000)
+        self.monotonic.return_value = 105
+        controller.tick()
+        self.assertEqual(self.notifications.call_count, 3)
+        self.assertIn("2,000", self.notifications.call_args.args[1])
+
+    def test_unsupported_notifications_consume_threshold_without_retry_loop(self):
+        controller = self.make_controller(999)
+        self.supports_messages.return_value = False
+        self.tap(controller)
+        with self.assertLogs("qiaoqiao", level="WARNING"):
+            controller.tick()
+        self.supports_messages.return_value = True
+        controller.tick()
+        self.notifications.assert_not_called()
+        self.assertEqual(controller.milestones.handled, 1000)
+
+    def test_notification_exception_does_not_interrupt_counting_or_retry(self):
+        controller = self.make_controller(999)
+        self.notifications.side_effect = RuntimeError("notification unavailable")
+        self.tap(controller)
+        with self.assertLogs("qiaoqiao", level="ERROR"):
+            controller.tick()
+        self.notifications.side_effect = None
+        self.monotonic.return_value = 110
+        self.tap(controller)
+        controller.tick()
+        self.notifications.assert_called_once()
+        self.assertTrue(controller.persistence.flush())
+        self.assertEqual(self.database.load()[(self.today.isoformat(), "1e")], 1001)
+        self.assertIsNone(controller.listener.last_error)
+
+    def test_preference_failure_is_visible_but_preserves_counting_and_memory_dedup(self):
+        controller = self.make_controller(999)
+        with patch.object(controller.settings, "status", return_value=QSettings.Status.AccessError):
+            with self.assertLogs("qiaoqiao", level="WARNING"):
+                controller.milestone_action.trigger()
+                controller.milestone_action.trigger()
+                self.tap(controller)
+                controller.tick()
+            self.assertIn("偏好保存失败", controller.milestone_action.text())
+            self.assertTrue(controller.milestone_action.toolTip())
+            self.monotonic.return_value = 110
+            controller.tick()
+            self.notifications.assert_called_once()
+        controller.milestone_action.trigger()
+        self.assertEqual(controller.milestone_action.text(), "千次里程碑提醒")
+        self.assertEqual(controller.milestones.total, 1000)
+
+    def test_invalid_preferences_fall_back_without_blocking_startup(self):
+        for saved_day, threshold in (("invalid", 1000), ([], 1000),
+                                     (self.today.isoformat(), -1000), (self.today.isoformat(), "bad"),
+                                     (self.today.isoformat(), [1000]), (self.today.isoformat(), 1500),
+                                     (self.today.isoformat(), True)):
+            with self.subTest(day=saved_day, threshold=threshold):
+                self.settings.setValue("milestones/last_day", saved_day)
+                self.settings.setValue("milestones/last_threshold", threshold)
+                self.settings.setValue("milestones/enabled", ["invalid"])
+                self.settings.sync()
+                controller = self.make_controller(999)
+                self.assertTrue(controller.milestones.enabled)
+                self.assertEqual(controller.milestones.handled, 0)
+                controller.dispose()
+
+    def test_notification_click_restores_window_without_repeating_milestone(self):
+        controller = self.make_controller(999)
+        controller.window.close()
+        self.tap(controller)
+        controller.tick()
+        controller.tray.messageClicked.emit()
+        self.assertTrue(controller.window.isVisible())
+        self.assertEqual(controller.window.total_label.text(), "1,000")
+        controller.tick()
+        self.notifications.assert_called_once()
+
+    def test_exit_and_disposal_do_not_deliver_pending_notifications(self):
+        controller = self.make_controller(999)
+        self.tap(controller)
+        controller.exiting = True
+        with patch.object(controller.persistence, "tick") as persistence_tick:
+            controller.tick()
+            persistence_tick.assert_not_called()
+        controller.exiting = False
+        with patch.object(APPLICATION, "quit"):
+            self.assertTrue(controller.request_exit())
+        controller.tick()
+        self.notifications.assert_not_called()
+        self.assertEqual(self.database.load()[(self.today.isoformat(), "1e")], 1000)
+
+    def test_failed_exit_keeps_pending_for_recovery(self):
+        controller = self.make_controller(999)
+        self.tap(controller)
+        with patch.object(self.database, "save", side_effect=OSError("disk full")):
+            with patch.object(controller, "_show_error"):
+                self.assertFalse(controller.request_exit())
+        controller.timer.stop()
+        self.notifications.assert_not_called()
+        self.assertEqual(controller.milestones.pending, 1000)
+        self.assertTrue(controller.persistence.flush())
+        controller.tick()
+        self.notifications.assert_called_once()
+
+
+class MilestoneMessageTests(unittest.TestCase):
+    def test_exact_thousands_and_tier_boundaries_have_complete_numbers(self):
+        for threshold in (1000, 2000, 4000, 5000, 9000, 10000, 11000, 19000, 20000,
+                          23000, 30000, 40000, 50000, 51000, 100000, 1000000):
+            with self.subTest(threshold=threshold):
+                title, message = milestone_message(threshold)
+                self.assertIn(f"今日敲击已达 {threshold:,} 次。", message)
+                self.assertEqual("万次里程碑" in title, threshold % 10000 == 0)
+                self.assertNotIn("纪录", message)
+                if threshold != 1000:
+                    self.assertNotIn("第一个", message)
+                if threshold != 20000:
+                    self.assertNotIn("两万次达成", message)
+                if threshold >= 50000:
+                    self.assertIn("双手", message)
+
+    def test_encouragement_rotates_within_each_tier(self):
+        for floor in (1000, 5000, 10000, 20000, 30000, 50000):
+            copies = {milestone_message(floor + step * 1000)[1].split("\n")[1] for step in (1, 2, 3)}
+            self.assertEqual(len(copies), 3)
 
 
 class InstanceTests(unittest.TestCase):

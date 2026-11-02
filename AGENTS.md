@@ -59,12 +59,12 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 | `qiaoqiao/runtime.py` | 参数解析、开发/正式模式、数据路径和版本标题 |
 | `qiaoqiao/keys.py` | 扫描码归一化、物理键标识、标准 104 键基础数据 |
 | `qiaoqiao/layouts.py` | 显示布局预设及几何位置，复用已有物理键标识 |
-| `qiaoqiao/core.py` | 纯计数、长按去重、设备按住状态、日期聚合 |
+| `qiaoqiao/core.py` | 纯计数、长按去重、设备按住状态、日期聚合、里程碑阈值状态 |
 | `qiaoqiao/storage.py` | 数据库结构、事务、批量保存和失败恢复 |
 | `qiaoqiao/raw_input.py` | Windows 原生消息、输入解析、设备和会话事件 |
 | `qiaoqiao/theme.py` | 共享调色板、QSS、像素绘制方法及保留原生交互的主题控件 |
 | `qiaoqiao/ui.py` | 窗口布局、键盘绘制、短暂敲击反馈、日期和布局交互 |
-| `qiaoqiao/app.py` | 组装模型/监听/UI/存储，托盘、单实例和退出生命周期 |
+| `qiaoqiao/app.py` | 组装模型/监听/UI/存储，托盘提醒、单实例和退出生命周期 |
 | `assets/` | 像素图原稿及应用 ICO |
 | `tests/` | 对应模块的自动化测试 |
 | `tools/` | 打包、图标导出、开发和发布快捷方式脚本 |
@@ -96,6 +96,8 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 - 多设备合并总数，但按住状态以 `(device, key_id)` 区分；拔出设备只清理对应状态。
 - 左右修饰键、主键区与数字小键盘分别统计；Num Lock 不改变小键盘物理键标识。
 - 按事件发生时的电脑本地日期计数；查询历史、切换时段或布局不得改变采集日期。
+- 千次里程碑按当天新接纳的物理按键总数触发；启动时已有次数作为基线，跨天重置，不追补历史阈值。
+- 里程碑提醒可从托盘关闭；关闭期间不排队补发。提醒开关及已尝试发送检查点保存在当前数据目录偏好中。
 - 周为周一至周日，月为自然月；跨午夜的持续按住不得重复计数。
 - 锁屏、休眠及恢复时按现有流程重置按住状态，避免恢复后出现卡住的按键。
 

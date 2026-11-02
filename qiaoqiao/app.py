@@ -3,16 +3,17 @@
 import hashlib
 import logging
 import sys
-from datetime import datetime
+from datetime import date, datetime
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
+from time import monotonic
 
 from PySide6.QtCore import QLockFile, QObject, QSettings, QTimer, Signal
 from PySide6.QtGui import QAction, QFont
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
 from PySide6.QtWidgets import QApplication, QMenu, QMessageBox, QSystemTrayIcon
 
-from .core import CounterModel
+from .core import MILESTONE_INTERVAL, CounterModel, MilestoneTracker
 from .raw_input import RawInputListener
 from .runtime import Runtime, parse_runtime
 from .storage import Database, Persistence
@@ -20,6 +21,57 @@ from .theme import STYLE, palette, set_state
 from .ui import StatsWindow, application_icon
 
 LOGGER = logging.getLogger("qiaoqiao")
+MILESTONE_ACTION_TEXT = "千次里程碑提醒"
+MILESTONE_MESSAGES = (
+    (1000, (
+        "又一个千次达成，今天的节奏已经起来了！",
+        "一点点积累，又走到了新的里程碑，做得不错！",
+        "新的千次节点，给认真投入的自己一个赞！",
+    )),
+    (5000, (
+        "又一个千次里程碑！今天的投入值得一个大大的赞！",
+        "这一路的积累真不错，为你的专注鼓掌！",
+        "新的里程碑达成！今天这份认真，值得好好肯定！",
+    )),
+    (10000, (
+        "万次之后又进一步！为这份持续的专注喝彩！",
+        "新的千次成就解锁！给今天投入的自己一阵掌声！",
+        "又抵达一个里程碑！今天的专注值得热烈祝贺！",
+    )),
+    (20000, (
+        "两万次之后再进一步！今天这一程值得热烈庆祝！",
+        "又一个里程碑达成！为今天认真的自己大声喝彩！",
+        "新的千次成就到手！给这份持续投入热烈的掌声！",
+    )),
+    (30000, (
+        "三万次之后的新里程碑！今天的投入值得一场掌声！",
+        "又一座千次里程碑！为这份坚持送上隆重的祝贺！",
+        "新的成就达成！请给今天的自己一次热烈的庆祝！",
+    )),
+    (50000, (
+        "五万次之后的新成就！隆重喝彩，也给双手一点休息时间吧！",
+        "又一个高阶里程碑！热烈祝贺，接下来也给双手放个小假！",
+        "这份投入值得隆重庆祝！给自己掌声，也记得放松双手！",
+    )),
+)
+
+
+def milestone_message(threshold: int) -> tuple[str, str]:
+    """Use local, rotating copy without claiming an unverified personal record."""
+    floor, messages = next(item for item in reversed(MILESTONE_MESSAGES) if threshold >= item[0])
+    encouragement = messages[(threshold - floor) // MILESTONE_INTERVAL % len(messages)]
+    title = "千次里程碑"
+    if threshold == MILESTONE_INTERVAL:
+        encouragement = "第一个千次达成，今天的节奏已经起来了！"
+    elif threshold % 10000 == 0:
+        title = "万次里程碑！"
+        encouragement = {
+            10000: "一万次达成！为今天专注投入的你喝彩！",
+            20000: "两万次达成！今天这一程，值得热烈庆祝！",
+            30000: "三万次里程碑！给今天认真投入的自己一场掌声！",
+            50000: "五万次达成！这份投入值得隆重喝彩，也给双手一点休息时间吧！",
+        }.get(threshold, encouragement)
+    return title, f"今日敲击已达 {threshold:,} 次。\n{encouragement}"
 
 
 class InstanceGuard(QObject):
@@ -74,6 +126,14 @@ class Controller(QObject):
         self.model = CounterModel(database.load())
         self.persistence = Persistence(self.model, database)
         self.settings = QSettings(str(self.runtime.directory / "preferences.ini"), QSettings.Format.IniFormat)
+        self._saved_milestone_day, self._saved_milestone_threshold = self._read_milestone_checkpoint()
+        today = datetime.now().date()
+        enabled = str(self.settings.value("milestones/enabled", True)).lower() != "false"
+        self.milestones = MilestoneTracker(
+            today, sum(self.model.totals("day", today).values()), enabled,
+            self._saved_milestone_threshold if self._saved_milestone_day == today else 0,
+        )
+        self._notification_not_before = 0.0
         self.window = StatsWindow(self.settings)
         self.window.setWindowTitle(f"{self.runtime.title} - 键盘统计")
         self.window.view_changed.connect(self.refresh)
@@ -84,9 +144,14 @@ class Controller(QObject):
         self.menu.setStyleSheet(STYLE)
         self.open_action = QAction("打开主界面", self)
         self.open_action.triggered.connect(self.window.restore)
+        self.milestone_action = QAction(MILESTONE_ACTION_TEXT, self)
+        self.milestone_action.setCheckable(True)
+        self.milestone_action.setChecked(enabled)
+        self.milestone_action.toggled.connect(self._set_milestone_enabled)
         self.exit_action = QAction("退出程序", self)
         self.exit_action.triggered.connect(lambda: self.request_exit())
         self.menu.addAction(self.open_action)
+        self.menu.addAction(self.milestone_action)
         self.menu.addSeparator()
         self.menu.addAction(self.exit_action)
         self.tray.setContextMenu(self.menu)
@@ -121,7 +186,12 @@ class Controller(QObject):
         self.window.show()
 
     def _key(self, event):
-        if self.model.accept(event, datetime.now().date()):
+        day = datetime.now().date()
+        # Rebase before accepting the first event of a new day, so it is neither
+        # swallowed into the baseline nor counted twice. No settings I/O here.
+        self._sync_milestone_day(day)
+        if self.model.accept(event, day):
+            self.milestones.record_press()
             # Feedback follows accepted physical presses, so key repeat never
             # retriggers it. The UI coalesces redraws without changing storage.
             self.window.keyboard.flash_key(event.key_id)
@@ -131,6 +201,9 @@ class Controller(QObject):
         self.refresh()
 
     def tick(self):
+        if self.closed or self.exiting:
+            return
+        self._sync_milestone_day(datetime.now().date())
         self.persistence.tick()
         if self.persistence.error != self._reported_save_error:
             self._reported_save_error = self.persistence.error
@@ -141,8 +214,79 @@ class Controller(QObject):
                     "统计仍在内存中，程序会自动重试。请打开主界面查看保存状态。",
                     QSystemTrayIcon.MessageIcon.Warning,
                 )
+                self._notification_not_before = monotonic() + 5
+        self._notify_milestone()
         if self.window.isVisible():
             self.refresh()
+
+    def _read_milestone_checkpoint(self) -> tuple[date | None, int]:
+        try:
+            day = date.fromisoformat(self.settings.value("milestones/last_day", ""))
+            value = self.settings.value("milestones/last_threshold", 0)
+            if isinstance(value, bool) or not isinstance(value, (str, int)):
+                return None, 0
+            threshold = int(value)
+        except (TypeError, ValueError):
+            return None, 0
+        if threshold < 0 or threshold % MILESTONE_INTERVAL:
+            return None, 0
+        return day, threshold
+
+    def _sync_milestone_day(self, day: date) -> None:
+        if self.milestones.day != day:
+            self.milestones.reset(
+                day, sum(self.model.totals("day", day).values()),
+                self._saved_milestone_threshold if self._saved_milestone_day == day else 0,
+            )
+
+    def _set_milestone_enabled(self, enabled: bool) -> None:
+        self._sync_milestone_day(datetime.now().date())
+        # Both toggles discard pending celebrations; re-enabling never replays
+        # thresholds reached while the user had notifications disabled.
+        self.milestones.set_enabled(enabled)
+        self.settings.setValue("milestones/enabled", enabled)
+        self._save_milestone_preferences()
+
+    def _save_milestone_preferences(self) -> None:
+        self._saved_milestone_day = self.milestones.day
+        self._saved_milestone_threshold = self.milestones.handled
+        self.settings.setValue("milestones/last_day", self.milestones.day.isoformat())
+        self.settings.setValue("milestones/last_threshold", self.milestones.handled)
+        self.settings.sync()
+        if self.settings.status() != QSettings.Status.NoError:
+            LOGGER.warning("Milestone preferences could not be saved: %s", self.settings.status())
+            self.milestone_action.setText(f"{MILESTONE_ACTION_TEXT}（偏好保存失败）")
+            self.milestone_action.setToolTip("本次设置仍有效，下次启动可能无法恢复；统计不受影响")
+        else:
+            self.milestone_action.setText(MILESTONE_ACTION_TEXT)
+            self.milestone_action.setToolTip("")
+
+    def _notify_milestone(self) -> None:
+        listener = self.listener
+        if (self.milestones.pending is None or not self.milestones.enabled
+                or listener is None or not listener.active or listener.locked or listener.suspended
+                or listener.last_error or self.persistence.error or self._dialogs
+                or monotonic() < self._notification_not_before):
+            return
+        threshold = self.milestones.take_pending()
+        if threshold is None:
+            return
+        # This checkpoint means "notification attempted", not "seen by the user".
+        # Persist before sending: Windows can suppress a banner without reporting
+        # delivery, and repeatedly retrying it would only create notification spam.
+        self._save_milestone_preferences()
+        if not QSystemTrayIcon.supportsMessages():
+            LOGGER.warning("System tray notifications are unavailable")
+            return
+        title, message = milestone_message(threshold)
+        try:
+            self.tray.showMessage(
+                f"{self.runtime.name} · {title}", message,
+                QSystemTrayIcon.MessageIcon.Information, 5000,
+            )
+        except RuntimeError:
+            LOGGER.exception("Milestone notification failed")
+        self._notification_not_before = monotonic() + 5
 
     def refresh(self):
         self.window.refresh(self.model)
@@ -185,6 +329,8 @@ class Controller(QObject):
                 QSystemTrayIcon.MessageIcon.Information, 3000,
             )
             self._tray_tip_shown = True
+            # The first-hide hint must not shorten an existing milestone/error cooldown.
+            self._notification_not_before = max(self._notification_not_before, monotonic() + 3)
 
     def _show_error(self, title, message):
         box = QMessageBox(QMessageBox.Icon.Warning, title, message, QMessageBox.StandardButton.Ok, self.window)

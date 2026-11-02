@@ -9,6 +9,7 @@ from .keys import PhysicalEvent
 
 Period = Literal["day", "week", "month", "all"]
 Counts = dict[tuple[str, str], int]
+MILESTONE_INTERVAL = 1000
 
 
 def date_range(period: Period, anchor: date) -> tuple[date | None, date | None]:
@@ -33,6 +34,45 @@ def move_date(anchor: date, period: Period, offset: int) -> date:
         month = month0 + 1
         return date(year, month, min(anchor.day, monthrange(year, month)[1]))
     return anchor
+
+
+class MilestoneTracker:
+    """Derived daily progress; the counter model remains the source of totals."""
+
+    def __init__(self, day: date, total: int, enabled: bool = True, handled: int = 0):
+        self.enabled = enabled
+        self.reset(day, total, handled)
+
+    def reset(self, day: date, total: int, handled: int = 0) -> None:
+        self.day = day
+        self.total = total
+        # Existing counts are a baseline, not a backlog to celebrate on startup.
+        # A saved checkpoint can be ahead of counts after an interrupted save.
+        self.handled = max(total // MILESTONE_INTERVAL * MILESTONE_INTERVAL, handled)
+        self.pending: int | None = None
+
+    def record_press(self) -> None:
+        """Call only after CounterModel accepts a new physical press."""
+        self.total += 1
+        reached = self.total // MILESTONE_INTERVAL * MILESTONE_INTERVAL
+        if reached > self.handled:
+            if self.enabled:
+                # Retain only the newest threshold if delivery is temporarily paused.
+                self.pending = reached
+            else:
+                self.handled = reached
+
+    def set_enabled(self, enabled: bool) -> None:
+        self.enabled = enabled
+        self.handled = max(self.handled, self.total // MILESTONE_INTERVAL * MILESTONE_INTERVAL)
+        self.pending = None
+
+    def take_pending(self) -> int | None:
+        threshold = self.pending
+        if threshold is not None:
+            self.handled = threshold
+            self.pending = None
+        return threshold
 
 
 class CounterModel:
