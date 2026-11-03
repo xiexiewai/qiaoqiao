@@ -84,6 +84,50 @@ class AppTests(unittest.TestCase):
         self.assertEqual(self.controller.window.total_label.text(), "1")
         self.assertTrue(self.controller.listener.active)
 
+    def test_trend_tab_keeps_capture_save_and_tray_restore_working(self):
+        window = self.controller.window
+        window.set_keyboard_layout("60")
+        window.tabs.setCurrentIndex(1)
+        self.tap("47")
+        self.controller.refresh()
+        self.assertTrue(self.controller.persistence.flush())
+        window.close()
+        with patch.object(self.controller.model, "trends", wraps=self.controller.model.trends) as aggregate:
+            self.tap("47")
+            self.controller.tick()
+            aggregate.assert_not_called()
+            self.assertTrue(self.controller.persistence.flush())
+            self.controller.tray.activated.emit(QSystemTrayIcon.ActivationReason.Trigger)
+            aggregate.assert_called_once()
+        self.assertEqual(window.tabs.currentIndex(), 1)
+        self.assertEqual(window.trends.cards[0].value.text(), "2")
+        self.assertEqual(window.trends.snapshot.top_keys, (("47", 2),))
+        self.assertTrue(self.controller.listener.active)
+        self.assertFalse(window.keyboard._feedback_timer.isActive())
+        self.assertEqual(self.database.load()[(date.today().isoformat(), "47")], 2)
+        window.tabs.setCurrentIndex(0)
+        self.assertEqual(window.total_label.text(), "2")
+        self.assertIn("Num 7: 2", window.other_label.text().replace("\u00a0", " "))
+
+    def test_trend_tab_failed_exit_keeps_counts_and_error_status_until_retry(self):
+        window = self.controller.window
+        window.tabs.setCurrentIndex(1)
+        self.tap()
+        with patch.object(self.database, "save", side_effect=OSError("disk full")):
+            with patch.object(self.controller, "_show_error"):
+                self.assertFalse(self.controller.request_exit())
+        self.assertTrue(window.isVisible())
+        self.assertEqual(window.tabs.currentIndex(), 1)
+        self.assertEqual(window.trends.cards[0].value.text(), "1")
+        self.assertEqual(window.save_label.text(), "保存失败，正在重试")
+        self.assertTrue(window.save_label.isVisible())
+        self.assertEqual(window.status_label.text(), "正在统计")
+        self.tap()
+        with patch.object(APPLICATION, "quit"):
+            self.assertTrue(self.controller.request_exit())
+        self.assertEqual(self.database.load()[(date.today().isoformat(), "1e")], 2)
+        self.assertTrue(self.controller.closed)
+
     def test_period_selection_and_history_do_not_change_capture_date(self):
         today = date.today()
         yesterday = today - timedelta(days=1)

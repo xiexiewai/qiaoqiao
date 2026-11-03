@@ -190,5 +190,84 @@ class CalendarTests(unittest.TestCase):
         self.assertEqual(move_date(date(2026, 12, 31), "month", 1), date(2027, 1, 31))
 
 
+class TrendTests(unittest.TestCase):
+    def test_shared_totals_include_unsaved_counts_and_exclude_future_rows(self):
+        model = CounterModel({
+            ("2026-10-28", "1e"): 9,
+            ("2026-11-01", "1e"): 15,
+            ("2026-11-02", "1e"): 4,
+            ("2026-11-02", "47"): 7,
+            ("2026-11-03", "e0_64"): 3,
+            ("2026-11-04", "1e"): 9999,
+        })
+        today = date(2026, 11, 3)
+        model.accept(PhysicalEvent(1, "47", True), today)
+        snapshot = model.trends(today)
+        self.assertEqual((snapshot.today_total, snapshot.week_total, snapshot.month_total), (4, 15, 30))
+        self.assertEqual(snapshot.top_keys, (("47", 8), ("1e", 4), ("e0_64", 3)))
+        self.assertEqual(snapshot.peak.day, date(2026, 11, 1))
+        self.assertEqual(snapshot.peak.count, 15)
+        self.assertEqual(snapshot.recent_days[0].day, date(2026, 10, 28))
+        self.assertIsNone(snapshot.month_days[3].count)
+        self.assertEqual(model.dirty, {("2026-11-03", "47")})
+
+    def test_missing_history_is_unknown_but_today_is_zero_so_far(self):
+        snapshot = CounterModel().trends(date(2026, 11, 3))
+        self.assertEqual([day.count for day in snapshot.recent_days], [None] * 6 + [0])
+        self.assertEqual([day.count for day in snapshot.month_days[:4]], [None, None, 0, None])
+        self.assertFalse(snapshot.top_keys)
+        self.assertIsNone(snapshot.peak)
+        self.assertEqual(snapshot.month_total, 0)
+
+    def test_explicit_zero_record_is_distinct_from_missing_day(self):
+        snapshot = CounterModel({("2026-11-01", "1e"): 0}).trends(date(2026, 11, 3))
+        self.assertEqual(snapshot.month_days[0].count, 0)
+        self.assertIsNone(snapshot.month_days[1].count)
+        self.assertIsNone(snapshot.peak)
+
+    def test_year_boundary_week_includes_december_but_month_does_not(self):
+        snapshot = CounterModel({
+            ("2026-12-27", "1e"): 30,
+            ("2026-12-28", "1e"): 7,
+            ("2026-12-31", "1e"): 8,
+            ("2027-01-01", "30"): 4,
+        }).trends(date(2027, 1, 1))
+        self.assertEqual(snapshot.week_start, date(2026, 12, 28))
+        self.assertEqual(snapshot.week_total, 19)
+        self.assertEqual(snapshot.month_total, 4)
+        self.assertEqual(snapshot.recent_days[0].day, date(2026, 12, 26))
+        self.assertEqual(len(snapshot.month_days), 31)
+
+    def test_leap_month_and_rollover_without_new_events(self):
+        model = CounterModel({("2028-02-29", "1e"): 12})
+        february = model.trends(date(2028, 2, 29))
+        march = model.trends(date(2028, 3, 1))
+        self.assertEqual(len(february.month_days), 29)
+        self.assertEqual(march.today_total, 0)
+        self.assertEqual(march.month_total, 0)
+        self.assertEqual(march.week_total, 12)
+        self.assertEqual(march.recent_days[-2].count, 12)
+
+    def test_top_ten_ties_use_physical_id_and_peak_uses_first_date(self):
+        counts = {("2026-11-02", f"{index:02x}"): 10 for index in range(20, 0, -1)}
+        counts[("2026-11-03", "1e")] = 200
+        snapshot = CounterModel(counts).trends(date(2026, 11, 3))
+        self.assertEqual(snapshot.top_keys[0], ("1e", 200))
+        self.assertEqual([key for key, _ in snapshot.top_keys[1:]], [f"{i:02x}" for i in range(1, 10)])
+        self.assertEqual(snapshot.week_total, 400)
+        self.assertEqual(snapshot.peak.day, date(2026, 11, 2))
+
+    def test_monday_starts_new_ranking_and_large_totals_remain_exact(self):
+        count = 9_223_372_036_854_775_807
+        snapshot = CounterModel({
+            ("2026-11-01", "1e"): count,
+            ("2026-11-02", "1d"): count,
+            ("2026-11-02", "e0_1d"): count,
+        }).trends(date(2026, 11, 2))
+        self.assertEqual(snapshot.week_total, 2 * count)
+        self.assertEqual(snapshot.month_total, 3 * count)
+        self.assertEqual(snapshot.top_keys, (("1d", count), ("e0_1d", count)))
+
+
 if __name__ == "__main__":
     unittest.main()

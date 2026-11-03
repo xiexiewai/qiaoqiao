@@ -59,11 +59,12 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 | `qiaoqiao/runtime.py` | 参数解析、开发/正式模式、数据路径和版本标题 |
 | `qiaoqiao/keys.py` | 扫描码归一化、物理键标识、标准 104 键基础数据 |
 | `qiaoqiao/layouts.py` | 显示布局预设及几何位置，复用已有物理键标识 |
-| `qiaoqiao/core.py` | 纯计数、长按去重、设备按住状态、日期聚合、里程碑阈值状态 |
+| `qiaoqiao/core.py` | 纯计数、长按去重、设备按住状态、日期与趋势聚合、里程碑阈值状态 |
 | `qiaoqiao/storage.py` | 数据库结构、事务、批量保存和失败恢复 |
 | `qiaoqiao/raw_input.py` | Windows 原生消息、输入解析、设备和会话事件 |
 | `qiaoqiao/theme.py` | 共享调色板、QSS、像素绘制方法及保留原生交互的主题控件 |
-| `qiaoqiao/ui.py` | 窗口布局、键盘绘制、短暂敲击反馈、日期和布局交互 |
+| `qiaoqiao/ui.py` | 窗口与 tab 布局、键盘绘制、短暂敲击反馈、日期和布局交互、趋势刷新协调 |
+| `qiaoqiao/trends.py` | 趋势数据卡片、原生图表绘制、日期悬停及跳转信号，不访问数据库 |
 | `qiaoqiao/app.py` | 组装模型/监听/UI/存储，托盘提醒、单实例和退出生命周期 |
 | `assets/` | 像素图原稿及应用 ICO |
 | `tests/` | 对应模块的自动化测试 |
@@ -80,6 +81,7 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 - 物理事件和键名复用 `PhysicalEvent`、`normalize()`、`key_name()`；不要在 UI 或存储层再造键位映射。
 - 布局复用 `Key`、`KeyboardLayout`、`LAYOUTS`、`LAYOUT_BY_ID`、`DEFAULT_LAYOUT`。
 - 计数和日期规则复用 `CounterModel`、`date_range()`、`move_date()`。
+- 趋势复用 `CounterModel.trends()` 的 `TrendSnapshot` / `DailyTotal` 快照，所有图表共用一次聚合结果。
 - 数据写入统一经过 `Database` / `Persistence`；路径选择统一经过 `Runtime` / `parse_runtime()`。
 - 应用图标复用 `application_icon()` 和 `assets/qiaoqiao.ico`。
 - 主题复用 `theme.py` 的 `STYLE`、`palette()`、`pixel_shape()` 和像素控件；主题模块不依赖计数模型或应用控制器。
@@ -110,6 +112,16 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 - 无真实扫描码的 Fn 使用 `key_id=None`，只作灰色占位，不虚构次数或绑定其他物理键。
 - 布局 ID 同时用于偏好持久化，不能随意重命名；无效偏好回退到默认 104 键。
 
+### 趋势视图
+
+- 默认打开“键盘热区”，同窗口提供“趋势视图”；切换 tab 保留键盘页原有日期及布局。
+- 趋势以电脑本地今天为基准：近 7 天含今天，本周从周一起，本月按自然月，均统计截至当前。
+- 卡片、折线、排行和日历使用同一快照，包含所有物理键及尚未保存的计数，不受显示布局筛选。
+- 历史缺失日标为“无记录”，折线断开，不把未运行日期推断为零次；今天无记录显示截至当前的 0。
+- 未来日期不参与总数、排行或最高值且不可跳转。排行并列按物理键 ID 排序，单日最高并列显示最早日。
+- 日历热度复用 `heat_color()` 及对数归一化；零次、无记录、未来日期独立呈现。
+- 点击折线日期或日历格切换到指定日的键盘热区，保留布局；支持悬停完整数据及键盘选日。
+
 ### 生命周期
 
 - 关闭或最小化主窗口进入托盘，继续采集和保存；用户正常退出通过托盘“退出程序”完成。
@@ -117,6 +129,7 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 - 系统关闭使用现有专门分支，不承诺系统强制结束时仍能阻止退出或保证落盘。
 - 单实例以解析后的数据目录为边界；相同目录重复启动唤醒已有窗口，不同目录可独立运行。
 - UI 当前每约 250 ms 刷新，保存每约 1 s 尝试一批；不要改成逐键刷盘或无节制重绘。
+- 趋势复用主定时器，只在可见趋势页数据变化时按约 1 s 节流聚合；返回或跨天立即更新，不新增常驻定时器。
 - 短暂敲击反馈独立使用 33 ms 定时器、180 ms 到期状态；仅在可见窗口有反馈时运行，到期或隐藏后停止，不改变统计及保存频率。
 
 ## 5. 数据、隐私与线程
@@ -169,7 +182,9 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 - 使用固定字号，不按窗口宽度等比缩放字体。现有键面可按文字宽度缩小至 7 pt，下限仍不足时扩大内容区域并滚动。
 - 默认窗口为 `1260 × 680`，最小为 `1040 × 570`；键盘通过 `QScrollArea` 处理窄窗口和极大数值。
 - 总数保留 `QLabel` 的完整文本与可访问名称，超大数值在固定宽度区域水平滚动，不撑宽窗口。
-- 沿用上部时间/日期/统计、中部键盘、底部布局/保存状态的顺序；布局切换不应使工具栏跳动。
+- 键盘热区沿用上部时间/日期/统计、中部键盘、底部布局/保存状态的顺序；布局切换不应使工具栏跳动。
+- 趋势页使用顶部四张数据卡片、左侧折线与日历、右侧排行的紧凑布局，图表不用嵌套卡片。
+  两页共用监听和保存状态，趋势页隐藏布局选择器；小窗口和极大数值通过滚动保护。
 - 图标按钮优先使用 Qt `QStyle.StandardPixmap`，并提供 tooltip 和可访问名称。
 - 时段、导航和日期使用原生 Qt 控件的像素绘制子类，只替换外观，保留互斥选择、键盘激活、日期编辑及日历弹窗。
 - 布局使用互斥菜单，不用自由文本输入替代。菜单、日历、滚动条和托盘菜单同步使用暗色主题。
@@ -224,6 +239,7 @@ git diff --check
 | 改动范围 | 必须关注 |
 | --- | --- |
 | 计数 / 映射 / 日期 | `test_core.py`：长按、多设备、跨天、左右键、小键盘、特殊键 |
+| 趋势 | `test_core.py` + `test_trends.py` + `test_app.py`：时间边界、缺失日、排行、图表交互、刷新节流、托盘及保存恢复 |
 | 持久化 | `test_storage.py`：事务回滚、幂等、失败后最新值重试、退出前刷盘 |
 | 布局 | `test_layouts.py` + `test_app.py`：唯一键 ID、无重叠、Fn、布局外统计、偏好和热度 |
 | 原生监听 | `test_raw_input.py`：64 位 ABI、消息边界、注册/注销、会话状态 |

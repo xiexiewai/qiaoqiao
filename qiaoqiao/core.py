@@ -2,6 +2,7 @@
 
 from calendar import monthrange
 from collections import Counter
+from dataclasses import dataclass
 from datetime import date, timedelta
 from typing import Literal
 
@@ -10,6 +11,26 @@ from .keys import PhysicalEvent
 Period = Literal["day", "week", "month", "all"]
 Counts = dict[tuple[str, str], int]
 MILESTONE_INTERVAL = 1000
+
+
+@dataclass(frozen=True)
+class DailyTotal:
+    day: date
+    count: int | None
+
+
+@dataclass(frozen=True)
+class TrendSnapshot:
+    today: date
+    week_start: date
+    month_start: date
+    recent_days: tuple[DailyTotal, ...]
+    month_days: tuple[DailyTotal, ...]
+    top_keys: tuple[tuple[str, int], ...]
+    today_total: int
+    week_total: int
+    month_total: int
+    peak: DailyTotal | None
 
 
 def date_range(period: Period, anchor: date) -> tuple[date | None, date | None]:
@@ -121,6 +142,45 @@ class CounterModel:
             if lower <= day <= upper:
                 result[key_id] += count
         return result
+
+    def trends(self, today: date) -> TrendSnapshot:
+        """One consistent view of saved and unsaved daily aggregates.
+
+        Missing past days are unknown: this database does not track uptime.
+        Only today can default to zero recorded so far. Future rows are ignored.
+        """
+        week_start, _ = date_range("week", today)
+        month_start, month_end = date_range("month", today)
+        recent_start = today - timedelta(days=6)
+        lower = min(week_start, month_start, recent_start).isoformat()
+        upper = today.isoformat()
+        week_lower = week_start.isoformat()
+        daily: Counter[str] = Counter()
+        weekly: Counter[str] = Counter()
+        for (day, key_id), count in self.counts.items():
+            if lower <= day <= upper:
+                daily[day] += count
+                if day >= week_lower:
+                    weekly[key_id] += count
+
+        def value(day: date) -> DailyTotal:
+            return DailyTotal(day, daily.get(day.isoformat(), 0 if day == today else None))
+
+        recent = tuple(value(recent_start + timedelta(days=i)) for i in range(7))
+        month = tuple(value(month_start + timedelta(days=i)) for i in range(month_end.day))
+        observed = [item for item in month if item.count is not None and item.count > 0]
+        return TrendSnapshot(
+            today=today, week_start=week_start, month_start=month_start,
+            recent_days=recent, month_days=month,
+            top_keys=tuple(sorted(
+                ((key, count) for key, count in weekly.items() if count > 0),
+                key=lambda item: (-item[1], item[0]),
+            )[:10]),
+            today_total=daily.get(upper, 0),
+            week_total=sum(weekly.values()),
+            month_total=sum(item.count or 0 for item in month),
+            peak=max(observed, key=lambda item: item.count) if observed else None,
+        )
 
     @property
     def first_day(self) -> date | None:

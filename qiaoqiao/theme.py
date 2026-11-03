@@ -35,6 +35,19 @@ QLabel[state="error"], QLabel#muted[state="error"], QLabel#status[state="error"]
 QLabel#status[state="paused"] {{ color: {PINK}; }}
 QLabel#muted[state="muted"] {{ color: {MUTED}; }}
 QFrame#divider {{ background: #3D324B; border: none; }}
+QTabWidget::pane {{ border: none; }}
+QTabBar::tab {{
+    background: #24202F; color: {MUTED}; border-bottom: 2px solid {BORDER};
+    padding: 8px 24px; margin-right: 8px;
+}}
+QTabBar::tab:selected {{ color: {PINK}; background: #342A40; border-bottom-color: {PINK}; }}
+QTabBar::tab:hover {{ color: {TEXT}; }}
+QTabBar::tab:focus {{ border-bottom-color: {MINT}; }}
+QWidget#trendPage, QWidget#trendViewport {{ background: {BACKGROUND}; }}
+QFrame#trendCard {{ background: {BOARD}; border: 1px solid {BORDER}; }}
+QLabel#trendValue {{ font-family: "Consolas"; font-size: 20pt; font-weight: 600; color: {MINT}; }}
+QLabel#trendValue[state="empty"] {{ font-family: "Microsoft YaHei UI"; }}
+QLabel#trendDetail {{ font-size: 9pt; color: {MUTED}; }}
 QPushButton, QToolButton {{
     background: #24202F; border: 1px solid {BORDER}; border-radius: 0;
     padding: 6px 10px; min-height: 22px;

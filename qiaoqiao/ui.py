@@ -9,12 +9,13 @@ from PySide6.QtCore import QDate, QEvent, QRectF, QSettings, QSize, Qt, QTimer, 
 from PySide6.QtGui import QActionGroup, QColor, QFont, QFontMetricsF, QIcon, QPainter
 from PySide6.QtWidgets import (
     QButtonGroup, QFrame, QHBoxLayout, QLabel, QMainWindow, QMenu,
-    QScrollArea, QSizePolicy, QStyle, QToolTip, QVBoxLayout, QWidget,
+    QScrollArea, QSizePolicy, QStyle, QTabWidget, QToolTip, QVBoxLayout, QWidget,
 )
 
 from .core import CounterModel, date_range, move_date
 from .keys import key_name
 from .layouts import DEFAULT_LAYOUT, LAYOUTS, LAYOUT_BY_ID
+from .trends import TrendPage
 from .theme import (
     BACKGROUND, BOARD, BORDER, GRID, KEY_DISABLED, KEY_IDLE, KEY_MUTED, MINT, MUTED,
     PINK, SHADOW, STYLE, HeatLegend, PixelButton, PixelDateEdit, PixelToolButton,
@@ -254,6 +255,9 @@ class StatsWindow(QMainWindow):
         self.last_today = date.today()
         self.allow_close = False
         self._render_key = None
+        self._trend_render_key = None
+        self._trend_updated_at = float("-inf")
+        self._trend_force_refresh = True
         self.settings = settings
         saved_layout = settings.value("keyboard/layout", "full") if settings is not None else "full"
         self.keyboard_layout = (
@@ -288,6 +292,18 @@ class StatsWindow(QMainWindow):
         self.status_label.setObjectName("status")
         header.addWidget(self.status_label)
         layout.addLayout(header)
+
+        self.tabs = QTabWidget()
+        self.tabs.setAccessibleName("统计视图")
+        self.keyboard_page = QWidget()
+        keyboard_page_layout = QVBoxLayout(self.keyboard_page)
+        keyboard_page_layout.setContentsMargins(0, 10, 0, 0)
+        keyboard_page_layout.setSpacing(10)
+        self.tabs.addTab(self.keyboard_page, "键盘热区")
+        self.trends = TrendPage()
+        self.tabs.addTab(self.trends, "趋势视图")
+        self.trends.day_activated.connect(self.open_day)
+        layout.addWidget(self.tabs, 1)
 
         toolbar = QHBoxLayout()
         toolbar.setSpacing(8)
@@ -325,12 +341,12 @@ class StatsWindow(QMainWindow):
         self.today_button.setFixedSize(66, 38)
         self.today_button.clicked.connect(self.go_today)
         toolbar.addWidget(self.today_button)
-        layout.addLayout(toolbar)
+        keyboard_page_layout.addLayout(toolbar)
         separator = QFrame()
         separator.setObjectName("divider")
         separator.setFrameShape(QFrame.Shape.HLine)
         separator.setFixedHeight(1)
-        layout.addWidget(separator)
+        keyboard_page_layout.addWidget(separator)
 
         summary = QHBoxLayout()
         summary.setSpacing(16)
@@ -361,25 +377,25 @@ class StatsWindow(QMainWindow):
         self.total_scroll.setWidget(self.total_label)
         total_column.addWidget(self.total_scroll)
         summary.addLayout(total_column)
-        layout.addLayout(summary)
+        keyboard_page_layout.addLayout(summary)
 
         legend = QHBoxLayout()
         legend.addWidget(QLabel("按键热度"))
         legend.addStretch()
         legend.addWidget(HeatLegend())
-        layout.addLayout(legend)
+        keyboard_page_layout.addLayout(legend)
         self.keyboard = KeyboardWidget()
         self.keyboard.set_keyboard_layout(self.keyboard_layout)
         keyboard_scroll = QScrollArea()
         keyboard_scroll.viewport().setObjectName("keyboardViewport")
         keyboard_scroll.setWidgetResizable(True)
         keyboard_scroll.setWidget(self.keyboard)
-        layout.addWidget(keyboard_scroll, stretch=1)
+        keyboard_page_layout.addWidget(keyboard_scroll, stretch=1)
         self.other_label = QLabel()
         self.other_label.setWordWrap(True)
         self.other_label.setObjectName("muted")
         self.other_label.hide()
-        layout.addWidget(self.other_label)
+        keyboard_page_layout.addWidget(self.other_label)
 
         footer = QHBoxLayout()
         self.layout_button = PixelToolButton()
@@ -413,7 +429,31 @@ class StatsWindow(QMainWindow):
         self.save_label.setObjectName("muted")
         footer.addWidget(self.save_label)
         layout.addLayout(footer)
+        self.tabs.currentChanged.connect(self._tab_changed)
         self._update_controls()
+
+    def _tab_changed(self, index: int) -> None:
+        self.layout_button.setVisible(index == 0)
+        self._trend_force_refresh = True
+        QToolTip.hideText()
+        self.view_changed.emit()
+
+    def open_day(self, day: date) -> None:
+        if day > date.today():
+            return
+        # Set the selection together before emitting one refresh for navigation.
+        self.period = "day"
+        self.period_buttons["day"].setChecked(True)
+        self.date_edit.blockSignals(True)
+        self.date_edit.setDate(QDate(day.year, day.month, day.day))
+        self.date_edit.blockSignals(False)
+        self.anchor = self.date_edit.date().toPython()
+        self.follow_today = self.anchor == date.today()
+        self._update_controls()
+        if self.tabs.currentIndex() == 0:
+            self.view_changed.emit()
+        else:
+            self.tabs.setCurrentIndex(0)
 
     def set_keyboard_layout(self, layout_id):
         preset = LAYOUT_BY_ID.get(layout_id, DEFAULT_LAYOUT)
@@ -477,6 +517,19 @@ class StatsWindow(QMainWindow):
             if self.follow_today:
                 self.go_today()
             self._update_controls()
+        if self.tabs.currentWidget() is self.trends:
+            if not self.isVisible():
+                return
+            now = monotonic()
+            key = (model.revision, today)
+            day_changed = self._trend_render_key is None or self._trend_render_key[1] != today
+            if (key != self._trend_render_key and (
+                    self._trend_force_refresh or day_changed or now - self._trend_updated_at >= 1)):
+                self.trends.set_snapshot(model.trends(today))
+                self._trend_render_key = key
+                self._trend_updated_at = now
+            self._trend_force_refresh = False
+            return
         render_key = (model.revision, self.period, self.anchor, self.keyboard_layout.layout_id)
         if render_key != self._render_key:
             totals = model.totals(self.period, self.anchor)
@@ -509,6 +562,7 @@ class StatsWindow(QMainWindow):
             self.keyboard.set_counts(self.keyboard.counts, {key for _, key in model.pressed})
 
     def restore(self):
+        self._trend_force_refresh = True
         self.showNormal()
         self.raise_()
         self.activateWindow()
