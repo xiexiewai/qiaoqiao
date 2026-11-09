@@ -61,9 +61,10 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 | `qiaoqiao/layouts.py` | 显示布局预设及几何位置，复用已有物理键标识 |
 | `qiaoqiao/core.py` | 纯计数、长按去重、设备按住状态、日期与趋势聚合、里程碑阈值状态 |
 | `qiaoqiao/storage.py` | 数据库结构、事务、批量保存和失败恢复 |
+| `qiaoqiao/backup.py` | 备份格式、范围筛选、严格校验和原子文件写入，不依赖 Qt |
 | `qiaoqiao/raw_input.py` | Windows 原生消息、输入解析、设备和会话事件 |
 | `qiaoqiao/theme.py` | 共享调色板、QSS、像素绘制方法及保留原生交互的主题控件 |
-| `qiaoqiao/ui.py` | 窗口与 tab 布局、键盘绘制、短暂敲击反馈、日期和布局交互、趋势刷新协调 |
+| `qiaoqiao/ui.py` | 窗口与 tab 布局、键盘绘制、短暂敲击反馈、日期和布局交互、趋势刷新协调、备份范围及导入预览 |
 | `qiaoqiao/trends.py` | 趋势数据卡片、原生图表绘制、日期悬停及跳转信号，不访问数据库 |
 | `qiaoqiao/app.py` | 组装模型/监听/UI/存储，托盘提醒、单实例和退出生命周期 |
 | `assets/` | 像素图原稿及应用 ICO |
@@ -83,6 +84,7 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 - 计数和日期规则复用 `CounterModel`、`date_range()`、`move_date()`。
 - 趋势复用 `CounterModel.trends()` 的 `TrendSnapshot` / `DailyTotal` 快照，所有图表共用一次聚合结果。
 - 数据写入统一经过 `Database` / `Persistence`；路径选择统一经过 `Runtime` / `parse_runtime()`。
+- 备份文件读写及格式校验复用 `backup.py`；UI 只选择范围和确认，`app.py` 协调异步任务。
 - 应用图标复用 `application_icon()` 和 `assets/qiaoqiao.ico`。
 - 主题复用 `theme.py` 的 `STYLE`、`palette()`、`pixel_shape()` 和像素控件；主题模块不依赖计数模型或应用控制器。
 - `core.py`、`keys.py`、`layouts.py` 保持不依赖 Qt、原生监听或应用控制器。
@@ -121,6 +123,20 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 - 未来日期不参与总数、排行或最高值且不可跳转。排行并列按物理键 ID 排序，单日最高并列显示最早日。
 - 日历热度复用 `heat_color()` 及对数归一化；零次、无记录、未来日期独立呈现。
 - 点击折线日期或日历格切换到指定日的键盘热区，保留布局；支持悬停完整数据及键盘选日。
+
+### 数据备份与导入
+
+- 导入以声明范围或用户选定的子范围完整替换；先删除范围内记录，再插入文件记录，不累加。
+- 文件缺失的日期或按键清除本机记录；范围外数据保留。空备份有效，确认后清空所选范围。
+- 起止日期均包含；按月导出对历史月份取整月、当月截至今天；全部记录使用已记录日期的首尾。
+- 导入预览显示范围和双方记录摘要，必须勾选覆盖确认；改变日期范围后重新确认。
+- 导出基于内存快照，包含未保存计数；实际导入期间暂停计数但维护按住/松开状态，不补记期间敲击。
+- 覆盖前串行完成旧保存任务，保存最新待写值并自动备份受影响范围；备份失败不得覆盖。
+- 删除和插入在同一 SQLite 事务内完成。提交后先替换内存模型并清理旧待保存状态，避免旧值回写。
+- 导入包含今天时重建里程碑基线及偏好检查点，不补发历史提醒；热区与趋势缓存均需失效。
+- 文件采用版本化 UTF-8 JSON 与 SHA-256，限制 64 MiB，严格校验日期、键 ID、整数范围及重复记录。
+- 自动备份保存在当前数据目录 `backups/`，可通过同一入口恢复，不自动清理；不备份偏好和设备状态。
+- 执行中的操作禁止重入及普通退出；系统退出先等待并协调已提交的结果，再进行最后保存。
 
 ### 生命周期
 
@@ -241,6 +257,7 @@ git diff --check
 | 计数 / 映射 / 日期 | `test_core.py`：长按、多设备、跨天、左右键、小键盘、特殊键 |
 | 趋势 | `test_core.py` + `test_trends.py` + `test_app.py`：时间边界、缺失日、排行、图表交互、刷新节流、托盘及保存恢复 |
 | 持久化 | `test_storage.py`：事务回滚、幂等、失败后最新值重试、退出前刷盘 |
+| 数据备份 / 导入 | `test_backup.py` + `test_storage.py` + `test_backup_app.py`：格式校验、日期覆盖、空范围清除、自动备份与恢复、旧保存隔离、失败恢复、界面确认和退出协调 |
 | 布局 | `test_layouts.py` + `test_app.py`：唯一键 ID、无重叠、Fn、布局外统计、偏好和热度 |
 | 原生监听 | `test_raw_input.py`：64 位 ABI、消息边界、注册/注销、会话状态 |
 | 运行模式 / 生命周期 | `test_runtime.py` + `test_app.py`：目录隔离、单实例、托盘和退出失败恢复 |

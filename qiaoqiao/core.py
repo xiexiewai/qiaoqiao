@@ -103,7 +103,7 @@ class CounterModel:
         self.dirty: set[tuple[str, str]] = set()
         self.revision = 0
 
-    def accept(self, event: PhysicalEvent, day: date) -> bool:
+    def accept(self, event: PhysicalEvent, day: date, *, counting: bool = True) -> bool:
         identity = (event.device, event.key_id)
         if not event.is_down:
             self.pressed.discard(identity)
@@ -112,6 +112,8 @@ class CounterModel:
             return False
         if not event.pulse:
             self.pressed.add(identity)
+        if not counting:
+            return False
         key = (day.isoformat(), event.key_id)
         self.counts[key] = self.counts.get(key, 0) + 1
         self.dirty.add(key)
@@ -132,6 +134,22 @@ class CounterModel:
     def retry(self, snapshot: Counts):
         # Retry current absolute totals, never an old snapshot's smaller values.
         self.dirty.update(snapshot)
+
+    def restored_counts(self, start: date, end: date, replacement: Counts) -> Counts:
+        """Prepare the post-import model before the database can commit."""
+        lower, upper = start.isoformat(), end.isoformat()
+        if start > end or any(not lower <= day <= upper for day, _ in replacement):
+            raise ValueError("导入记录必须位于所选日期范围内。")
+        result = {key: value for key, value in self.counts.items() if not lower <= key[0] <= upper}
+        result.update(replacement)
+        return result
+
+    def apply_restored_counts(self, counts: Counts) -> None:
+        # Persistence has saved all pre-import dirty values and committed the
+        # replacement. Keep physical held-state, but discard old dirty identities.
+        self.counts = counts
+        self.dirty.clear()
+        self.revision += 1
 
     def totals(self, period: Period, anchor: date) -> Counter:
         start, end = date_range(period, anchor)

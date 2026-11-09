@@ -24,7 +24,7 @@ HEAT_STOPS = ((0, "#4C355E"), (.4, "#8A517C"), (.7, "#C47D98"), (1, "#FFE6B5"))
 
 STYLE = f"""
 QWidget {{ font-family: "Microsoft YaHei UI"; font-size: 10pt; color: {TEXT}; }}
-QMainWindow, QWidget#body {{ background: {BACKGROUND}; }}
+QMainWindow, QDialog, QWidget#body {{ background: {BACKGROUND}; }}
 QLabel {{ background: transparent; }}
 QLabel#brand {{ font-size: 21pt; font-weight: 700; }}
 QLabel#muted {{ color: {MUTED}; }}

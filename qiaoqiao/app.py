@@ -3,22 +3,25 @@
 import hashlib
 import logging
 import sys
+from concurrent.futures import Future
 from datetime import date, datetime
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from time import monotonic
+from uuid import uuid4
 
-from PySide6.QtCore import QLockFile, QObject, QSettings, QTimer, Signal
+from PySide6.QtCore import QLockFile, QObject, QSettings, Qt, QTimer, Signal
 from PySide6.QtGui import QAction, QFont
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
-from PySide6.QtWidgets import QApplication, QMenu, QMessageBox, QSystemTrayIcon
+from PySide6.QtWidgets import QApplication, QDialog, QFileDialog, QMenu, QMessageBox, QStyle, QSystemTrayIcon
 
+from .backup import Backup, read_backup, write_backup
 from .core import MILESTONE_INTERVAL, CounterModel, MilestoneTracker
 from .raw_input import RawInputListener
 from .runtime import Runtime, parse_runtime
 from .storage import Database, Persistence
 from .theme import STYLE, palette, set_state
-from .ui import StatsWindow, application_icon
+from .ui import BackupDialog, StatsWindow, application_icon
 
 LOGGER = logging.getLogger("qiaoqiao")
 MILESTONE_ACTION_TEXT = "千次里程碑提醒"
@@ -138,6 +141,19 @@ class Controller(QObject):
         self.window.setWindowTitle(f"{self.runtime.title} - 键盘统计")
         self.window.view_changed.connect(self.refresh)
         self.window.hidden_to_tray.connect(self._hidden)
+        self._data_flow = False
+        self._data_dialog: QDialog | None = None
+        self._transfer_kind: str | None = None
+        self._transfer_future: Future | None = None
+        self._transfer_path: Path | None = None
+        self._import_span: tuple[date, date] | None = None
+        self.export_action = QAction(self.window.style().standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton),
+                                     "导出数据…", self)
+        self.import_action = QAction(self.window.style().standardIcon(QStyle.StandardPixmap.SP_DialogOpenButton),
+                                     "导入数据…", self)
+        self.export_action.triggered.connect(self.export_data)
+        self.import_action.triggered.connect(self.import_data)
+        self.window.data_menu.addActions([self.export_action, self.import_action])
         self.tray = QSystemTrayIcon(application_icon(), self)
         self.menu = QMenu()
         self.menu.setPalette(palette())
@@ -152,6 +168,8 @@ class Controller(QObject):
         self.exit_action.triggered.connect(lambda: self.request_exit())
         self.menu.addAction(self.open_action)
         self.menu.addAction(self.milestone_action)
+        self.tray_data_menu = self.menu.addMenu("数据管理")
+        self.tray_data_menu.addActions([self.export_action, self.import_action])
         self.menu.addSeparator()
         self.menu.addAction(self.exit_action)
         self.tray.setContextMenu(self.menu)
@@ -187,6 +205,11 @@ class Controller(QObject):
 
     def _key(self, event):
         day = datetime.now().date()
+        if self.persistence.import_future is not None:
+            # Track only physical hold/release state while counts are paused.
+            # A key held across the restore must not be counted again on repeat.
+            self.model.accept(event, day, counting=False)
+            return
         # Rebase before accepting the first event of a new day, so it is neither
         # swallowed into the baseline nor counted twice. No settings I/O here.
         self._sync_milestone_day(day)
@@ -203,6 +226,7 @@ class Controller(QObject):
     def tick(self):
         if self.closed or self.exiting:
             return
+        self._poll_transfer()
         self._sync_milestone_day(datetime.now().date())
         self.persistence.tick()
         if self.persistence.error != self._reported_save_error:
@@ -265,7 +289,7 @@ class Controller(QObject):
         listener = self.listener
         if (self.milestones.pending is None or not self.milestones.enabled
                 or listener is None or not listener.active or listener.locked or listener.suspended
-                or listener.last_error or self.persistence.error or self._dialogs
+                or listener.last_error or self.persistence.error or self._dialogs or self._data_flow
                 or monotonic() < self._notification_not_before):
             return
         threshold = self.milestones.take_pending()
@@ -290,7 +314,9 @@ class Controller(QObject):
 
     def refresh(self):
         self.window.refresh(self.model)
-        if self.listener is None:
+        if self.persistence.import_future is not None:
+            state = "导入中，统计暂停"
+        elif self.listener is None:
             state = "正在启动"
         elif self.listener.last_error:
             state = "监听异常"
@@ -306,7 +332,11 @@ class Controller(QObject):
         ))
         self.window.status_label.setToolTip(self.listener.last_error or "" if self.listener else "")
         self.tray.setToolTip(f"{self.runtime.title} · {state}")
-        if self.persistence.error:
+        if self._transfer_kind is not None:
+            saved = {"read": "正在校验备份", "export": "正在导出数据", "import": "正在备份并覆盖数据"}[
+                self._transfer_kind
+            ]
+        elif self.persistence.error:
             saved = "保存失败，正在重试"
         elif self.model.dirty or self.persistence.future is not None:
             saved = "正在保存"
@@ -317,6 +347,179 @@ class Controller(QObject):
         self.window.save_label.setText(saved)
         self.window.save_label.setToolTip(self.persistence.error or str(self.database.path))
         set_state(self.window.save_label, "error" if self.persistence.error else "muted")
+
+    def _update_data_actions(self) -> None:
+        available = not self._data_flow and not self.exiting and not self.closed
+        self.export_action.setEnabled(available)
+        self.import_action.setEnabled(available)
+        self.exit_action.setEnabled(self._transfer_kind is None)
+
+    def _end_data_flow(self) -> None:
+        self._data_flow = False
+        self._transfer_kind = None
+        self._transfer_future = None
+        self._update_data_actions()
+
+    def _open_data_dialog(self, dialog: QDialog, accepted) -> None:
+        self._data_dialog = dialog
+        self._dialogs.append(dialog)
+
+        def finished(result):
+            self._dialogs.remove(dialog)
+            self._data_dialog = None
+            try:
+                if self.closed or self.exiting or result != QDialog.DialogCode.Accepted:
+                    self._end_data_flow()
+                else:
+                    accepted(dialog)
+            except Exception as error:
+                LOGGER.exception("Backup dialog failed")
+                self._end_data_flow()
+                self._show_error("数据操作失败", str(error))
+            finally:
+                dialog.deleteLater()
+
+        dialog.finished.connect(finished)
+        dialog.open()
+
+    def export_data(self) -> None:
+        if self._data_flow or self.closed or self.exiting:
+            return
+        self._data_flow = True
+        self._update_data_actions()
+        self.window.restore()
+        dialog = BackupDialog(self.model.counts, parent=self.window)
+        self._open_data_dialog(dialog, lambda chosen: self._choose_export_path(*chosen.selected_range()))
+
+    def _choose_export_path(self, start: date, end: date) -> None:
+        dialog = QFileDialog(self.window, "保存敲敲备份")
+        dialog.setAcceptMode(QFileDialog.AcceptMode.AcceptSave)
+        dialog.setFileMode(QFileDialog.FileMode.AnyFile)
+        dialog.setNameFilter("敲敲备份 (*.qiaoqiao.json)")
+        dialog.setDefaultSuffix("qiaoqiao.json")
+        dialog.selectFile(f"Qiaoqiao-{start.isoformat()}_{end.isoformat()}.qiaoqiao.json")
+        self._open_data_dialog(
+            dialog, lambda chosen: self.start_export(Path(chosen.selectedFiles()[0]), start, end),
+        )
+
+    def start_export(self, path: Path, start: date, end: date) -> None:
+        if self._transfer_kind is not None or self.closed or self.exiting:
+            raise RuntimeError("已有数据操作正在执行。")
+        if not path.name.lower().endswith(".qiaoqiao.json"):
+            raise ValueError("备份文件名必须以 .qiaoqiao.json 结尾。")
+        # Capture once on the GUI thread; serialization and file I/O use the
+        # existing worker, while incoming keys continue to update the live model.
+        snapshot = dict(self.model.counts)
+        future = self.persistence.executor.submit(write_backup, path, snapshot, start, end)
+        self._transfer_future = future
+        self._transfer_path = path
+        self._transfer_kind = "export"
+        self._data_flow = True
+        self._update_data_actions()
+        self.refresh()
+
+    def import_data(self) -> None:
+        if self._data_flow or self.closed or self.exiting:
+            return
+        self._data_flow = True
+        self._update_data_actions()
+        self.window.restore()
+        dialog = QFileDialog(self.window, "选择敲敲备份")
+        dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
+        dialog.setNameFilter("敲敲备份 (*.qiaoqiao.json);;JSON 文件 (*.json)")
+        self._open_data_dialog(dialog, lambda chosen: self._read_import(Path(chosen.selectedFiles()[0])))
+
+    def _read_import(self, path: Path) -> None:
+        future = self.persistence.executor.submit(read_backup, path)
+        self._transfer_future = future
+        self._transfer_path = path
+        self._transfer_kind = "read"
+        self._update_data_actions()
+        self.refresh()
+
+    def _preview_import(self, backup: Backup) -> None:
+        dialog = BackupDialog(self.model.counts, backup, self.window)
+        self._open_data_dialog(
+            dialog, lambda chosen: self.start_import(backup, *chosen.selected_range()),
+        )
+
+    def start_import(self, backup: Backup, start: date, end: date) -> None:
+        if self._transfer_kind is not None or self.closed or self.exiting:
+            raise RuntimeError("已有数据操作正在执行。")
+        totals = backup.select(start, end)
+        path = self.runtime.directory / "backups" / (
+            f"before-import-{datetime.now():%Y%m%d-%H%M%S}-{uuid4().hex[:12]}.qiaoqiao.json"
+        )
+        self.persistence.begin_import(start, end, totals, path)
+        self._transfer_path = path
+        self._import_span = (start, end)
+        self._transfer_kind = "import"
+        self._data_flow = True
+        self._update_data_actions()
+        self.refresh()
+
+    def _poll_transfer(self, wait: bool = False, notify: bool = True) -> None:
+        kind = self._transfer_kind
+        if kind is None:
+            return
+        committed = False
+        try:
+            result = None
+            if kind == "import":
+                if not self.persistence.finish_import(wait):
+                    return
+                committed = True
+                self.window.invalidate_counts()
+                today = datetime.now().date()
+                if self._import_span[0] <= today <= self._import_span[1]:
+                    self.milestones.reset(today, sum(self.model.totals("day", today).values()))
+                    self._save_milestone_preferences()
+            else:
+                if not wait and not self._transfer_future.done():
+                    return
+                result = self._transfer_future.result()
+        except Exception as error:
+            LOGGER.exception("Data %s failed", kind)
+            self._end_data_flow()
+            if notify:
+                self._show_error(
+                    "数据操作失败",
+                    f"{error}\n\n" + (
+                        "统计已导入，但界面或提醒偏好更新失败；请重新打开主界面。"
+                        if committed else "未覆盖原统计，计数已恢复。请处理错误后重新导入。" if kind == "import"
+                        else "请检查备份文件、磁盘空间和文件权限后重试。"
+                    ),
+                )
+            self.refresh()
+            return
+        self._transfer_kind = None
+        self._transfer_future = None
+        if kind == "read" and notify:
+            self._update_data_actions()
+            try:
+                self._preview_import(result)
+            except ValueError as error:
+                self._end_data_flow()
+                self._show_error("无法导入", str(error))
+        else:
+            self._end_data_flow()
+            if notify:
+                if kind == "import":
+                    self._show_result(
+                        "导入完成",
+                        f"已覆盖 {self._import_span[0]} 至 {self._import_span[1]}，范围外数据保留。\n"
+                        f"原数据备份：\n{self._transfer_path}",
+                    )
+                elif kind == "export":
+                    self._show_result("导出完成", f"备份已保存：\n{self._transfer_path}")
+        self.refresh()
+
+    def _show_result(self, title: str, message: str) -> None:
+        box = QMessageBox(QMessageBox.Icon.Information, title, message, QMessageBox.StandardButton.Ok, self.window)
+        box.setTextFormat(Qt.TextFormat.PlainText)
+        self._dialogs.append(box)
+        box.finished.connect(lambda result: self._dialogs.remove(box))
+        box.open()
 
     def _tray_activated(self, reason):
         if reason in (QSystemTrayIcon.ActivationReason.Trigger, QSystemTrayIcon.ActivationReason.DoubleClick):
@@ -334,6 +537,7 @@ class Controller(QObject):
 
     def _show_error(self, title, message):
         box = QMessageBox(QMessageBox.Icon.Warning, title, message, QMessageBox.StandardButton.Ok, self.window)
+        box.setTextFormat(Qt.TextFormat.PlainText)
         self._dialogs.append(box)
         box.finished.connect(lambda result: self._dialogs.remove(box))
         box.open()
@@ -343,10 +547,14 @@ class Controller(QObject):
             return True
         if self.exiting:
             return False
+        if self._transfer_kind is not None and not system:
+            self._show_error("数据操作进行中", "请等待数据操作完成后，再退出程序。")
+            return False
         self.exiting = True
         self.timer.stop()
         try:
             self.listener.stop()
+            self._poll_transfer(wait=True, notify=False)
             saved = self.persistence.flush()
         except Exception as error:
             LOGGER.exception("Exit preparation failed")
@@ -384,6 +592,9 @@ class Controller(QObject):
                 self.listener.close()
             except Exception:
                 LOGGER.exception("Listener cleanup failed")
+        self._poll_transfer(wait=True, notify=False)
+        if self._data_dialog is not None:
+            self._data_dialog.reject()
         self.persistence.close()
         self.tray.hide()
         self.window.allow_close = True
@@ -432,6 +643,7 @@ def main(argv=None) -> int:
         if controller and not controller.closed:
             try:
                 controller.listener.stop()
+                controller._poll_transfer(wait=True, notify=False)
                 controller.persistence.flush()
             finally:
                 controller.dispose()

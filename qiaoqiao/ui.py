@@ -8,18 +8,19 @@ from time import monotonic
 from PySide6.QtCore import QDate, QEvent, QRectF, QSettings, QSize, Qt, QTimer, Signal
 from PySide6.QtGui import QActionGroup, QColor, QFont, QFontMetricsF, QIcon, QPainter
 from PySide6.QtWidgets import (
-    QButtonGroup, QFrame, QHBoxLayout, QLabel, QMainWindow, QMenu,
+    QButtonGroup, QCheckBox, QDialog, QFormLayout, QFrame, QHBoxLayout, QLabel, QMainWindow, QMenu,
     QScrollArea, QSizePolicy, QStyle, QTabWidget, QToolTip, QVBoxLayout, QWidget,
 )
 
-from .core import CounterModel, date_range, move_date
+from .backup import MIN_DAY, Backup, select_counts
+from .core import Counts, CounterModel, date_range, move_date
 from .keys import key_name
 from .layouts import DEFAULT_LAYOUT, LAYOUTS, LAYOUT_BY_ID
 from .trends import TrendPage
 from .theme import (
     BACKGROUND, BOARD, BORDER, GRID, KEY_DISABLED, KEY_IDLE, KEY_MUTED, MINT, MUTED,
     PINK, SHADOW, STYLE, HeatLegend, PixelButton, PixelDateEdit, PixelToolButton,
-    PixelTotalLabel, blend, configure_calendar, draw_icon, heat_color, key_ink, palette, pixel_shape,
+    PixelTotalLabel, blend, configure_calendar, draw_icon, heat_color, key_ink, palette, pixel_shape, set_state,
 )
 
 SHORT_ARROW_LABELS = {"e0_48": "\u2191", "e0_50": "\u2193"}
@@ -28,6 +29,173 @@ SHORT_ARROW_LABELS = {"e0_48": "\u2191", "e0_50": "\u2193"}
 def application_icon() -> QIcon:
     # PyInstaller preserves this relative layout inside the bundled data directory.
     return QIcon(str(Path(__file__).resolve().parents[1] / "assets" / "qiaoqiao.ico"))
+
+
+class BackupDialog(QDialog):
+    """Date selection and an explicit destructive-import preview; no storage I/O."""
+
+    def __init__(self, counts: Counts, backup: Backup | None = None, parent=None):
+        super().__init__(parent)
+        self.counts = dict(counts)
+        self.backup = backup
+        self.today = date.today()
+        self.setWindowTitle("导入数据" if backup else "导出数据")
+        self.setWindowIcon(application_icon())
+        self.setPalette(palette())
+        self.setStyleSheet(STYLE)
+        self.setMinimumWidth(530)
+        self.resize(580, 440)
+        self.mode = "custom" if backup else "month"
+        self.available_days = sorted({day for day, _ in counts if day <= self.today.isoformat()})
+        lower = backup.start if backup else MIN_DAY
+        upper = min(backup.end, self.today) if backup else self.today
+        if lower > upper:
+            raise ValueError("备份日期全部位于未来，当前无法导入。")
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(24, 20, 24, 20)
+        layout.setSpacing(14)
+        self.mode_buttons = {}
+        if backup is None:
+            modes = QHBoxLayout()
+            group = QButtonGroup(self)
+            for key, label in (("month", "按月"), ("custom", "自定义"), ("all", "全部记录")):
+                button = PixelButton(label)
+                button.setCheckable(True)
+                button.setChecked(key == self.mode)
+                button.setEnabled(key != "all" or bool(self.available_days))
+                button.clicked.connect(lambda checked=False, value=key: self._set_mode(value))
+                group.addButton(button)
+                modes.addWidget(button)
+                self.mode_buttons[key] = button
+            layout.addLayout(modes)
+        else:
+            label = QLabel(
+                f"文件范围：{backup.start:%Y-%m-%d} 至 {backup.end:%Y-%m-%d}\n"
+                f"来源版本：{backup.app_version}    导出时间：{backup.exported_at}"
+            )
+            label.setTextFormat(Qt.TextFormat.PlainText)
+            label.setWordWrap(True)
+            label.setObjectName("muted")
+            layout.addWidget(label)
+        form = QFormLayout()
+        form.setSpacing(10)
+        self.month_edit = self._date_control(self.today, MIN_DAY, self.today, "导出月份")
+        self.month_edit.setDisplayFormat("yyyy 年 MM 月")
+        self.month_label = QLabel("月份")
+        form.addRow(self.month_label, self.month_edit)
+        self.month_label.setVisible(backup is None)
+        self.month_edit.setVisible(backup is None)
+        self.start_edit = self._date_control(backup.start if backup else self.today.replace(day=1),
+                                             lower, upper, "起始日期")
+        self.end_edit = self._date_control(upper, lower, upper, "结束日期")
+        form.addRow("起始日期（含）", self.start_edit)
+        form.addRow("结束日期（含）", self.end_edit)
+        layout.addLayout(form)
+        self.summary_label = QLabel()
+        self.summary_label.setWordWrap(True)
+        self.summary_label.setTextFormat(Qt.TextFormat.PlainText)
+        self.summary_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        layout.addWidget(self.summary_label)
+        self.warning_label = QLabel()
+        self.warning_label.setWordWrap(True)
+        self.warning_label.setObjectName("muted")
+        layout.addWidget(self.warning_label)
+        self.confirm = QCheckBox("确认覆盖所选日期；文件中没有的日期和按键也将清除")
+        self.confirm.setVisible(backup is not None)
+        layout.addWidget(self.confirm)
+        layout.addStretch()
+        buttons = QHBoxLayout()
+        buttons.addStretch()
+        self.cancel_button = PixelButton("取消")
+        self.cancel_button.setDefault(True)
+        self.cancel_button.clicked.connect(self.reject)
+        self.submit_button = PixelButton("覆盖导入" if backup else "选择保存位置")
+        self.submit_button.setAutoDefault(False)
+        self.submit_button.clicked.connect(self.accept)
+        buttons.addWidget(self.cancel_button)
+        buttons.addWidget(self.submit_button)
+        layout.addLayout(buttons)
+        self.month_edit.dateChanged.connect(self._update_range)
+        self.start_edit.dateChanged.connect(self._update_summary)
+        self.end_edit.dateChanged.connect(self._update_summary)
+        self.confirm.toggled.connect(self._update_submit)
+        self._update_range()
+
+    def _date_control(self, value: date, lower: date, upper: date, name: str) -> PixelDateEdit:
+        control = PixelDateEdit(QDate(value.year, value.month, value.day))
+        control.setDateRange(QDate(lower.year, lower.month, lower.day), QDate(upper.year, upper.month, upper.day))
+        control.setDisplayFormat("yyyy / MM / dd")
+        control.setCalendarPopup(True)
+        configure_calendar(control.calendarWidget())
+        control.setAccessibleName(name)
+        control.setMinimumHeight(38)
+        return control
+
+    def selected_range(self) -> tuple[date, date]:
+        return self.start_edit.date().toPython(), self.end_edit.date().toPython()
+
+    def _set_mode(self, mode: str) -> None:
+        self.mode = mode
+        self._update_range()
+
+    def _update_range(self, *_args) -> None:
+        self.month_edit.setEnabled(self.mode == "month")
+        self.start_edit.setEnabled(self.mode == "custom")
+        self.end_edit.setEnabled(self.mode == "custom")
+        if self.mode == "month":
+            start, end = date_range("month", self.month_edit.date().toPython())
+            end = min(end, self.today)
+        elif self.mode == "all":
+            start, end = map(date.fromisoformat, (self.available_days[0], self.available_days[-1]))
+        else:
+            self._update_summary()
+            return
+        self.start_edit.setDate(QDate(start.year, start.month, start.day))
+        self.end_edit.setDate(QDate(end.year, end.month, end.day))
+        self._update_summary()
+
+    @staticmethod
+    def _summary(counts: Counts) -> str:
+        return f"{len({day for day, _ in counts}):,} 个有记录日期，{len(counts):,} 条记录，{sum(counts.values()):,} 次敲击"
+
+    def _update_summary(self, *_args) -> None:
+        self.confirm.setChecked(False)
+        start, end = self.selected_range()
+        valid = start <= end
+        if not valid:
+            self.summary_label.setText("")
+            self.warning_label.setText("起始日期不能晚于结束日期。")
+        elif self.backup is not None:
+            incoming = self.backup.select(start, end)
+            current = select_counts(self.counts, start, end)
+            self.summary_label.setText(
+                f"覆盖范围：{start:%Y-%m-%d} 至 {end:%Y-%m-%d}\n"
+                f"导入记录：{self._summary(incoming)}\n"
+                f"本机记录（预览时）：{self._summary(current)}"
+            )
+            self.warning_label.setText(
+                ("所选范围没有导入记录，将清空该范围的本机数据。\n" if not incoming else
+                 "所选范围将完整替换，缺失的日期和按键会被清除。\n")
+                + "范围外数据保留。覆盖前将自动备份；执行期间暂停计数。"
+            )
+        else:
+            selected = select_counts(self.counts, start, end)
+            self.summary_label.setText(
+                f"导出范围：{start:%Y-%m-%d} 至 {end:%Y-%m-%d}\n{self._summary(selected)}"
+            )
+            self.warning_label.setText(
+                "所选范围暂无记录；此文件用于导入时会清空对应日期的数据。" if not selected else ""
+            )
+        set_state(self.warning_label, "error" if not valid or self.backup else "muted")
+        self._update_submit()
+
+    def _update_submit(self, *_args) -> None:
+        start, end = self.selected_range()
+        self.submit_button.setEnabled(start <= end and (self.backup is None or self.confirm.isChecked()))
+
+    def accept(self) -> None:
+        if self.submit_button.isEnabled():
+            super().accept()
 
 
 class KeyboardWidget(QWidget):
@@ -288,6 +456,15 @@ class StatsWindow(QMainWindow):
         brand_titles.addWidget(subtitle)
         header.addLayout(brand_titles)
         header.addStretch()
+        self.data_button = PixelToolButton()
+        self.data_button.setText("数据管理")
+        self.data_button.setAccessibleName("数据管理")
+        self.data_button.setToolTip("导入或导出统计数据")
+        self.data_button.setFixedSize(120, 38)
+        self.data_button.setPopupMode(PixelToolButton.ToolButtonPopupMode.InstantPopup)
+        self.data_menu = QMenu(self.data_button)
+        self.data_button.setMenu(self.data_menu)
+        header.addWidget(self.data_button)
         self.status_label = QLabel("正在启动")
         self.status_label.setObjectName("status")
         header.addWidget(self.status_label)
@@ -560,6 +737,10 @@ class StatsWindow(QMainWindow):
             self._render_key = render_key
         else:
             self.keyboard.set_counts(self.keyboard.counts, {key for _, key in model.pressed})
+
+    def invalidate_counts(self) -> None:
+        self._render_key = None
+        self._trend_force_refresh = True
 
     def restore(self):
         self._trend_force_refresh = True
