@@ -17,6 +17,7 @@ from PySide6.QtWidgets import QApplication, QDialog, QFileDialog, QMenu, QMessag
 
 from .backup import Backup, read_backup, write_backup
 from .core import MILESTONE_INTERVAL, CounterModel, MilestoneTracker
+from .pet import PetWindow
 from .raw_input import RawInputListener
 from .runtime import Runtime, parse_runtime
 from .storage import Database, Persistence
@@ -159,7 +160,15 @@ class Controller(QObject):
         self.menu.setPalette(palette())
         self.menu.setStyleSheet(STYLE)
         self.open_action = QAction("打开主界面", self)
-        self.open_action.triggered.connect(self.window.restore)
+        self.open_action.triggered.connect(self.restore_window)
+        self.pet_action = QAction("显示宠物", self)
+        self.pet_action.setCheckable(True)
+        self.pet_action.setChecked(str(self.settings.value("pet/enabled", True)).lower() != "false")
+        self.pet_action.toggled.connect(self._set_pet_enabled)
+        self.topmost_action = QAction("宠物顶置", self)
+        self.topmost_action.setCheckable(True)
+        self.topmost_action.setChecked(str(self.settings.value("pet/topmost", True)).lower() != "false")
+        self.topmost_action.toggled.connect(self._set_pet_topmost)
         self.milestone_action = QAction(MILESTONE_ACTION_TEXT, self)
         self.milestone_action.setCheckable(True)
         self.milestone_action.setChecked(enabled)
@@ -167,6 +176,8 @@ class Controller(QObject):
         self.exit_action = QAction("退出程序", self)
         self.exit_action.triggered.connect(lambda: self.request_exit())
         self.menu.addAction(self.open_action)
+        self.menu.addAction(self.pet_action)
+        self.menu.addAction(self.topmost_action)
         self.menu.addAction(self.milestone_action)
         self.tray_data_menu = self.menu.addMenu("数据管理")
         self.tray_data_menu.addActions([self.export_action, self.import_action])
@@ -174,7 +185,16 @@ class Controller(QObject):
         self.menu.addAction(self.exit_action)
         self.tray.setContextMenu(self.menu)
         self.tray.activated.connect(self._tray_activated)
-        self.tray.messageClicked.connect(self.window.restore)
+        self.tray.messageClicked.connect(self.restore_window)
+        self.pet_menu = QMenu()
+        self.pet_menu.setPalette(palette())
+        self.pet_menu.setStyleSheet(STYLE)
+        self.pet_menu.addActions((self.open_action, self.pet_action, self.topmost_action))
+        self.pet_menu.addSeparator()
+        self.pet_menu.addAction(self.exit_action)
+        self.pet = PetWindow(self.settings, self.pet_menu, self.topmost_action.isChecked())
+        self.pet.open_requested.connect(self.restore_window)
+        self.window.view_changed.connect(self._sync_pet_visibility)
         self.timer = QTimer(self)
         self.timer.setInterval(250)
         self.timer.timeout.connect(self.tick)
@@ -191,6 +211,7 @@ class Controller(QObject):
             )
         except Exception:
             self.persistence.close()
+            self.pet.close()
             self.window.deleteLater()
             raise
 
@@ -202,6 +223,31 @@ class Controller(QObject):
         self.timer.start()
         self.refresh()
         self.window.show()
+        self._sync_pet_visibility()
+
+    def restore_window(self) -> None:
+        self.pet.hide()
+        self.window.restore()
+
+    def _sync_pet_visibility(self) -> None:
+        listener = self.listener
+        show = (self.pet_action.isChecked() and not self.window.isVisible()
+                and not self.closed and not self.exiting
+                and listener is not None and not listener.locked and not listener.suspended)
+        if show and not self.pet.isVisible():
+            self.pet.show()
+        elif not show and self.pet.isVisible():
+            self.pet.hide()
+
+    def _set_pet_enabled(self, enabled: bool) -> None:
+        self.settings.setValue("pet/enabled", enabled)
+        self.settings.sync()
+        self._sync_pet_visibility()
+
+    def _set_pet_topmost(self, enabled: bool) -> None:
+        self.pet.set_topmost(enabled)
+        self.settings.setValue("pet/topmost", enabled)
+        self.settings.sync()
 
     def _key(self, event):
         day = datetime.now().date()
@@ -240,6 +286,7 @@ class Controller(QObject):
                 )
                 self._notification_not_before = monotonic() + 5
         self._notify_milestone()
+        self._sync_pet_visibility()
         if self.window.isVisible():
             self.refresh()
 
@@ -387,7 +434,7 @@ class Controller(QObject):
             return
         self._data_flow = True
         self._update_data_actions()
-        self.window.restore()
+        self.restore_window()
         dialog = BackupDialog(self.model.counts, parent=self.window)
         self._open_data_dialog(dialog, lambda chosen: self._choose_export_path(*chosen.selected_range()))
 
@@ -423,7 +470,7 @@ class Controller(QObject):
             return
         self._data_flow = True
         self._update_data_actions()
-        self.window.restore()
+        self.restore_window()
         dialog = QFileDialog(self.window, "选择敲敲备份")
         dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
         dialog.setNameFilter("敲敲备份 (*.qiaoqiao.json);;JSON 文件 (*.json)")
@@ -523,9 +570,10 @@ class Controller(QObject):
 
     def _tray_activated(self, reason):
         if reason in (QSystemTrayIcon.ActivationReason.Trigger, QSystemTrayIcon.ActivationReason.DoubleClick):
-            self.window.restore()
+            self.restore_window()
 
     def _hidden(self):
+        self._sync_pet_visibility()
         if not self._tray_tip_shown:
             self.tray.showMessage(
                 f"{self.runtime.name}仍在统计", "可通过托盘图标打开窗口，或选择“退出程序”。",
@@ -551,6 +599,7 @@ class Controller(QObject):
             self._show_error("数据操作进行中", "请等待数据操作完成后，再退出程序。")
             return False
         self.exiting = True
+        self.pet.hide()
         self.timer.stop()
         try:
             self.listener.stop()
@@ -569,7 +618,7 @@ class Controller(QObject):
                 LOGGER.exception("Could not restart keyboard listener")
             self.exiting = False
             self.timer.start()
-            self.window.restore()
+            self.restore_window()
             self._show_error(
                 "退出前保存失败",
                 f"程序暂未退出，尚未保存的统计仍保留在内存中，并会自动重试。\n"
@@ -587,6 +636,8 @@ class Controller(QObject):
         if self.closed:
             return
         self.timer.stop()
+        self.pet.close()
+        self.pet_menu.close()
         if self.listener:
             try:
                 self.listener.close()
@@ -611,6 +662,7 @@ def main(argv=None) -> int:
     application.setOrganizationName("Qiaoqiao")
     application.setQuitOnLastWindowClosed(False)
     application.setStyle("Fusion")
+    application.styleHints().setColorScheme(Qt.ColorScheme.Dark)
     application.setFont(QFont("Microsoft YaHei UI", 10))
     application.setWindowIcon(application_icon())
     guard = None
@@ -632,7 +684,7 @@ def main(argv=None) -> int:
         database = Database(directory / "counts.sqlite3")
         database.initialize()
         controller = Controller(application, database, runtime=runtime)
-        guard.activated.connect(controller.window.restore)
+        guard.activated.connect(controller.restore_window)
         controller.start()
         return application.exec()
     except Exception as error:

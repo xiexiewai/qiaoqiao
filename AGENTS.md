@@ -65,9 +65,10 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 | `qiaoqiao/raw_input.py` | Windows 原生消息、输入解析、设备和会话事件 |
 | `qiaoqiao/theme.py` | 共享调色板、QSS、像素绘制方法及保留原生交互的主题控件 |
 | `qiaoqiao/ui.py` | 窗口与 tab 布局、键盘绘制、短暂敲击反馈、日期和布局交互、趋势刷新协调、备份范围及导入预览 |
+| `qiaoqiao/pet.py` | 桌面宠物图集加载与动作播放、逐帧透明命中区域、拖动贴边与位置偏好 |
 | `qiaoqiao/trends.py` | 趋势数据卡片、原生图表绘制、日期悬停及跳转信号，不访问数据库 |
 | `qiaoqiao/app.py` | 组装模型/监听/UI/存储，托盘提醒、单实例和退出生命周期 |
-| `assets/` | 像素图原稿及应用 ICO |
+| `assets/` | 像素图原稿、应用 ICO 及宠物 PNG / JSON 动作图集 |
 | `tests/` | 对应模块的自动化测试 |
 | `tools/` | 打包、图标导出、开发和发布快捷方式脚本 |
 | `qiaoqiao.spec` | PyInstaller 收集及 EXE 配置 |
@@ -140,13 +141,14 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 
 ### 生命周期
 
-- 关闭或最小化主窗口进入托盘，继续采集和保存；用户正常退出通过托盘“退出程序”完成。
+- 关闭或最小化主窗口进入托盘，继续采集和保存；启用时展示动画桌面宠物，打开主窗口暂时隐藏宠物。用户正常退出通过托盘“退出程序”完成。
 - 普通退出必须先保存；失败时保留模型和未保存数据，恢复运行并提示重试。
 - 系统关闭使用现有专门分支，不承诺系统强制结束时仍能阻止退出或保证落盘。
 - 单实例以解析后的数据目录为边界；相同目录重复启动唤醒已有窗口，不同目录可独立运行。
 - UI 当前每约 250 ms 刷新，保存每约 1 s 尝试一批；不要改成逐键刷盘或无节制重绘。
 - 趋势复用主定时器，只在可见趋势页数据变化时按约 1 s 节流聚合；返回或跨天立即更新，不新增常驻定时器。
 - 短暂敲击反馈独立使用 33 ms 定时器、180 ms 到期状态；仅在可见窗口有反馈时运行，到期或隐藏后停止，不改变统计及保存频率。
+- 宠物使用按素材帧时长调度的单次定时器，仅可见时运行；隐藏、会话暂停和退出时停播。图集和透明区域只在创建时加载，播放时不读盘，不改变统计或保存频率。
 
 ## 5. 数据、隐私与线程
 
@@ -175,6 +177,7 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 不添加宣传页、装饰性大卡片、嵌套卡片或无关视觉效果。
 主题入口为 `qiaoqiao/theme.py` 的 `STYLE` 和 `palette()`；键盘使用 `KeyboardWidget.paintEvent()` 自绘，
 共享同一调色板及像素绘制方法。保持 Qt Widgets / QPainter，不引入 Web UI 或第三方皮肤库。
+启动时通过 Qt 应用配色模式请求深色原生标题栏，保留系统窗口边框及按钮，不自行绘制标题栏。
 
 | 用途 | 现有约定 |
 | --- | --- |
@@ -211,6 +214,7 @@ If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is 
 - 背景点阵保持静态、低对比；隐藏窗口停止反馈定时器，不增加常驻装饰动画。
 - 图标原稿为 `assets/qiaoqiao-pixel.png`，通过 `tools/build_icon.py` 导出 ICO；保持最近邻缩放和像素边缘。
 - 窗口、托盘、EXE 和快捷方式共用应用图标，不分别维护不同图案。
+- 宠物独立使用 `assets/pet/qiaoqiao-v2/atlas.png` / `atlas.json`，以最近邻绘制到固定 128 × 128 逻辑画布；动作按接触线定位，不能逐帧按包围框居中，左右探身素材不能再次裁半幅。
 
 ## 7. 编码约定
 
@@ -261,6 +265,7 @@ git diff --check
 | 布局 | `test_layouts.py` + `test_app.py`：唯一键 ID、无重叠、Fn、布局外统计、偏好和热度 |
 | 原生监听 | `test_raw_input.py`：64 位 ABI、消息边界、注册/注销、会话状态 |
 | 运行模式 / 生命周期 | `test_runtime.py` + `test_app.py`：目录隔离、单实例、托盘和退出失败恢复 |
+| 桌面宠物 | `test_pet.py` + `test_pet_assets.py` + `test_app.py`：动作时序、隐藏停播、逐帧透明区域、贴边接触点、拖动、偏好、顶置和主窗口切换；实际桌面点击穿透与跨屏另行验收 |
 | 打包 / 依赖 / 资源 | `test_build_release.py`、全量测试及实际构建冒烟 |
 | 仅文档 | 核对路径、命令与实现，检查差异；不因此强制运行整套 UI 测试或打包 |
 

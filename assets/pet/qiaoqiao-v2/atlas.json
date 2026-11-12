@@ -1,0 +1,964 @@
+{
+  "schema_version": 1,
+  "character": "qiaoqiao-keycap",
+  "design_version": 2,
+  "status": "motion-review",
+  "image": "atlas.png",
+  "frame_size": [
+    64,
+    64
+  ],
+  "atlas_size": [
+    512,
+    512
+  ],
+  "columns": 8,
+  "rows": 8,
+  "recommended_scale": 2,
+  "sampling": "nearest",
+  "palette": {
+    "INK": "#0D0C14",
+    "FRONT": "#443A53",
+    "LIGHT": "#655971",
+    "SIDE": "#54465F",
+    "SHADOW": "#2C283B",
+    "RIM": "#8D7C9E",
+    "FACE": "#191621",
+    "MINT": "#97E4C2",
+    "MINT_DARK": "#568F80",
+    "PINK": "#C7849C",
+    "EYE_LIGHT": "#CEF2DF"
+  },
+  "coordinates": "Top-left origin; anchors and contacts use pixel boundaries.",
+  "actions": {
+    "idle": {
+      "label": "待机呼吸",
+      "row": 0,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "duration_ms": 3000,
+      "frames": [
+        {
+          "rect": [
+            0,
+            0,
+            64,
+            64
+          ],
+          "duration_ms": 1000,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            0,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            128,
+            0,
+            64,
+            64
+          ],
+          "duration_ms": 650,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            192,
+            0,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "blink": {
+      "label": "待机眨眼",
+      "row": 1,
+      "loop": false,
+      "next": "idle",
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "duration_ms": 220,
+      "frames": [
+        {
+          "rect": [
+            0,
+            64,
+            64,
+            64
+          ],
+          "duration_ms": 30,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            64,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            128,
+            64,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            192,
+            64,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            256,
+            64,
+            64,
+            64
+          ],
+          "duration_ms": 30,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "drag": {
+      "label": "拖动提起",
+      "row": 2,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        24
+      ],
+      "contacts": [],
+      "boundary": null,
+      "duration_ms": 800,
+      "frames": [
+        {
+          "rect": [
+            0,
+            128,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            8,
+            10,
+            47,
+            42
+          ]
+        },
+        {
+          "rect": [
+            64,
+            128,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            8,
+            10,
+            47,
+            42
+          ]
+        },
+        {
+          "rect": [
+            128,
+            128,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            8,
+            10,
+            47,
+            42
+          ]
+        },
+        {
+          "rect": [
+            192,
+            128,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            8,
+            10,
+            47,
+            42
+          ]
+        }
+      ]
+    },
+    "left": {
+      "label": "左边探身",
+      "row": 3,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 6900,
+      "frames": [
+        {
+          "rect": [
+            0,
+            192,
+            64,
+            64
+          ],
+          "duration_ms": 4600,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            192,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            192,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            192,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            192,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            192,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            192,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            192,
+            64,
+            64
+          ],
+          "duration_ms": 1260,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right": {
+      "label": "右边探身",
+      "row": 4,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 6900,
+      "frames": [
+        {
+          "rect": [
+            0,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 4600,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 1260,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "bottom": {
+      "label": "底边趴伏",
+      "row": 5,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 6000,
+      "frames": [
+        {
+          "rect": [
+            0,
+            320,
+            64,
+            64
+          ],
+          "duration_ms": 2200,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            320,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            320,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            192,
+            320,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            256,
+            320,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            320,
+            320,
+            64,
+            64
+          ],
+          "duration_ms": 740,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            384,
+            320,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            448,
+            320,
+            64,
+            64
+          ],
+          "duration_ms": 1100,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "top": {
+      "label": "顶边悬挂",
+      "row": 6,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 6000,
+      "frames": [
+        {
+          "rect": [
+            0,
+            384,
+            64,
+            64
+          ],
+          "duration_ms": 1800,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            384,
+            64,
+            64
+          ],
+          "duration_ms": 650,
+          "bounds": [
+            15,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            128,
+            384,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            192,
+            384,
+            64,
+            64
+          ],
+          "duration_ms": 650,
+          "bounds": [
+            13,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            256,
+            384,
+            64,
+            64
+          ],
+          "duration_ms": 1840,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            320,
+            384,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            384,
+            384,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            448,
+            384,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "settle": {
+      "label": "松开回弹",
+      "row": 7,
+      "loop": false,
+      "next": "idle",
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [],
+      "boundary": null,
+      "duration_ms": 300,
+      "frames": [
+        {
+          "rect": [
+            0,
+            448,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            8,
+            10,
+            47,
+            42
+          ]
+        },
+        {
+          "rect": [
+            64,
+            448,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            8,
+            13,
+            47,
+            42
+          ]
+        },
+        {
+          "rect": [
+            128,
+            448,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            8,
+            14,
+            47,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            448,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            256,
+            448,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    }
+  },
+  "sha256": "3884a5b6935140415c4bdd774f42afa148469dd9f20dd01899e790d0624f3257"
+}

@@ -1,0 +1,59 @@
+{
+  "atlas_sha256": "3884a5b6935140415c4bdd774f42afa148469dd9f20dd01899e790d0624f3257",
+  "gif_checks": {
+    "idle": {
+      "decoded_frames": 4,
+      "distinct_frames": 4,
+      "duration_ms": 3000,
+      "pixels_match_atlas": true
+    },
+    "blink": {
+      "decoded_frames": 5,
+      "distinct_frames": 3,
+      "duration_ms": 2020,
+      "pixels_match_atlas": true
+    },
+    "drag": {
+      "decoded_frames": 4,
+      "distinct_frames": 3,
+      "duration_ms": 800,
+      "pixels_match_atlas": true
+    },
+    "left": {
+      "decoded_frames": 8,
+      "distinct_frames": 5,
+      "duration_ms": 6900,
+      "pixels_match_atlas": true
+    },
+    "right": {
+      "decoded_frames": 8,
+      "distinct_frames": 5,
+      "duration_ms": 6900,
+      "pixels_match_atlas": true
+    },
+    "bottom": {
+      "decoded_frames": 7,
+      "distinct_frames": 4,
+      "duration_ms": 6000,
+      "pixels_match_atlas": true
+    },
+    "top": {
+      "decoded_frames": 8,
+      "distinct_frames": 5,
+      "duration_ms": 6000,
+      "pixels_match_atlas": true
+    },
+    "settle": {
+      "decoded_frames": 5,
+      "distinct_frames": 5,
+      "duration_ms": 2100,
+      "pixels_match_atlas": true
+    },
+    "overview": {
+      "decoded_frames": 173,
+      "duration_ms": 13800
+    }
+  },
+  "visual_review": "Contact sheet and decoded keyframes; browser playback unavailable.",
+  "ok": true
+}

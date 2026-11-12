@@ -1,0 +1,50 @@
+Use case: stylized-concept.
+Asset type: Qiaoqiao desktop pet, revision 2, static key-pose preview.
+This is an art brief; the current preview is drawn locally with QPainter.
+
+References:
+docs/pet-preview-v1/pose-sheet.png shows the first concept.
+docs/pet-design-v2.md contains the revised design constraints.
+assets/qiaoqiao-pixel.png is a product/style reference, not an edit target.
+
+Keep:
+One quiet, curious anthropomorphic keycap with a stepped silhouette,
+an inset face panel, short arms and short feet.
+No separate humanoid head, ears, tail, lettering or counter.
+64 x 64 logical pixel canvas, nearest-neighbor enlargement.
+Crisp square pixels, hard-edged shading, no glow, blur or smooth gradients.
+
+Revise the palette throughout all poses:
+Outline #0D0C14.
+Body #443A53, a dark muted gray-purple.
+Top facet #655971; side #54465F; shadow #2C283B.
+Narrow rim highlights #8D7C9E.
+Face panel #191621.
+Mint eyes #97E4C2, tiny eye highlights #CEF2DF.
+Small limb details #568F80 and restrained pink accents #C7849C.
+No white body or large bright-white top facet.
+Keep the silhouette readable on both dark and light desktop backgrounds.
+
+Revise both side-peeking poses:
+Lean the upper body INTO the desktop by approximately 34 degrees.
+At the LEFT edge, the upper body leans RIGHT while the lower body stays outside.
+At the RIGHT edge, the upper body leans LEFT while the lower body stays outside.
+Expose proportionally more of the upper body than the lower body.
+Hide the legs and feet completely.
+Show both eyes intact and facing the desktop interior.
+Redraw a three-quarter face and a bent forearm; one hand grips the screen edge.
+The gripping hand stays at a stable contact point rather than rotating away.
+Do not use a vertical half-body crop of the neutral standing pose.
+Do not rely on a fixed 50 percent exposure rule.
+
+Eight-pose presentation:
+Idle, subtle breath, blink, picked-up drag,
+left lean-and-peek, right lean-and-peek, bottom rest, top hang.
+Keep the planted feet at the same baseline in idle and breath.
+Keep the legs attached to the body in the picked-up pose.
+Bottom rest remains above the taskbar; top hang preserves the entire face.
+Boundary lines and labels are review annotations, not part of the sprite.
+
+Deliver static pose and edge-detail sheets, plus a synthetic desktop scale view.
+Include 128 x 128 canvas examples on dark and light backgrounds.
+Do not describe these previews as runtime-ready sprites or finished animations.

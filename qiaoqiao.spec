@@ -7,7 +7,12 @@ a = Analysis(
     [str(root / "run.py")],
     pathex=[str(root)],
     binaries=[],
-    datas=[(str(root / "assets" / "qiaoqiao.ico"), "assets")],
+    datas=[
+        (str(root / "assets" / "qiaoqiao.ico"), "assets"),
+        (str(root / "assets" / "qiaoqiao-pixel.png"), "assets"),
+        (str(root / "assets" / "pet" / "qiaoqiao-v2" / "atlas.png"), "assets/pet/qiaoqiao-v2"),
+        (str(root / "assets" / "pet" / "qiaoqiao-v2" / "atlas.json"), "assets/pet/qiaoqiao-v2"),
+    ],
     hiddenimports=[],
     hookspath=[],
     runtime_hooks=[],

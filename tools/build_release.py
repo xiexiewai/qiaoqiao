@@ -35,6 +35,7 @@ def source_files():
     ]
     for folder, pattern in (
         ("qiaoqiao", "*.py"), ("tests", "*.py"), ("assets", "*.ico"), ("assets", "*.png"),
+        ("assets", "*.json"),
     ):
         files.extend((ROOT / folder).rglob(pattern))
     files.extend(path for path in (ROOT / "tools").iterdir() if path.suffix in (".py", ".ps1", ".txt"))

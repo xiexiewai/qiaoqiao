@@ -67,6 +67,7 @@ class AppTests(unittest.TestCase):
     def test_close_hides_but_capture_and_persistence_continue(self):
         self.controller.window.close()
         self.assertFalse(self.controller.window.isVisible())
+        self.assertTrue(self.controller.pet.isVisible())
         self.assertTrue(self.controller.listener.active)
         self.assertTrue(self.controller.timer.isActive())
         self.tap()
@@ -78,11 +79,74 @@ class AppTests(unittest.TestCase):
         self.controller.window.showMinimized()
         QTest.qWait(30)
         self.assertFalse(self.controller.window.isVisible())
+        self.assertTrue(self.controller.pet.isVisible())
         self.tap()
         self.controller.window.restore()
         self.assertTrue(self.controller.window.isVisible())
+        self.assertFalse(self.controller.pet.isVisible())
         self.assertEqual(self.controller.window.total_label.text(), "1")
         self.assertTrue(self.controller.listener.active)
+
+    def test_pet_visibility_topmost_and_tray_actions_persist(self):
+        controller = self.controller
+        controller.window.close()
+        self.assertTrue(controller.pet.isVisible())
+        self.assertTrue(controller.pet._animation_timer.isActive())
+        self.assertTrue(controller.pet.windowFlags() & Qt.WindowType.WindowStaysOnTopHint)
+        controller.topmost_action.setChecked(False)
+        self.assertTrue(controller.pet.isVisible())
+        self.assertFalse(controller.pet.windowFlags() & Qt.WindowType.WindowStaysOnTopHint)
+        controller.pet_action.setChecked(False)
+        self.assertFalse(controller.pet.isVisible())
+        self.assertFalse(controller.pet._animation_timer.isActive())
+        self.tap()
+        self.assertEqual(sum(controller.model.totals("day", date.today()).values()), 1)
+        self.assertEqual(controller.settings.value("pet/enabled", type=bool), False)
+        self.assertEqual(controller.settings.value("pet/topmost", type=bool), False)
+        controller.pet_action.setChecked(True)
+        self.assertTrue(controller.pet.isVisible())
+        self.assertTrue(controller.pet._animation_timer.isActive())
+        controller.open_action.trigger()
+        self.assertTrue(controller.window.isVisible())
+        self.assertFalse(controller.pet.isVisible())
+        self.assertFalse(controller.pet._animation_timer.isActive())
+
+    def test_pet_hides_during_session_pause_and_restores_afterward(self):
+        self.controller.window.close()
+        self.controller.listener.locked = True
+        self.controller.tick()
+        self.assertFalse(self.controller.pet.isVisible())
+        self.assertFalse(self.controller.pet._animation_timer.isActive())
+        self.controller.listener.locked = False
+        self.controller.tick()
+        self.assertTrue(self.controller.pet.isVisible())
+        self.assertTrue(self.controller.pet._animation_timer.isActive())
+        self.controller.listener.suspended = True
+        self.controller.tick()
+        self.assertFalse(self.controller.pet.isVisible())
+        self.assertFalse(self.controller.pet._animation_timer.isActive())
+
+    def test_pet_double_click_requests_main_window(self):
+        self.controller.window.close()
+        self.controller.pet.open_requested.emit()
+        self.assertTrue(self.controller.window.isVisible())
+        self.assertFalse(self.controller.pet.isVisible())
+
+    def test_pet_preference_survives_controller_recreation(self):
+        self.controller.topmost_action.setChecked(False)
+        self.controller.pet_action.setChecked(False)
+        restored = Controller(APPLICATION, self.database, FakeListener)
+        try:
+            self.assertFalse(restored.topmost_action.isChecked())
+            self.assertFalse(restored.pet_action.isChecked())
+            self.assertFalse(restored.pet.windowFlags() & Qt.WindowType.WindowStaysOnTopHint)
+        finally:
+            restored.dispose()
+            restored.pet.deleteLater()
+            restored.pet_menu.deleteLater()
+            restored.window.deleteLater()
+            restored.menu.deleteLater()
+            restored.deleteLater()
 
     def test_trend_tab_keeps_capture_save_and_tray_restore_working(self):
         window = self.controller.window

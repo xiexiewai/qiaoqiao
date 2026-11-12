@@ -12,6 +12,14 @@ from tools.build_release import ROOT, isolated_environment, source_files
 
 
 class BuildEnvironmentTests(unittest.TestCase):
+    def test_pet_atlas_and_manifest_are_in_source_snapshot(self):
+        self.assertIn(ROOT / "assets" / "pet" / "qiaoqiao-v2" / "atlas.png", source_files())
+        self.assertIn(ROOT / "assets" / "pet" / "qiaoqiao-v2" / "atlas.json", source_files())
+
+    def test_pet_prototype_sources_are_in_snapshot(self):
+        self.assertIn(ROOT / "qiaoqiao" / "pet.py", source_files())
+        self.assertIn(ROOT / "assets" / "qiaoqiao-pixel.png", source_files())
+
     def test_build_excludes_unrelated_dll_and_python_plugin_paths(self):
         overrides = {
             "PATH": r"C:\unrelated-tools",

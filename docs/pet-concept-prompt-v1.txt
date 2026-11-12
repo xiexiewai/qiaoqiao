@@ -1,0 +1,78 @@
+Use case: stylized-concept
+Asset type: desktop pet character and key-pose concept sheet, version 1.
+
+Primary request:
+Design one original pixel-art desktop companion named Qiaoqiao for a local keyboard-counting application.
+Show the same character in eight key poses on a clean landscape concept sheet.
+This is a visual design proposal, not a finished animation spritesheet.
+
+Reference:
+assets/qiaoqiao-pixel.png is a style and product reference, not an edit target.
+It depicts a compact mechanical-keycap motif with stepped pixel outlines, dark sidewalls,
+light key surface, mint and pink accents.
+Develop that keycap motif into a living character; preserve the existing application icon as-is.
+The written description is sufficient if reference-image input is unavailable.
+
+Character:
+A friendly anthropomorphic mechanical keycap with a slightly wider-than-tall body.
+The body itself is the head, with a flat light top facet, stepped corner cuts, and shaded sidewalls.
+A small dark inset face panel holds two expressive mint pixel eyes.
+Very short arms with simple mitten hands and short feet.
+Small restrained pink cheek accents.
+Quiet, curious, slightly shy personality.
+No separate humanoid head, animal ears, tail, accessories, lettering or number display.
+
+Style:
+Deliberate low-resolution pixel art with crisp square pixels and a consistent pixel grid.
+Design each pose as if on a 64 by 64 logical canvas, shown enlarged with nearest-neighbor scaling.
+Approximately 34 by 30 logical pixels for the body and 46 by 44 including limbs in the neutral pose.
+Two or three hard-edged tones per material, strong silhouette, no antialiasing or gradients.
+Do not simulate pixel art using many tiny irregular pixels or painted texture.
+
+Palette:
+Outline #0D0C14.
+Keycap front #F2EBF4.
+Side planes #A49AB4 and #54465F.
+Face panel #24202F.
+Eyes and small limb accents #97E4C2.
+Small pink accents #E59AAC.
+Plain neutral light gray presentation background.
+
+Composition:
+Landscape sheet, exactly eight evenly spaced positions in two rows of four.
+Same character scale and identity throughout, generous breathing room, no enclosing cards.
+The bottom row uses fine charcoal boundary lines to explain screen-edge contact.
+Boundary lines are presentation guides, not part of the character.
+No text, labels, arrows, watermark, ornamental scenery or extra characters.
+
+Top row, left to right:
+1. Neutral free-standing idle pose, front view with a small visible top facet, hands relaxed, both feet planted.
+2. The same idle pose at the high point of a very subtle breath, body raised one logical pixel while feet stay planted.
+3. The same idle pose with eyes closed in a gentle blink; same silhouette and scale.
+4. Picked-up drag pose, whole body visible, feet dangling naturally, hands slightly spread, eyes mildly widened.
+
+Bottom row, left to right:
+5. Peeking from the LEFT screen edge. A vertical line at the contact edge.
+   Only about half of the body extends into the visible area to the RIGHT of that line.
+   The visible face looks RIGHT toward screen interior; one hand visibly grips the edge.
+   Draw a deliberate turned peeking pose, not a neutral frontal sprite sliced in half.
+   Keep the visible eye and gripping hand intact.
+6. Peeking from the RIGHT screen edge. A vertical line at the contact edge.
+   Only about half of the body extends into the visible area to the LEFT of that line.
+   The visible face looks LEFT toward screen interior; one hand visibly grips the edge.
+   Match the identity, palette and proportions of pose 5.
+7. Resting prone at the BOTTOM boundary. A horizontal line directly below the character.
+   Body slightly lowered, chin close to both hands, hands and underside resting on the line,
+   short feet tucked behind the body. All character pixels remain ABOVE the line.
+   The line represents the top of the taskbar; no limbs hang into the taskbar.
+8. Hanging from the TOP boundary. A horizontal line directly above the character.
+   Both hands grip that line, body and short feet hang BELOW it.
+   Contact points feel physically clear, face remains fully visible, small relaxed dangling pose.
+
+Constraints:
+Consistent body design, face panel, limb lengths, palette and pixel density in all eight poses.
+Prioritize readable small-size silhouette, quiet expression and believable boundary contact.
+No glossy 3D rendering, realistic metal, plush fur, soft shadows, glow or blurred outlines.
+No keyboard props, taskbar app icons, full desktop screenshot or unrelated interface.
+No high-amplitude jumping or excessive facial expression.
+No claim that the sheet is a transparent or production-ready sprite asset.
