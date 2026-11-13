@@ -3,16 +3,29 @@
 import hashlib
 import json
 import math
+import random
 from dataclasses import dataclass
 from pathlib import Path
+from time import monotonic
 
 from PySide6.QtCore import QElapsedTimer, QPoint, QRect, QSettings, QSize, Qt, QTimer, Signal
-from PySide6.QtGui import QGuiApplication, QPainter, QPixmap, QRegion
+from PySide6.QtGui import QCursor, QGuiApplication, QPainter, QPixmap, QRegion
 from PySide6.QtWidgets import QApplication, QMenu, QWidget
 
 PET_SIZE = QSize(128, 128)
 SNAP_DISTANCE = 28
 EDGES = ("left", "right", "top", "bottom")
+MOTIONS = (
+    "tap", "typing", "celebrate", "celebrate_big", "hover", "hover_hold",
+    "hover_left", "hover_up", "hover_down", "hover_leave", "click",
+    "look", "stretch", "play", "doze", "sleep", "wake",
+)
+TYPING_GAP = 0.35
+TYPING_TAIL = 0.65
+HOVER_DELAY = 0.15
+DOZE_AFTER = 90.0
+SLEEP_AFTER = 180.0
+CELEBRATION_TTL = 5.0
 
 
 @dataclass
@@ -35,7 +48,7 @@ def load_actions(directory: Path | None = None) -> dict[str, PetAction]:
     """Read bundled assets once; painting and animation never perform file I/O."""
     directory = directory or Path(__file__).resolve().parents[1] / "assets" / "pet" / "qiaoqiao-v2"
     manifest = json.loads((directory / "atlas.json").read_text(encoding="utf-8"))
-    if manifest["schema_version"] != 1 or manifest["frame_size"] != [64, 64]:
+    if manifest["schema_version"] != 2 or manifest["frame_size"] != [64, 64]:
         raise ValueError("不支持的宠物图集格式")
     image = (directory / manifest["image"]).read_bytes()
     if hashlib.sha256(image).hexdigest() != manifest["sha256"]:
@@ -44,7 +57,10 @@ def load_actions(directory: Path | None = None) -> dict[str, PetAction]:
     if not atlas.loadFromData(image, "PNG") or atlas.size() != QSize(*manifest["atlas_size"]):
         raise ValueError("无法加载宠物图集")
     definitions = manifest["actions"]
-    if set(definitions) != {"idle", "blink", "drag", "settle", *EDGES}:
+    required = {"idle", "blink", "drag", "settle", *EDGES,
+                "drag.pickup", "drag.struggle", "drag.release"}
+    required.update(f"{pose}.{motion}" for pose in ("free", *EDGES) for motion in MOTIONS)
+    if set(definitions) != required:
         raise ValueError("宠物动作不完整")
     actions = {}
     for name, action in definitions.items():
@@ -66,17 +82,18 @@ def load_actions(directory: Path | None = None) -> dict[str, PetAction]:
             raise ValueError(f"无效的宠物后续动作：{name}")
         # Edge art is already clipped. Align its contact line, not half of the image.
         offset = QPoint()
-        if name in EDGES:
+        pose = name.split(".")[0]
+        if pose in EDGES:
             boundary = action["boundary"]
-            expected_axis = "x" if name in ("left", "right") else "y"
+            expected_axis = "x" if pose in ("left", "right") else "y"
             if boundary["axis"] != expected_axis or not 0 < boundary["value"] < 64:
                 raise ValueError(f"无效的宠物贴边位置：{name}")
             value = boundary["value"] * 2
-            if name == "left":
+            if pose == "left":
                 offset.setX(-value)
-            elif name == "right":
+            elif pose == "right":
                 offset.setX(PET_SIZE.width() - value)
-            elif name == "top":
+            elif pose == "top":
                 offset.setY(-value)
             else:
                 offset.setY(PET_SIZE.height() - value)
@@ -124,7 +141,17 @@ class PetWindow(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating)
         self.setWindowFlags(self._flags())
         self.setFixedSize(PET_SIZE)
+        self.setMouseTracking(True)
         self._actions = load_actions()
+        self._hover_regions: dict[str, QRegion] = {}
+        for pose in ("free", *EDGES):
+            region = QRegion()
+            for name in (("idle" if pose == "free" else pose),
+                         *(f"{pose}.{motion}" for motion in MOTIONS if motion.startswith("hover"))):
+                action = self._actions[name]
+                for frame in action.frames:
+                    region |= frame.mask.translated(action.offset)
+            self._hover_regions[pose] = region.intersected(QRegion(self.rect()))
         self._action = "idle"
         self._frame_index = 0
         self._clock = QElapsedTimer()
@@ -132,8 +159,80 @@ class PetWindow(QWidget):
         self._animation_timer.setSingleShot(True)
         self._animation_timer.setTimerType(Qt.TimerType.PreciseTimer)
         self._animation_timer.timeout.connect(self._animate)
+        self._reset_interactions()
+        self.menu.aboutToShow.connect(self._menu_opened)
+        self.menu.aboutToHide.connect(self._menu_closed)
         self._restore_placement()
         self._watch_screens()
+
+    @property
+    def _behavior(self) -> str:
+        return self._action.rsplit(".", 1)[-1]
+
+    def _reset_interactions(self) -> None:
+        now = monotonic()
+        self._last_activity = now
+        self._next_idle = now + random.uniform(20, 40)
+        self._last_idle_motion = ""
+        self._dozed = False
+        self._last_key = -math.inf
+        self._typing_until = 0.0
+        self._typing_requested = False
+        self._key_pending = False
+        self._pending_celebration: tuple[int, float] | None = None
+        self._wake_next: str | None = None
+        self._click_due = 0.0
+        self._click_not_before = 0.0
+        self._hover_due = 0.0
+        self._leave_due = 0.0
+        self._hovered = False
+        self._gaze_not_before = 0.0
+        self._menu_open = False
+
+    def _touch(self, now: float) -> None:
+        self._last_activity = now
+        self._dozed = False
+
+    def _wake_scheduler(self) -> None:
+        if self.isVisible() and not self._menu_open:
+            if not self._animation_timer.isActive() or self._animation_timer.remainingTime() > 16:
+                self._animation_timer.start(16)
+
+    def on_key_press(self) -> None:
+        """Coalesce accepted presses in memory; the native callback never draws."""
+        if not self.isVisible() or self._menu_open:
+            return
+        now = monotonic()
+        self._touch(now)
+        self._typing_requested = now - self._last_key <= TYPING_GAP
+        self._last_key = now
+        self._typing_until = now + TYPING_TAIL
+        self._key_pending = True
+        self._wake_scheduler()
+
+    def celebrate(self, threshold: int) -> None:
+        if not self.isVisible() or self._menu_open:
+            return
+        now = monotonic()
+        self._touch(now)
+        pending = self._pending_celebration
+        self._pending_celebration = (max(threshold, pending[0]) if pending else threshold,
+                                     now + CELEBRATION_TTL)
+        self._wake_scheduler()
+
+    def clear_celebration(self) -> None:
+        self._pending_celebration = None
+        if self._wake_next in ("celebrate", "celebrate_big"):
+            self._wake_next = None
+        if self._behavior in ("celebrate", "celebrate_big"):
+            self._start_action(self._edge or "idle")
+
+    def _start_motion(self, motion: str) -> None:
+        if self._behavior in ("doze", "sleep"):
+            self._wake_next = motion
+            self._start_action(f"{self._edge or 'free'}.wake")
+        else:
+            self._start_action(f"{self._edge or 'free'}.{motion}")
 
     def _start_action(self, name: str) -> None:
         self._animation_timer.stop()
@@ -142,14 +241,141 @@ class PetWindow(QWidget):
         self._clock.start()
         self._update_mask()
         self.update()
-        if self.isVisible():
-            self._animation_timer.start(self._actions[name].frames[0].duration_ms)
+        self._schedule_frame(self._actions[name].frames[0].duration_ms)
 
     def _animate(self) -> None:
+        if not self.isVisible() or self._menu_open:
+            self._animation_timer.stop()
+            return
+        if self._service_behavior(monotonic()):
+            return
         self._advance_animation(self._clock.elapsed())
 
+    def _schedule_frame(self, remaining_ms: int) -> None:
+        if not self.isVisible() or self._menu_open:
+            return
+        now = monotonic()
+        deadlines = [] if self._press_global is not None else [
+            self._click_due, self._hover_due, self._leave_due,
+        ]
+        if self._press_global is None and self._behavior == "typing":
+            deadlines.append(self._typing_until)
+        if self._press_global is None and self._action in ("idle", "blink", *EDGES):
+            deadlines.extend((max(self._next_idle, self._last_activity + 20),
+                              self._last_activity + (SLEEP_AFTER if self._dozed else DOZE_AFTER)))
+        for deadline in deadlines:
+            if deadline:
+                remaining_ms = min(remaining_ms, max(16, math.ceil((deadline - now) * 1000)))
+        if self._hovered or self._hover_due:
+            remaining_ms = min(remaining_ms, 100)
+        self._animation_timer.start(max(1, remaining_ms))
+
+    def _pointer_inside(self) -> bool:
+        # Intent uses the resting/hover silhouettes to tolerate moving pixels;
+        # the actual native hit region remains the current frame's alpha mask.
+        point = self.mapFromGlobal(QCursor.pos())
+        return self._hover_regions[self._edge or "free"].contains(point)
+
+    def _gaze_motion(self) -> str:
+        center = self._hover_regions[self._edge or "free"].boundingRect().center()
+        delta = self.mapFromGlobal(QCursor.pos()) - center
+        if delta.manhattanLength() < 6 and self._behavior in (
+                "hover_hold", "hover_left", "hover_up", "hover_down"):
+            return self._behavior
+        if abs(delta.y()) > abs(delta.x()):
+            return "hover_up" if delta.y() < 0 else "hover_down"
+        return "hover_left" if delta.x() < 0 else "hover_hold"
+
+    def _service_behavior(self, now: float) -> bool:
+        pending = self._pending_celebration
+        if pending and now >= pending[1]:
+            self._pending_celebration = None
+        if self._dragging or self._press_global is not None:
+            return False
+        if self._hovered and not self._pointer_inside() and not self._leave_due:
+            self._leave_due = now + HOVER_DELAY
+        if self._leave_due and now >= self._leave_due:
+            self._leave_due = 0.0
+            if not self._pointer_inside():
+                self._hovered = False
+                self._hover_due = 0.0
+        if self._hover_due and now >= self._hover_due:
+            self._hover_due = 0.0
+            self._hovered = self._pointer_inside()
+            if self._hovered:
+                self._touch(now)
+        behavior = self._behavior
+        if behavior in ("celebrate", "celebrate_big"):
+            self._click_due = 0.0
+            return False
+        if self._pending_celebration:
+            threshold, _ = self._pending_celebration
+            self._pending_celebration = None
+            motion = "celebrate_big" if threshold % 10000 == 0 else "celebrate"
+            self._click_due = 0.0
+            if behavior == "wake":
+                self._wake_next = motion
+                return False
+            self._start_motion(motion)
+            return True
+        if behavior == "wake":
+            return False
+        if self._click_due and now >= self._click_due:
+            self._click_due = 0.0
+            if now >= self._click_not_before:
+                self._click_not_before = now + 0.8
+                self._start_motion("click")
+                return True
+        if behavior in ("click", "release"):
+            return False
+        if self._hovered:
+            self._touch(now)
+            if behavior in ("hover_hold", "hover_left", "hover_up", "hover_down"):
+                motion = self._gaze_motion()
+                if motion != behavior and now >= self._gaze_not_before:
+                    self._gaze_not_before = now + HOVER_DELAY
+                    self._start_motion(motion)
+                    return True
+            elif behavior != "hover":
+                self._start_motion("hover")
+                return True
+            return False
+        if behavior.startswith("hover") and behavior != "hover_leave":
+            self._start_motion("hover_leave")
+            return True
+        if now >= self._typing_until:
+            self._key_pending = self._typing_requested = False
+            if behavior == "typing":
+                self._start_action(self._edge or "idle")
+                return True
+        if self._key_pending:
+            if behavior == "tap":
+                return False
+            self._key_pending = False
+            motion = "typing" if self._typing_requested else "tap"
+            if behavior != motion:
+                self._start_motion(motion)
+                return True
+        if self._action not in ("idle", "blink", *EDGES):
+            return False
+        quiet = now - self._last_activity
+        if quiet >= SLEEP_AFTER:
+            self._start_motion("sleep")
+            return True
+        if quiet >= DOZE_AFTER and not self._dozed:
+            self._dozed = True
+            self._start_motion("doze")
+            return True
+        if quiet >= 20 and now >= self._next_idle:
+            choices = [name for name in ("look", "stretch", "play") if name != self._last_idle_motion]
+            self._last_idle_motion = random.choice(choices)
+            self._next_idle = now + random.uniform(20, 40)
+            self._start_motion(self._last_idle_motion)
+            return True
+        return False
+
     def _advance_animation(self, elapsed: int) -> None:
-        if not self.isVisible():
+        if not self.isVisible() or self._menu_open:
             self._animation_timer.stop()
             return
         action = self._actions[self._action]
@@ -157,7 +383,16 @@ class PetWindow(QWidget):
             self._start_action("blink")
             return
         if not action.loop and elapsed >= action.duration_ms:
-            self._start_action(action.next_action)
+            if self._behavior == "wake" and self._wake_next:
+                motion, self._wake_next = self._wake_next, None
+                self._start_action(f"{self._edge or 'free'}.{motion}")
+            elif self._behavior == "tap" and self._typing_requested and monotonic() < self._typing_until:
+                self._key_pending = False
+                self._start_motion("typing")
+            elif self._behavior == "click" and self._hovered:
+                self._start_motion(self._gaze_motion())
+            else:
+                self._start_action(action.next_action)
             return
         # Delayed GUI events skip expired frames instead of replaying a backlog.
         elapsed %= action.duration_ms
@@ -167,12 +402,13 @@ class PetWindow(QWidget):
                     self._frame_index = index
                     self._update_mask()
                     self.update()
-                self._animation_timer.start(frame.duration_ms - elapsed)
+                self._schedule_frame(frame.duration_ms - elapsed)
                 return
             elapsed -= frame.duration_ms
 
     def showEvent(self, event) -> None:
         super().showEvent(event)
+        self._reset_interactions()
         self._start_action(self._edge or "idle")
 
     def hideEvent(self, event) -> None:
@@ -180,7 +416,22 @@ class PetWindow(QWidget):
         if self._dragging:
             self._finish_drag(self.geometry().center())
         self._clear_press()
+        self._reset_interactions()
+        self.menu.hide()
         super().hideEvent(event)
+
+    def _menu_opened(self) -> None:
+        if self._dragging:
+            self._finish_drag(self.geometry().center())
+        self._clear_press()
+        self._reset_interactions()
+        self._menu_open = True
+        self._animation_timer.stop()
+
+    def _menu_closed(self) -> None:
+        self._reset_interactions()
+        if self.isVisible():
+            self._start_action(self._edge or "idle")
 
     def _flags(self) -> Qt.WindowType:
         flags = (Qt.WindowType.Tool | Qt.WindowType.FramelessWindowHint
@@ -283,8 +534,25 @@ class PetWindow(QWidget):
         frame = self._actions[self._action].frames[self._frame_index]
         painter.drawPixmap(self._sprite_offset(), frame.sprite)
 
+    def enterEvent(self, event) -> None:
+        if not self._dragging and not self._menu_open:
+            self._leave_due = 0.0
+            if not self._hovered:
+                self._hover_due = monotonic() + HOVER_DELAY
+            self._wake_scheduler()
+        super().enterEvent(event)
+
+    def leaveEvent(self, event) -> None:
+        if not self._dragging:
+            self._hover_due = 0.0
+            if self._hovered:
+                self._leave_due = monotonic() + HOVER_DELAY
+                self._wake_scheduler()
+        super().leaveEvent(event)
+
     def mousePressEvent(self, event) -> None:
         if event.button() == Qt.MouseButton.LeftButton:
+            self._touch(monotonic())
             self._press_global = event.globalPosition().toPoint()
             self._press_position = self.pos()
             self._previous_edge = self._edge
@@ -299,23 +567,32 @@ class PetWindow(QWidget):
             if not self._dragging and delta.manhattanLength() >= QApplication.startDragDistance():
                 self._dragging = True
                 self._edge = ""
-                self._start_action("drag")
+                self._hovered = False
+                self._hover_due = self._leave_due = self._click_due = 0.0
+                self._wake_next = None
+                self._start_action("drag.pickup")
             if self._dragging:
                 self.move(self._press_position + delta)
             event.accept()
             return
+        if self._hovered:
+            self._wake_scheduler()
         super().mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event) -> None:
         if event.button() == Qt.MouseButton.LeftButton and self._press_global is not None:
             if self._dragging:
                 self._finish_drag(event.globalPosition().toPoint())
+            elif self.mask().contains(event.position().toPoint()):
+                self._click_due = monotonic() + QApplication.doubleClickInterval() / 1000
+                self._wake_scheduler()
             self._clear_press()
             event.accept()
             return
         super().mouseReleaseEvent(event)
 
     def _finish_drag(self, pointer: QPoint) -> None:
+        self._touch(monotonic())
         screen = QGuiApplication.screenAt(pointer)
         screen = screen or QGuiApplication.screenAt(self.geometry().center())
         screen = screen or QGuiApplication.primaryScreen()
@@ -326,7 +603,7 @@ class PetWindow(QWidget):
             self._screen_name = screen.name()
             self._place(position, screen.availableGeometry(), edge)
             if not edge:
-                self._start_action("settle")
+                self._start_action("drag.release")
             self._save_placement()
 
     def _clear_press(self) -> None:
@@ -336,6 +613,7 @@ class PetWindow(QWidget):
 
     def mouseDoubleClickEvent(self, event) -> None:
         if event.button() == Qt.MouseButton.LeftButton:
+            self._click_due = 0.0
             self._clear_press()
             self.open_requested.emit()
             event.accept()

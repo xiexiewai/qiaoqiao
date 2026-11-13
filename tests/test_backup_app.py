@@ -95,6 +95,7 @@ class BackupAppTests(unittest.TestCase):
         window = self.controller.window
         window.set_keyboard_layout("60")
         window.tabs.setCurrentIndex(1)
+        self.controller.pet._pending_celebration = (7000, float("inf"))
         self.controller.start_import(backup, self.today, self.today)
         self.assertIn("暂停", window.status_label.text())
         self.controller._poll_transfer(wait=True)
@@ -105,6 +106,7 @@ class BackupAppTests(unittest.TestCase):
         self.assertEqual(self.controller.milestones.handled, 0)
         self.assertEqual(self.controller.settings.value("milestones/last_threshold", type=int), 0)
         self.assertIsNone(self.controller.milestones.pending)
+        self.assertIsNone(self.controller.pet._pending_celebration)
         self.assertEqual(window.keyboard_layout.layout_id, "60")
         window.tabs.setCurrentIndex(0)
         self.assertEqual(window.total_label.text(), "999")
@@ -148,9 +150,13 @@ class BackupAppTests(unittest.TestCase):
         self.controller._key(PhysicalEvent(1, "1e", True))
         backup = self.incoming({(self.today.isoformat(), "1e"): 50})
         self.controller.start_import(backup, self.today, self.today)
-        self.tap("30")
-        self.controller._key(PhysicalEvent(1, "2e", True))
-        self.controller._key(PhysicalEvent(1, "1e", True))
+        with patch.object(self.controller.pet, "on_key_press") as feedback, \
+                patch.object(self.controller.pet, "celebrate") as celebrate:
+            self.tap("30")
+            self.controller._key(PhysicalEvent(1, "2e", True))
+            self.controller._key(PhysicalEvent(1, "1e", True))
+            feedback.assert_not_called()
+            celebrate.assert_not_called()
         self.assertEqual(self.controller.model.counts, {(self.today.isoformat(), "1e"): 1})
         self.controller._poll_transfer(wait=True)
         self.controller._key(PhysicalEvent(1, "1e", True))

@@ -1,0 +1,150 @@
+{
+  "ok": true,
+  "clips": 93,
+  "frames_checked": 526,
+  "atlas_sha256": "9ea47fc81453ba3ed76c859b834525a48e301911aeec022cc102caafdb055298",
+  "runtime_atlas_sha256": "3884a5b6935140415c4bdd774f42afa148469dd9f20dd01899e790d0624f3257",
+  "checks": [
+    "binary alpha",
+    "existing palette",
+    "connected body",
+    "two visible eyes",
+    "canvas bounds",
+    "fixed support patches",
+    "no edge leaks",
+    "timing",
+    "resting-pose transitions",
+    "current runtime reference",
+    "left/right mirrors excluding directional gaze"
+  ],
+  "errors": [],
+  "runtime_integration_tested": false,
+  "gif_checks": {
+    "free.tap": {
+      "decoded_frames": 5,
+      "duration_ms": 1700,
+      "decoded_pixels_match": true
+    },
+    "free.typing": {
+      "decoded_frames": 6,
+      "duration_ms": 480,
+      "decoded_pixels_match": true
+    },
+    "free.celebrate": {
+      "decoded_frames": 8,
+      "duration_ms": 2800,
+      "decoded_pixels_match": true
+    },
+    "free.celebrate_big": {
+      "decoded_frames": 12,
+      "duration_ms": 3700,
+      "decoded_pixels_match": true
+    },
+    "free.hover": {
+      "decoded_frames": 8,
+      "duration_ms": 2960,
+      "decoded_pixels_match": true
+    },
+    "free.click": {
+      "decoded_frames": 7,
+      "duration_ms": 2050,
+      "decoded_pixels_match": true
+    },
+    "free.look": {
+      "decoded_frames": 8,
+      "duration_ms": 3600,
+      "decoded_pixels_match": true
+    },
+    "free.stretch": {
+      "decoded_frames": 8,
+      "duration_ms": 3800,
+      "decoded_pixels_match": true
+    },
+    "free.play": {
+      "decoded_frames": 8,
+      "duration_ms": 3600,
+      "decoded_pixels_match": true
+    },
+    "free.doze": {
+      "decoded_frames": 7,
+      "duration_ms": 4200,
+      "decoded_pixels_match": true
+    },
+    "free.sleep": {
+      "decoded_frames": 3,
+      "duration_ms": 4000,
+      "decoded_pixels_match": true
+    },
+    "free.wake": {
+      "decoded_frames": 5,
+      "duration_ms": 1660,
+      "decoded_pixels_match": true
+    },
+    "free.hover_hold": {
+      "decoded_frames": 3,
+      "duration_ms": 2400,
+      "decoded_pixels_match": true
+    },
+    "free.hover_leave": {
+      "decoded_frames": 3,
+      "duration_ms": 1600,
+      "decoded_pixels_match": true
+    },
+    "drag.pickup": {
+      "decoded_frames": 24,
+      "duration_ms": 3090,
+      "decoded_pixels_match": true
+    },
+    "drag.struggle": {
+      "decoded_frames": 8,
+      "duration_ms": 720,
+      "decoded_pixels_match": true
+    },
+    "drag.release": {
+      "decoded_frames": 5,
+      "duration_ms": 1700,
+      "decoded_pixels_match": true
+    },
+    "overview": {
+      "decoded_frames": 247,
+      "duration_ms": 8400,
+      "decoded_pixels_match": true
+    },
+    "interactions": {
+      "decoded_frames": 193,
+      "duration_ms": 8400,
+      "decoded_pixels_match": true
+    },
+    "idle": {
+      "decoded_frames": 83,
+      "duration_ms": 8400,
+      "decoded_pixels_match": true
+    },
+    "drag": {
+      "decoded_frames": 165,
+      "duration_ms": 8400,
+      "decoded_pixels_match": true
+    },
+    "edge-left": {
+      "decoded_frames": 170,
+      "duration_ms": 8400,
+      "decoded_pixels_match": true
+    },
+    "edge-right": {
+      "decoded_frames": 170,
+      "duration_ms": 8400,
+      "decoded_pixels_match": true
+    },
+    "edge-top": {
+      "decoded_frames": 151,
+      "duration_ms": 8400,
+      "decoded_pixels_match": true
+    },
+    "edge-bottom": {
+      "decoded_frames": 151,
+      "duration_ms": 8400,
+      "decoded_pixels_match": true
+    }
+  },
+  "visual_review": "Visual appearance awaits user approval; automated checks do not constitute approval."
+}

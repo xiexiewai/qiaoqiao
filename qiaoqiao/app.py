@@ -260,10 +260,15 @@ class Controller(QObject):
         # swallowed into the baseline nor counted twice. No settings I/O here.
         self._sync_milestone_day(day)
         if self.model.accept(event, day):
+            previous_threshold = self.milestones.pending
             self.milestones.record_press()
             # Feedback follows accepted physical presses, so key repeat never
             # retriggers it. The UI coalesces redraws without changing storage.
             self.window.keyboard.flash_key(event.key_id)
+            self.pet.on_key_press()
+            threshold = self.milestones.pending
+            if threshold is not None and threshold != previous_threshold:
+                self.pet.celebrate(threshold)
 
     def _input_error(self, message):
         LOGGER.error("Keyboard listener: %s", message)
@@ -305,6 +310,7 @@ class Controller(QObject):
 
     def _sync_milestone_day(self, day: date) -> None:
         if self.milestones.day != day:
+            self.pet.clear_celebration()
             self.milestones.reset(
                 day, sum(self.model.totals("day", day).values()),
                 self._saved_milestone_threshold if self._saved_milestone_day == day else 0,
@@ -315,6 +321,7 @@ class Controller(QObject):
         # Both toggles discard pending celebrations; re-enabling never replays
         # thresholds reached while the user had notifications disabled.
         self.milestones.set_enabled(enabled)
+        self.pet.clear_celebration()
         self.settings.setValue("milestones/enabled", enabled)
         self._save_milestone_preferences()
 
@@ -519,6 +526,7 @@ class Controller(QObject):
                 self.window.invalidate_counts()
                 today = datetime.now().date()
                 if self._import_span[0] <= today <= self._import_span[1]:
+                    self.pet.clear_celebration()
                     self.milestones.reset(today, sum(self.model.totals("day", today).values()))
                     self._save_milestone_preferences()
             else:

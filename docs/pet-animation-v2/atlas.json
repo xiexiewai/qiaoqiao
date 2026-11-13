@@ -1,0 +1,10466 @@
+{
+  "review_schema_version": 1,
+  "status": "awaiting-visual-approval",
+  "character": "qiaoqiao-keycap",
+  "design_version": 2,
+  "image": "atlas.png",
+  "frame_size": [
+    64,
+    64
+  ],
+  "display_size": [
+    128,
+    128
+  ],
+  "atlas_size": [
+    768,
+    5952
+  ],
+  "columns": 12,
+  "rows": 93,
+  "sampling": "nearest",
+  "palette": {
+    "INK": "#0D0C14",
+    "FRONT": "#443A53",
+    "LIGHT": "#655971",
+    "SIDE": "#54465F",
+    "SHADOW": "#2C283B",
+    "RIM": "#8D7C9E",
+    "FACE": "#191621",
+    "MINT": "#97E4C2",
+    "MINT_DARK": "#568F80",
+    "PINK": "#C7849C",
+    "EYE_LIGHT": "#CEF2DF"
+  },
+  "poses": {
+    "free": "自由摆放",
+    "left": "左边探身",
+    "right": "右边探身",
+    "top": "顶边悬挂",
+    "bottom": "底边趴伏",
+    "drag": "拖动中"
+  },
+  "runtime_integration": false,
+  "actions": {
+    "free.rest": {
+      "pose": "free",
+      "behavior": "rest",
+      "label": "原有待机参考",
+      "group": "参考",
+      "loop": true,
+      "note": "沿用当前程序的第一帧，作为衔接基准。",
+      "next": "free.rest",
+      "duration_ms": 1600,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            0,
+            64,
+            64
+          ],
+          "duration_ms": 1600,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.tap": {
+      "pose": "free",
+      "behavior": "tap",
+      "label": "单次敲击",
+      "group": "敲击",
+      "loop": false,
+      "note": "轻压、落手、回弹；一轮 300 ms。",
+      "next": "free.rest",
+      "duration_ms": 300,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            64,
+            64,
+            64
+          ],
+          "duration_ms": 30,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            64,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            6,
+            13,
+            49,
+            42
+          ]
+        },
+        {
+          "rect": [
+            128,
+            64,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            6,
+            14,
+            49,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            64,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            6,
+            11,
+            49,
+            44
+          ]
+        },
+        {
+          "rect": [
+            256,
+            64,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.typing": {
+      "pose": "free",
+      "behavior": "typing",
+      "label": "连续敲击",
+      "group": "敲击",
+      "loop": true,
+      "note": "左右手交替，480 ms 循环；接入后由敲击延长播放。",
+      "next": "free.rest",
+      "duration_ms": 480,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            128,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            6,
+            13,
+            52,
+            42
+          ]
+        },
+        {
+          "rect": [
+            64,
+            128,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            6,
+            12,
+            49,
+            43
+          ]
+        },
+        {
+          "rect": [
+            128,
+            128,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            192,
+            128,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            6,
+            13,
+            51,
+            42
+          ]
+        },
+        {
+          "rect": [
+            256,
+            128,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            8,
+            12,
+            50,
+            43
+          ]
+        },
+        {
+          "rect": [
+            320,
+            128,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.celebrate": {
+      "pose": "free",
+      "behavior": "celebrate",
+      "label": "千次庆祝",
+      "group": "庆祝",
+      "loop": false,
+      "note": "一次小跳、举手和笑眼；贴边时变为身体提起与空闲肢体欢呼。",
+      "next": "free.rest",
+      "duration_ms": 1400,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            192,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            192,
+            64,
+            64
+          ],
+          "duration_ms": 160,
+          "bounds": [
+            6,
+            14,
+            52,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            192,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            6,
+            10,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            192,
+            192,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            6,
+            8,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            256,
+            192,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            6,
+            10,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            320,
+            192,
+            64,
+            64
+          ],
+          "duration_ms": 150,
+          "bounds": [
+            6,
+            14,
+            52,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            192,
+            64,
+            64
+          ],
+          "duration_ms": 230,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            448,
+            192,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.celebrate_big": {
+      "pose": "free",
+      "behavior": "celebrate_big",
+      "label": "万次庆祝",
+      "group": "庆祝",
+      "loop": false,
+      "note": "两次小跳后得意停顿；不增加闪屏、文字或彩纸。",
+      "next": "free.rest",
+      "duration_ms": 2300,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            6,
+            14,
+            52,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            6,
+            8,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            192,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            6,
+            10,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            256,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            8,
+            14,
+            47,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            6,
+            7,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            384,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            6,
+            9,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            448,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            6,
+            14,
+            52,
+            41
+          ]
+        },
+        {
+          "rect": [
+            512,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            6,
+            11,
+            52,
+            44
+          ]
+        },
+        {
+          "rect": [
+            576,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 460,
+          "bounds": [
+            6,
+            12,
+            52,
+            43
+          ]
+        },
+        {
+          "rect": [
+            640,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            704,
+            256,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.hover": {
+      "pose": "free",
+      "behavior": "hover",
+      "label": "悬停招呼",
+      "group": "鼠标",
+      "loop": false,
+      "note": "抬头、望向鼠标、轻眨眼；预览以鼠标在右侧为例。",
+      "next": "free.hover_hold",
+      "duration_ms": 660,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            320,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            320,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            128,
+            320,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            192,
+            320,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            256,
+            320,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            320,
+            320,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.hover_hold": {
+      "pose": "free",
+      "behavior": "hover_hold",
+      "label": "悬停注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "只轻呼吸，不反复打招呼；此处为向右注视。",
+      "next": "free.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            384,
+            64,
+            64
+          ],
+          "duration_ms": 800,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            384,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            128,
+            384,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            192,
+            384,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.hover_left": {
+      "pose": "free",
+      "behavior": "hover_left",
+      "label": "向左注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "",
+      "next": "free.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            448,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            448,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            128,
+            448,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.hover_up": {
+      "pose": "free",
+      "behavior": "hover_up",
+      "label": "向上注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "",
+      "next": "free.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            512,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            512,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            128,
+            512,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.hover_down": {
+      "pose": "free",
+      "behavior": "hover_down",
+      "label": "向下注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "",
+      "next": "free.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            576,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            576,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            128,
+            576,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.hover_leave": {
+      "pose": "free",
+      "behavior": "hover_leave",
+      "label": "移开回望",
+      "group": "鼠标",
+      "loop": false,
+      "note": "收回注视，200 ms 回到当前姿态。",
+      "next": "free.rest",
+      "duration_ms": 200,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            640,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            640,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            128,
+            640,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.click": {
+      "pose": "free",
+      "behavior": "click",
+      "label": "单击回应",
+      "group": "鼠标",
+      "loop": false,
+      "note": "惊讶、轻歪、摸脸和笑眼；双手扶边时改为身体轻侧摆。",
+      "next": "free.rest",
+      "duration_ms": 650,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            8,
+            13,
+            47,
+            42
+          ]
+        },
+        {
+          "rect": [
+            128,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            9,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            192,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            9,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            256,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            320,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            6,
+            12,
+            49,
+            43
+          ]
+        },
+        {
+          "rect": [
+            384,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.look": {
+      "pose": "free",
+      "behavior": "look",
+      "label": "左右张望",
+      "group": "待机",
+      "loop": false,
+      "note": "先左后右，再回正；没有自主移动。",
+      "next": "free.rest",
+      "duration_ms": 2200,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            768,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            768,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            128,
+            768,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            7,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            192,
+            768,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            256,
+            768,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            320,
+            768,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            9,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            384,
+            768,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            448,
+            768,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.stretch": {
+      "pose": "free",
+      "behavior": "stretch",
+      "label": "伸个懒腰",
+      "group": "待机",
+      "loop": false,
+      "note": "上举、舒展、放松；顶边保持抓握并伸展身体和腿。",
+      "next": "free.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            832,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            832,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            6,
+            13,
+            52,
+            42
+          ]
+        },
+        {
+          "rect": [
+            128,
+            832,
+            64,
+            64
+          ],
+          "duration_ms": 280,
+          "bounds": [
+            6,
+            11,
+            51,
+            44
+          ]
+        },
+        {
+          "rect": [
+            192,
+            832,
+            64,
+            64
+          ],
+          "duration_ms": 640,
+          "bounds": [
+            4,
+            9,
+            56,
+            46
+          ]
+        },
+        {
+          "rect": [
+            256,
+            832,
+            64,
+            64
+          ],
+          "duration_ms": 420,
+          "bounds": [
+            4,
+            10,
+            56,
+            45
+          ]
+        },
+        {
+          "rect": [
+            320,
+            832,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            6,
+            12,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            384,
+            832,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            6,
+            12,
+            52,
+            43
+          ]
+        },
+        {
+          "rect": [
+            448,
+            832,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.play": {
+      "pose": "free",
+      "behavior": "play",
+      "label": "摆手踢脚",
+      "group": "待机",
+      "loop": false,
+      "note": "原地左右摆手踢脚；边缘只活动没有承担支撑的肢体。",
+      "next": "free.rest",
+      "duration_ms": 2200,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            896,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            896,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            5,
+            12,
+            52,
+            43
+          ]
+        },
+        {
+          "rect": [
+            128,
+            896,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            5,
+            12,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            192,
+            896,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            256,
+            896,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            7,
+            12,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            320,
+            896,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            7,
+            12,
+            52,
+            43
+          ]
+        },
+        {
+          "rect": [
+            384,
+            896,
+            64,
+            64
+          ],
+          "duration_ms": 360,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            448,
+            896,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.doze": {
+      "pose": "free",
+      "behavior": "doze",
+      "label": "打瞌睡",
+      "group": "休息",
+      "loop": false,
+      "note": "眼皮下垂、点头后短暂清醒。",
+      "next": "free.rest",
+      "duration_ms": 2800,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            960,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            960,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            128,
+            960,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            8,
+            13,
+            47,
+            42
+          ]
+        },
+        {
+          "rect": [
+            192,
+            960,
+            64,
+            64
+          ],
+          "duration_ms": 500,
+          "bounds": [
+            8,
+            14,
+            47,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            960,
+            64,
+            64
+          ],
+          "duration_ms": 350,
+          "bounds": [
+            8,
+            14,
+            47,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            960,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            384,
+            960,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            448,
+            960,
+            64,
+            64
+          ],
+          "duration_ms": 270,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.sleep": {
+      "pose": "free",
+      "behavior": "sleep",
+      "label": "浅睡呼吸",
+      "group": "休息",
+      "loop": true,
+      "note": "闭眼慢呼吸；保持贴边抓握，无漂浮睡眠符号。",
+      "next": "free.rest",
+      "duration_ms": 4000,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1024,
+            64,
+            64
+          ],
+          "duration_ms": 1400,
+          "bounds": [
+            8,
+            14,
+            47,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1024,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            8,
+            13,
+            47,
+            42
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1024,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            8,
+            13,
+            47,
+            42
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1024,
+            64,
+            64
+          ],
+          "duration_ms": 1200,
+          "bounds": [
+            8,
+            14,
+            47,
+            41
+          ]
+        }
+      ]
+    },
+    "free.wake": {
+      "pose": "free",
+      "behavior": "wake",
+      "label": "醒来",
+      "group": "休息",
+      "loop": false,
+      "note": "260 ms 睁眼回正，之后可接敲击或单击。",
+      "next": "free.rest",
+      "duration_ms": 260,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1088,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            8,
+            14,
+            47,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1088,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            8,
+            13,
+            47,
+            42
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1088,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1088,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1088,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "left.rest": {
+      "pose": "left",
+      "behavior": "rest",
+      "label": "原有待机参考",
+      "group": "参考",
+      "loop": true,
+      "note": "沿用当前程序的第一帧，作为衔接基准。",
+      "next": "left.rest",
+      "duration_ms": 1600,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            1152,
+            64,
+            64
+          ],
+          "duration_ms": 1600,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.tap": {
+      "pose": "left",
+      "behavior": "tap",
+      "label": "单次敲击",
+      "group": "敲击",
+      "loop": false,
+      "note": "轻压、落手、回弹；一轮 300 ms。",
+      "next": "left.rest",
+      "duration_ms": 300,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            1216,
+            64,
+            64
+          ],
+          "duration_ms": 30,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1216,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            24,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1216,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            24,
+            14,
+            20,
+            39
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1216,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1216,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.typing": {
+      "pose": "left",
+      "behavior": "typing",
+      "label": "连续敲击",
+      "group": "敲击",
+      "loop": true,
+      "note": "左右手交替，480 ms 循环；接入后由敲击延长播放。",
+      "next": "left.rest",
+      "duration_ms": 480,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            1280,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            14,
+            24,
+            40
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1280,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1280,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1280,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1280,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            1280,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.celebrate": {
+      "pose": "left",
+      "behavior": "celebrate",
+      "label": "千次庆祝",
+      "group": "庆祝",
+      "loop": false,
+      "note": "一次小跳、举手和笑眼；贴边时变为身体提起与空闲肢体欢呼。",
+      "next": "left.rest",
+      "duration_ms": 1400,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            1344,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1344,
+            64,
+            64
+          ],
+          "duration_ms": 160,
+          "bounds": [
+            24,
+            14,
+            24,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1344,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1344,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1344,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            1344,
+            64,
+            64
+          ],
+          "duration_ms": 150,
+          "bounds": [
+            24,
+            14,
+            24,
+            39
+          ]
+        },
+        {
+          "rect": [
+            384,
+            1344,
+            64,
+            64
+          ],
+          "duration_ms": 230,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            1344,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.celebrate_big": {
+      "pose": "left",
+      "behavior": "celebrate_big",
+      "label": "万次庆祝",
+      "group": "庆祝",
+      "loop": false,
+      "note": "两次小跳后得意停顿；不增加闪屏、文字或彩纸。",
+      "next": "left.rest",
+      "duration_ms": 2300,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            24,
+            14,
+            24,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            24,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            320,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            24,
+            14,
+            24,
+            39
+          ]
+        },
+        {
+          "rect": [
+            512,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            576,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 460,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            640,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            704,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.hover": {
+      "pose": "left",
+      "behavior": "hover",
+      "label": "悬停招呼",
+      "group": "鼠标",
+      "loop": false,
+      "note": "抬头、望向鼠标、轻眨眼；预览以鼠标在右侧为例。",
+      "next": "left.hover_hold",
+      "duration_ms": 660,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            1472,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1472,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1472,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1472,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1472,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            1472,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.hover_hold": {
+      "pose": "left",
+      "behavior": "hover_hold",
+      "label": "悬停注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "只轻呼吸，不反复打招呼；此处为向右注视。",
+      "next": "left.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            1536,
+            64,
+            64
+          ],
+          "duration_ms": 800,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1536,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1536,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1536,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.hover_left": {
+      "pose": "left",
+      "behavior": "hover_left",
+      "label": "向左注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "",
+      "next": "left.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            1600,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1600,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1600,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.hover_up": {
+      "pose": "left",
+      "behavior": "hover_up",
+      "label": "向上注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "",
+      "next": "left.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            1664,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1664,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1664,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.hover_down": {
+      "pose": "left",
+      "behavior": "hover_down",
+      "label": "向下注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "",
+      "next": "left.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            1728,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1728,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1728,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.hover_leave": {
+      "pose": "left",
+      "behavior": "hover_leave",
+      "label": "移开回望",
+      "group": "鼠标",
+      "loop": false,
+      "note": "收回注视，200 ms 回到当前姿态。",
+      "next": "left.rest",
+      "duration_ms": 200,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            1792,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1792,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1792,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.click": {
+      "pose": "left",
+      "behavior": "click",
+      "label": "单击回应",
+      "group": "鼠标",
+      "loop": false,
+      "note": "惊讶、轻歪、摸脸和笑眼；双手扶边时改为身体轻侧摆。",
+      "next": "left.rest",
+      "duration_ms": 650,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            1856,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1856,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            24,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1856,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            21,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1856,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            24,
+            13,
+            21,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1856,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            21,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            1856,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            1856,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.look": {
+      "pose": "left",
+      "behavior": "look",
+      "label": "左右张望",
+      "group": "待机",
+      "loop": false,
+      "note": "先左后右，再回正；没有自主移动。",
+      "next": "left.rest",
+      "duration_ms": 2200,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            1920,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1920,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1920,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1920,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1920,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            1920,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            1920,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            1920,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.stretch": {
+      "pose": "left",
+      "behavior": "stretch",
+      "label": "伸个懒腰",
+      "group": "待机",
+      "loop": false,
+      "note": "上举、舒展、放松；顶边保持抓握并伸展身体和腿。",
+      "next": "left.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            1984,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1984,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            14,
+            24,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1984,
+            64,
+            64
+          ],
+          "duration_ms": 280,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1984,
+            64,
+            64
+          ],
+          "duration_ms": 640,
+          "bounds": [
+            24,
+            13,
+            33,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1984,
+            64,
+            64
+          ],
+          "duration_ms": 420,
+          "bounds": [
+            24,
+            13,
+            33,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            1984,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            1984,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            1984,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.play": {
+      "pose": "left",
+      "behavior": "play",
+      "label": "摆手踢脚",
+      "group": "待机",
+      "loop": false,
+      "note": "原地左右摆手踢脚；边缘只活动没有承担支撑的肢体。",
+      "next": "left.rest",
+      "duration_ms": 2200,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            2048,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2048,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2048,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2048,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2048,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            2048,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            2048,
+            64,
+            64
+          ],
+          "duration_ms": 360,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            2048,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.doze": {
+      "pose": "left",
+      "behavior": "doze",
+      "label": "打瞌睡",
+      "group": "休息",
+      "loop": false,
+      "note": "眼皮下垂、点头后短暂清醒。",
+      "next": "left.rest",
+      "duration_ms": 2800,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            2112,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2112,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2112,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            24,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2112,
+            64,
+            64
+          ],
+          "duration_ms": 500,
+          "bounds": [
+            24,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2112,
+            64,
+            64
+          ],
+          "duration_ms": 350,
+          "bounds": [
+            24,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            320,
+            2112,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            2112,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            2112,
+            64,
+            64
+          ],
+          "duration_ms": 270,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.sleep": {
+      "pose": "left",
+      "behavior": "sleep",
+      "label": "浅睡呼吸",
+      "group": "休息",
+      "loop": true,
+      "note": "闭眼慢呼吸；保持贴边抓握，无漂浮睡眠符号。",
+      "next": "left.rest",
+      "duration_ms": 4000,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            2176,
+            64,
+            64
+          ],
+          "duration_ms": 1400,
+          "bounds": [
+            24,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2176,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            24,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2176,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            24,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2176,
+            64,
+            64
+          ],
+          "duration_ms": 1200,
+          "bounds": [
+            24,
+            14,
+            19,
+            39
+          ]
+        }
+      ]
+    },
+    "left.wake": {
+      "pose": "left",
+      "behavior": "wake",
+      "label": "醒来",
+      "group": "休息",
+      "loop": false,
+      "note": "260 ms 睁眼回正，之后可接敲击或单击。",
+      "next": "left.rest",
+      "duration_ms": 260,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        24
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            2240,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            24,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2240,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            24,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2240,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2240,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2240,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.rest": {
+      "pose": "right",
+      "behavior": "rest",
+      "label": "原有待机参考",
+      "group": "参考",
+      "loop": true,
+      "note": "沿用当前程序的第一帧，作为衔接基准。",
+      "next": "right.rest",
+      "duration_ms": 1600,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            2304,
+            64,
+            64
+          ],
+          "duration_ms": 1600,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.tap": {
+      "pose": "right",
+      "behavior": "tap",
+      "label": "单次敲击",
+      "group": "敲击",
+      "loop": false,
+      "note": "轻压、落手、回弹；一轮 300 ms。",
+      "next": "right.rest",
+      "duration_ms": 300,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            2368,
+            64,
+            64
+          ],
+          "duration_ms": 30,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2368,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            20,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2368,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            20,
+            14,
+            20,
+            39
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2368,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2368,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.typing": {
+      "pose": "right",
+      "behavior": "typing",
+      "label": "连续敲击",
+      "group": "敲击",
+      "loop": true,
+      "note": "左右手交替，480 ms 循环；接入后由敲击延长播放。",
+      "next": "right.rest",
+      "duration_ms": 480,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            2432,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            16,
+            14,
+            24,
+            40
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2432,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2432,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2432,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            20,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2432,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            2432,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.celebrate": {
+      "pose": "right",
+      "behavior": "celebrate",
+      "label": "千次庆祝",
+      "group": "庆祝",
+      "loop": false,
+      "note": "一次小跳、举手和笑眼；贴边时变为身体提起与空闲肢体欢呼。",
+      "next": "right.rest",
+      "duration_ms": 1400,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            2496,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2496,
+            64,
+            64
+          ],
+          "duration_ms": 160,
+          "bounds": [
+            16,
+            14,
+            24,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2496,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2496,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2496,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            2496,
+            64,
+            64
+          ],
+          "duration_ms": 150,
+          "bounds": [
+            16,
+            14,
+            24,
+            39
+          ]
+        },
+        {
+          "rect": [
+            384,
+            2496,
+            64,
+            64
+          ],
+          "duration_ms": 230,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            2496,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.celebrate_big": {
+      "pose": "right",
+      "behavior": "celebrate_big",
+      "label": "万次庆祝",
+      "group": "庆祝",
+      "loop": false,
+      "note": "两次小跳后得意停顿；不增加闪屏、文字或彩纸。",
+      "next": "right.rest",
+      "duration_ms": 2300,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            2560,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2560,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            16,
+            14,
+            24,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2560,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2560,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2560,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            21,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            320,
+            2560,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            2560,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            2560,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            16,
+            14,
+            24,
+            39
+          ]
+        },
+        {
+          "rect": [
+            512,
+            2560,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            576,
+            2560,
+            64,
+            64
+          ],
+          "duration_ms": 460,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            640,
+            2560,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            704,
+            2560,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.hover": {
+      "pose": "right",
+      "behavior": "hover",
+      "label": "悬停招呼",
+      "group": "鼠标",
+      "loop": false,
+      "note": "抬头、望向鼠标、轻眨眼；预览以鼠标在右侧为例。",
+      "next": "right.hover_hold",
+      "duration_ms": 660,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            2624,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2624,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2624,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2624,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2624,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            2624,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.hover_hold": {
+      "pose": "right",
+      "behavior": "hover_hold",
+      "label": "悬停注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "只轻呼吸，不反复打招呼；此处为向右注视。",
+      "next": "right.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            2688,
+            64,
+            64
+          ],
+          "duration_ms": 800,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2688,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2688,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2688,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.hover_left": {
+      "pose": "right",
+      "behavior": "hover_left",
+      "label": "向左注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "",
+      "next": "right.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            2752,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2752,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2752,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.hover_up": {
+      "pose": "right",
+      "behavior": "hover_up",
+      "label": "向上注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "",
+      "next": "right.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            2816,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2816,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2816,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.hover_down": {
+      "pose": "right",
+      "behavior": "hover_down",
+      "label": "向下注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "",
+      "next": "right.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            2880,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2880,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2880,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.hover_leave": {
+      "pose": "right",
+      "behavior": "hover_leave",
+      "label": "移开回望",
+      "group": "鼠标",
+      "loop": false,
+      "note": "收回注视，200 ms 回到当前姿态。",
+      "next": "right.rest",
+      "duration_ms": 200,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            2944,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2944,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2944,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.click": {
+      "pose": "right",
+      "behavior": "click",
+      "label": "单击回应",
+      "group": "鼠标",
+      "loop": false,
+      "note": "惊讶、轻歪、摸脸和笑眼；双手扶边时改为身体轻侧摆。",
+      "next": "right.rest",
+      "duration_ms": 650,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            3008,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3008,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            20,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3008,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            19,
+            13,
+            21,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3008,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            19,
+            13,
+            21,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3008,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            19,
+            13,
+            21,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            3008,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            3008,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.look": {
+      "pose": "right",
+      "behavior": "look",
+      "label": "左右张望",
+      "group": "待机",
+      "loop": false,
+      "note": "先左后右，再回正；没有自主移动。",
+      "next": "right.rest",
+      "duration_ms": 2200,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            3072,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3072,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3072,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3072,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3072,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            3072,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            3072,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            3072,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.stretch": {
+      "pose": "right",
+      "behavior": "stretch",
+      "label": "伸个懒腰",
+      "group": "待机",
+      "loop": false,
+      "note": "上举、舒展、放松；顶边保持抓握并伸展身体和腿。",
+      "next": "right.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            3136,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3136,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            16,
+            14,
+            24,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3136,
+            64,
+            64
+          ],
+          "duration_ms": 280,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3136,
+            64,
+            64
+          ],
+          "duration_ms": 640,
+          "bounds": [
+            7,
+            13,
+            33,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3136,
+            64,
+            64
+          ],
+          "duration_ms": 420,
+          "bounds": [
+            7,
+            13,
+            33,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            3136,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            3136,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            3136,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.play": {
+      "pose": "right",
+      "behavior": "play",
+      "label": "摆手踢脚",
+      "group": "待机",
+      "loop": false,
+      "note": "原地左右摆手踢脚；边缘只活动没有承担支撑的肢体。",
+      "next": "right.rest",
+      "duration_ms": 2200,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            3200,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3200,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3200,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3200,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3200,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            3200,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            3200,
+            64,
+            64
+          ],
+          "duration_ms": 360,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            3200,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.doze": {
+      "pose": "right",
+      "behavior": "doze",
+      "label": "打瞌睡",
+      "group": "休息",
+      "loop": false,
+      "note": "眼皮下垂、点头后短暂清醒。",
+      "next": "right.rest",
+      "duration_ms": 2800,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            3264,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3264,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3264,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            20,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3264,
+            64,
+            64
+          ],
+          "duration_ms": 500,
+          "bounds": [
+            21,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3264,
+            64,
+            64
+          ],
+          "duration_ms": 350,
+          "bounds": [
+            21,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            320,
+            3264,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            3264,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            3264,
+            64,
+            64
+          ],
+          "duration_ms": 270,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.sleep": {
+      "pose": "right",
+      "behavior": "sleep",
+      "label": "浅睡呼吸",
+      "group": "休息",
+      "loop": true,
+      "note": "闭眼慢呼吸；保持贴边抓握，无漂浮睡眠符号。",
+      "next": "right.rest",
+      "duration_ms": 4000,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            3328,
+            64,
+            64
+          ],
+          "duration_ms": 1400,
+          "bounds": [
+            21,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3328,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            20,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3328,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            20,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3328,
+            64,
+            64
+          ],
+          "duration_ms": 1200,
+          "bounds": [
+            21,
+            14,
+            19,
+            39
+          ]
+        }
+      ]
+    },
+    "right.wake": {
+      "pose": "right",
+      "behavior": "wake",
+      "label": "醒来",
+      "group": "休息",
+      "loop": false,
+      "note": "260 ms 睁眼回正，之后可接敲击或单击。",
+      "next": "right.rest",
+      "duration_ms": 260,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": [
+        "x",
+        40
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            3392,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            21,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3392,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            20,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3392,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3392,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3392,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "top.rest": {
+      "pose": "top",
+      "behavior": "rest",
+      "label": "原有待机参考",
+      "group": "参考",
+      "loop": true,
+      "note": "沿用当前程序的第一帧，作为衔接基准。",
+      "next": "top.rest",
+      "duration_ms": 1600,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            3456,
+            64,
+            64
+          ],
+          "duration_ms": 1600,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.tap": {
+      "pose": "top",
+      "behavior": "tap",
+      "label": "单次敲击",
+      "group": "敲击",
+      "loop": false,
+      "note": "轻压、落手、回弹；一轮 300 ms。",
+      "next": "top.rest",
+      "duration_ms": 300,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            3520,
+            64,
+            64
+          ],
+          "duration_ms": 30,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3520,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3520,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3520,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3520,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.typing": {
+      "pose": "top",
+      "behavior": "typing",
+      "label": "连续敲击",
+      "group": "敲击",
+      "loop": true,
+      "note": "左右手交替，480 ms 循环；接入后由敲击延长播放。",
+      "next": "top.rest",
+      "duration_ms": 480,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            3584,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3584,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3584,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3584,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3584,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            320,
+            3584,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.celebrate": {
+      "pose": "top",
+      "behavior": "celebrate",
+      "label": "千次庆祝",
+      "group": "庆祝",
+      "loop": false,
+      "note": "一次小跳、举手和笑眼；贴边时变为身体提起与空闲肢体欢呼。",
+      "next": "top.rest",
+      "duration_ms": 1400,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            3648,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3648,
+            64,
+            64
+          ],
+          "duration_ms": 160,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3648,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            44
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3648,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            14,
+            15,
+            36,
+            44
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3648,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            44
+          ]
+        },
+        {
+          "rect": [
+            320,
+            3648,
+            64,
+            64
+          ],
+          "duration_ms": 150,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            384,
+            3648,
+            64,
+            64
+          ],
+          "duration_ms": 230,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            448,
+            3648,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.celebrate_big": {
+      "pose": "top",
+      "behavior": "celebrate_big",
+      "label": "万次庆祝",
+      "group": "庆祝",
+      "loop": false,
+      "note": "两次小跳后得意停顿；不增加闪屏、文字或彩纸。",
+      "next": "top.rest",
+      "duration_ms": 2300,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            3712,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3712,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3712,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            44
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3712,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            14,
+            15,
+            36,
+            44
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3712,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            320,
+            3712,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            14,
+            15,
+            36,
+            44
+          ]
+        },
+        {
+          "rect": [
+            384,
+            3712,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            44
+          ]
+        },
+        {
+          "rect": [
+            448,
+            3712,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            512,
+            3712,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            576,
+            3712,
+            64,
+            64
+          ],
+          "duration_ms": 460,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            640,
+            3712,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            704,
+            3712,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.hover": {
+      "pose": "top",
+      "behavior": "hover",
+      "label": "悬停招呼",
+      "group": "鼠标",
+      "loop": false,
+      "note": "抬头、望向鼠标、轻眨眼；预览以鼠标在右侧为例。",
+      "next": "top.hover_hold",
+      "duration_ms": 660,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            3776,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3776,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3776,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3776,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3776,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            320,
+            3776,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.hover_hold": {
+      "pose": "top",
+      "behavior": "hover_hold",
+      "label": "悬停注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "只轻呼吸，不反复打招呼；此处为向右注视。",
+      "next": "top.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            3840,
+            64,
+            64
+          ],
+          "duration_ms": 800,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3840,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3840,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3840,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.hover_left": {
+      "pose": "top",
+      "behavior": "hover_left",
+      "label": "向左注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "",
+      "next": "top.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            3904,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3904,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3904,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.hover_up": {
+      "pose": "top",
+      "behavior": "hover_up",
+      "label": "向上注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "",
+      "next": "top.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            3968,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3968,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3968,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.hover_down": {
+      "pose": "top",
+      "behavior": "hover_down",
+      "label": "向下注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "",
+      "next": "top.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            4032,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4032,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4032,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.hover_leave": {
+      "pose": "top",
+      "behavior": "hover_leave",
+      "label": "移开回望",
+      "group": "鼠标",
+      "loop": false,
+      "note": "收回注视，200 ms 回到当前姿态。",
+      "next": "top.rest",
+      "duration_ms": 200,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            4096,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4096,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4096,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.click": {
+      "pose": "top",
+      "behavior": "click",
+      "label": "单击回应",
+      "group": "鼠标",
+      "loop": false,
+      "note": "惊讶、轻歪、摸脸和笑眼；双手扶边时改为身体轻侧摆。",
+      "next": "top.rest",
+      "duration_ms": 650,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            4160,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4160,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4160,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            15,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4160,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            15,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4160,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            320,
+            4160,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            384,
+            4160,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.look": {
+      "pose": "top",
+      "behavior": "look",
+      "label": "左右张望",
+      "group": "待机",
+      "loop": false,
+      "note": "先左后右，再回正；没有自主移动。",
+      "next": "top.rest",
+      "duration_ms": 2200,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            4224,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4224,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4224,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            13,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4224,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4224,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            320,
+            4224,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            15,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            384,
+            4224,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            448,
+            4224,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.stretch": {
+      "pose": "top",
+      "behavior": "stretch",
+      "label": "伸个懒腰",
+      "group": "待机",
+      "loop": false,
+      "note": "上举、舒展、放松；顶边保持抓握并伸展身体和腿。",
+      "next": "top.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            4288,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4288,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4288,
+            64,
+            64
+          ],
+          "duration_ms": 280,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4288,
+            64,
+            64
+          ],
+          "duration_ms": 640,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4288,
+            64,
+            64
+          ],
+          "duration_ms": 420,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            320,
+            4288,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            384,
+            4288,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            448,
+            4288,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.play": {
+      "pose": "top",
+      "behavior": "play",
+      "label": "摆手踢脚",
+      "group": "待机",
+      "loop": false,
+      "note": "原地左右摆手踢脚；边缘只活动没有承担支撑的肢体。",
+      "next": "top.rest",
+      "duration_ms": 2200,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            4352,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4352,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            13,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4352,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            13,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4352,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4352,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            15,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            320,
+            4352,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            15,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            384,
+            4352,
+            64,
+            64
+          ],
+          "duration_ms": 360,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            448,
+            4352,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.doze": {
+      "pose": "top",
+      "behavior": "doze",
+      "label": "打瞌睡",
+      "group": "休息",
+      "loop": false,
+      "note": "眼皮下垂、点头后短暂清醒。",
+      "next": "top.rest",
+      "duration_ms": 2800,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            4416,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4416,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4416,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4416,
+            64,
+            64
+          ],
+          "duration_ms": 500,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4416,
+            64,
+            64
+          ],
+          "duration_ms": 350,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            320,
+            4416,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            384,
+            4416,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            448,
+            4416,
+            64,
+            64
+          ],
+          "duration_ms": 270,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.sleep": {
+      "pose": "top",
+      "behavior": "sleep",
+      "label": "浅睡呼吸",
+      "group": "休息",
+      "loop": true,
+      "note": "闭眼慢呼吸；保持贴边抓握，无漂浮睡眠符号。",
+      "next": "top.rest",
+      "duration_ms": 4000,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            4480,
+            64,
+            64
+          ],
+          "duration_ms": 1400,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4480,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4480,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4480,
+            64,
+            64
+          ],
+          "duration_ms": 1200,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        }
+      ]
+    },
+    "top.wake": {
+      "pose": "top",
+      "behavior": "wake",
+      "label": "醒来",
+      "group": "休息",
+      "loop": false,
+      "note": "260 ms 睁眼回正，之后可接敲击或单击。",
+      "next": "top.rest",
+      "duration_ms": 260,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": [
+        "y",
+        15
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            4544,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4544,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4544,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4544,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4544,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "bottom.rest": {
+      "pose": "bottom",
+      "behavior": "rest",
+      "label": "原有待机参考",
+      "group": "参考",
+      "loop": true,
+      "note": "沿用当前程序的第一帧，作为衔接基准。",
+      "next": "bottom.rest",
+      "duration_ms": 1600,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            4608,
+            64,
+            64
+          ],
+          "duration_ms": 1600,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.tap": {
+      "pose": "bottom",
+      "behavior": "tap",
+      "label": "单次敲击",
+      "group": "敲击",
+      "loop": false,
+      "note": "轻压、落手、回弹；一轮 300 ms。",
+      "next": "bottom.rest",
+      "duration_ms": 300,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            4672,
+            64,
+            64
+          ],
+          "duration_ms": 30,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4672,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4672,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4672,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4672,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.typing": {
+      "pose": "bottom",
+      "behavior": "typing",
+      "label": "连续敲击",
+      "group": "敲击",
+      "loop": true,
+      "note": "左右手交替，480 ms 循环；接入后由敲击延长播放。",
+      "next": "bottom.rest",
+      "duration_ms": 480,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            4736,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4736,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4736,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4736,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4736,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            320,
+            4736,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.celebrate": {
+      "pose": "bottom",
+      "behavior": "celebrate",
+      "label": "千次庆祝",
+      "group": "庆祝",
+      "loop": false,
+      "note": "一次小跳、举手和笑眼；贴边时变为身体提起与空闲肢体欢呼。",
+      "next": "bottom.rest",
+      "duration_ms": 1400,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            4800,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4800,
+            64,
+            64
+          ],
+          "duration_ms": 160,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4800,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            11,
+            36,
+            40
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4800,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            14,
+            11,
+            36,
+            40
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4800,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            11,
+            36,
+            40
+          ]
+        },
+        {
+          "rect": [
+            320,
+            4800,
+            64,
+            64
+          ],
+          "duration_ms": 150,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            384,
+            4800,
+            64,
+            64
+          ],
+          "duration_ms": 230,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            448,
+            4800,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.celebrate_big": {
+      "pose": "bottom",
+      "behavior": "celebrate_big",
+      "label": "万次庆祝",
+      "group": "庆祝",
+      "loop": false,
+      "note": "两次小跳后得意停顿；不增加闪屏、文字或彩纸。",
+      "next": "bottom.rest",
+      "duration_ms": 2300,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            4864,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4864,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4864,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            11,
+            36,
+            40
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4864,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            14,
+            11,
+            36,
+            40
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4864,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            320,
+            4864,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            14,
+            11,
+            36,
+            40
+          ]
+        },
+        {
+          "rect": [
+            384,
+            4864,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            11,
+            36,
+            40
+          ]
+        },
+        {
+          "rect": [
+            448,
+            4864,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            512,
+            4864,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            576,
+            4864,
+            64,
+            64
+          ],
+          "duration_ms": 460,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            640,
+            4864,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            704,
+            4864,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.hover": {
+      "pose": "bottom",
+      "behavior": "hover",
+      "label": "悬停招呼",
+      "group": "鼠标",
+      "loop": false,
+      "note": "抬头、望向鼠标、轻眨眼；预览以鼠标在右侧为例。",
+      "next": "bottom.hover_hold",
+      "duration_ms": 660,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            4928,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4928,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4928,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4928,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4928,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            320,
+            4928,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.hover_hold": {
+      "pose": "bottom",
+      "behavior": "hover_hold",
+      "label": "悬停注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "只轻呼吸，不反复打招呼；此处为向右注视。",
+      "next": "bottom.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            4992,
+            64,
+            64
+          ],
+          "duration_ms": 800,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4992,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4992,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4992,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.hover_left": {
+      "pose": "bottom",
+      "behavior": "hover_left",
+      "label": "向左注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "",
+      "next": "bottom.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            5056,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5056,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5056,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.hover_up": {
+      "pose": "bottom",
+      "behavior": "hover_up",
+      "label": "向上注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "",
+      "next": "bottom.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            5120,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5120,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5120,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.hover_down": {
+      "pose": "bottom",
+      "behavior": "hover_down",
+      "label": "向下注视",
+      "group": "鼠标",
+      "loop": true,
+      "note": "",
+      "next": "bottom.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            5184,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5184,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5184,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.hover_leave": {
+      "pose": "bottom",
+      "behavior": "hover_leave",
+      "label": "移开回望",
+      "group": "鼠标",
+      "loop": false,
+      "note": "收回注视，200 ms 回到当前姿态。",
+      "next": "bottom.rest",
+      "duration_ms": 200,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            5248,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5248,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5248,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.click": {
+      "pose": "bottom",
+      "behavior": "click",
+      "label": "单击回应",
+      "group": "鼠标",
+      "loop": false,
+      "note": "惊讶、轻歪、摸脸和笑眼；双手扶边时改为身体轻侧摆。",
+      "next": "bottom.rest",
+      "duration_ms": 650,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            5312,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5312,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5312,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            15,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5312,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            15,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            256,
+            5312,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            320,
+            5312,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            384,
+            5312,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.look": {
+      "pose": "bottom",
+      "behavior": "look",
+      "label": "左右张望",
+      "group": "待机",
+      "loop": false,
+      "note": "先左后右，再回正；没有自主移动。",
+      "next": "bottom.rest",
+      "duration_ms": 2200,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            5376,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5376,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5376,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            13,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5376,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            256,
+            5376,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            320,
+            5376,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            15,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            384,
+            5376,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            448,
+            5376,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.stretch": {
+      "pose": "bottom",
+      "behavior": "stretch",
+      "label": "伸个懒腰",
+      "group": "待机",
+      "loop": false,
+      "note": "上举、舒展、放松；顶边保持抓握并伸展身体和腿。",
+      "next": "bottom.rest",
+      "duration_ms": 2400,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            5440,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5440,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5440,
+            64,
+            64
+          ],
+          "duration_ms": 280,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5440,
+            64,
+            64
+          ],
+          "duration_ms": 640,
+          "bounds": [
+            14,
+            11,
+            36,
+            40
+          ]
+        },
+        {
+          "rect": [
+            256,
+            5440,
+            64,
+            64
+          ],
+          "duration_ms": 420,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            320,
+            5440,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            384,
+            5440,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            448,
+            5440,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.play": {
+      "pose": "bottom",
+      "behavior": "play",
+      "label": "摆手踢脚",
+      "group": "待机",
+      "loop": false,
+      "note": "原地左右摆手踢脚；边缘只活动没有承担支撑的肢体。",
+      "next": "bottom.rest",
+      "duration_ms": 2200,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            5504,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5504,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            13,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5504,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            13,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5504,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            256,
+            5504,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            15,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            320,
+            5504,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            15,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            384,
+            5504,
+            64,
+            64
+          ],
+          "duration_ms": 360,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            448,
+            5504,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.doze": {
+      "pose": "bottom",
+      "behavior": "doze",
+      "label": "打瞌睡",
+      "group": "休息",
+      "loop": false,
+      "note": "眼皮下垂、点头后短暂清醒。",
+      "next": "bottom.rest",
+      "duration_ms": 2800,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            5568,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5568,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5568,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5568,
+            64,
+            64
+          ],
+          "duration_ms": 500,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            256,
+            5568,
+            64,
+            64
+          ],
+          "duration_ms": 350,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            320,
+            5568,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            384,
+            5568,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            448,
+            5568,
+            64,
+            64
+          ],
+          "duration_ms": 270,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.sleep": {
+      "pose": "bottom",
+      "behavior": "sleep",
+      "label": "浅睡呼吸",
+      "group": "休息",
+      "loop": true,
+      "note": "闭眼慢呼吸；保持贴边抓握，无漂浮睡眠符号。",
+      "next": "bottom.rest",
+      "duration_ms": 4000,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            5632,
+            64,
+            64
+          ],
+          "duration_ms": 1400,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5632,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5632,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5632,
+            64,
+            64
+          ],
+          "duration_ms": 1200,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        }
+      ]
+    },
+    "bottom.wake": {
+      "pose": "bottom",
+      "behavior": "wake",
+      "label": "醒来",
+      "group": "休息",
+      "loop": false,
+      "note": "260 ms 睁眼回正，之后可接敲击或单击。",
+      "next": "bottom.rest",
+      "duration_ms": 260,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": [
+        "y",
+        51
+      ],
+      "frames": [
+        {
+          "rect": [
+            0,
+            5696,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5696,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5696,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5696,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            256,
+            5696,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "drag.pickup": {
+      "pose": "drag",
+      "behavior": "pickup",
+      "label": "提起一惊",
+      "group": "拖动",
+      "loop": false,
+      "note": "",
+      "next": "drag.struggle",
+      "duration_ms": 150,
+      "anchor": [
+        32,
+        24
+      ],
+      "contacts": [],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5760,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5760,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            6,
+            9,
+            52,
+            43
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5760,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            6,
+            8,
+            52,
+            44
+          ]
+        }
+      ]
+    },
+    "drag.struggle": {
+      "pose": "drag",
+      "behavior": "struggle",
+      "label": "拖动挣扎",
+      "group": "拖动",
+      "loop": true,
+      "note": "双手交替挥动、腿交替踢动；画布和提起参考点固定。",
+      "next": "free.rest",
+      "duration_ms": 720,
+      "anchor": [
+        32,
+        24
+      ],
+      "contacts": [],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5824,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            5,
+            10,
+            52,
+            42
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5824,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            3,
+            9,
+            53,
+            43
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5824,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            6,
+            10,
+            51,
+            42
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5824,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            7,
+            9,
+            54,
+            43
+          ]
+        },
+        {
+          "rect": [
+            256,
+            5824,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            7,
+            10,
+            51,
+            42
+          ]
+        },
+        {
+          "rect": [
+            320,
+            5824,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            6,
+            10,
+            52,
+            42
+          ]
+        },
+        {
+          "rect": [
+            384,
+            5824,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            3,
+            9,
+            53,
+            43
+          ]
+        },
+        {
+          "rect": [
+            448,
+            5824,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            6,
+            10,
+            52,
+            42
+          ]
+        }
+      ]
+    },
+    "drag.release": {
+      "pose": "drag",
+      "behavior": "release",
+      "label": "放下回弹",
+      "group": "拖动",
+      "loop": false,
+      "note": "300 ms 落稳；仅展示自由位置释放。",
+      "next": "free.rest",
+      "duration_ms": 300,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [],
+      "boundary": null,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5888,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            8,
+            10,
+            47,
+            45
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5888,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            8,
+            13,
+            47,
+            42
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5888,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            8,
+            14,
+            47,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5888,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            256,
+            5888,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    }
+  },
+  "sha256": "9ea47fc81453ba3ed76c859b834525a48e301911aeec022cc102caafdb055298"
+}

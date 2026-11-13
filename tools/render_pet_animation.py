@@ -181,6 +181,11 @@ def validate_previews(manifest: dict, sprites: dict[str, list[Image.Image]], col
 
 def main() -> None:
     manifest = json.loads((ASSETS / "atlas.json").read_text(encoding="utf-8"))
+    # Keep the original eight-motion review; new behaviors have a separate v2 preview.
+    manifest["actions"] = {
+        name: manifest["actions"][name]
+        for name in ("idle", "blink", "drag", "left", "right", "bottom", "top", "settle")
+    }
     atlas = Image.open(ASSETS / manifest["image"]).convert("RGBA")
     colors = palette(manifest)
     sprites = {name: sprite_frames(atlas, action) for name, action in manifest["actions"].items()}

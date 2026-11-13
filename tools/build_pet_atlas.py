@@ -155,18 +155,18 @@ def save_png(image: QImage, path: Path) -> None:
         raise RuntimeError(f"Could not write {path}")
 
 
-def write_atlas(items: list[Action]) -> dict:
-    atlas = QImage(COLUMNS * SIZE, len(items) * SIZE, QImage.Format.Format_ARGB32_Premultiplied)
+def write_atlas(items: list[Action], *, columns: int = COLUMNS, schema_version: int = 1) -> dict:
+    atlas = QImage(columns * SIZE, len(items) * SIZE, QImage.Format.Format_ARGB32_Premultiplied)
     atlas.fill(Qt.GlobalColor.transparent)
     manifest = {
-        "schema_version": 1,
+        "schema_version": schema_version,
         "character": "qiaoqiao-keycap",
         "design_version": 2,
-        "status": "motion-review",
+        "status": "runtime" if schema_version == 2 else "motion-review",
         "image": "atlas.png",
         "frame_size": [SIZE, SIZE],
         "atlas_size": [atlas.width(), atlas.height()],
-        "columns": COLUMNS,
+        "columns": columns,
         "rows": len(items),
         "recommended_scale": 2,
         "sampling": "nearest",
@@ -242,10 +242,12 @@ def write_contact_sheet(items: list[Action]) -> None:
 
 
 def main() -> None:
+    from tools.build_pet_runtime import runtime_actions
+
     app = QApplication([])
-    items = actions()
-    manifest = write_atlas(items)
-    write_contact_sheet(items)
+    items = runtime_actions()
+    manifest = write_atlas(items, columns=12, schema_version=2)
+    write_contact_sheet(actions())
     print(f"Atlas: {OUTPUT / 'atlas.png'}")
     print(f"Manifest: {OUTPUT / 'atlas.json'}")
     print(f"Actions: {len(items)}; frames: {sum(len(a.images) for a in items)}")

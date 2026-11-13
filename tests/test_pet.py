@@ -5,13 +5,14 @@ import tempfile
 import unittest
 from contextlib import chdir
 from pathlib import Path
+from unittest.mock import patch
 
-from PySide6.QtCore import QPoint, QRect, QSettings, QSize, Qt
-from PySide6.QtGui import QContextMenuEvent
+from PySide6.QtCore import QEvent, QPoint, QPointF, QRect, QSettings, QSize, Qt
+from PySide6.QtGui import QContextMenuEvent, QEnterEvent
 from PySide6.QtTest import QSignalSpy, QTest
 from PySide6.QtWidgets import QApplication, QMenu, QWidget
 
-from qiaoqiao.pet import PET_SIZE, PetWindow, load_actions, snap_placement
+from qiaoqiao.pet import DOZE_AFTER, PET_SIZE, SLEEP_AFTER, PetWindow, load_actions, snap_placement
 
 
 APPLICATION = QApplication.instance() or QApplication([])
@@ -43,6 +44,12 @@ class PlacementTests(unittest.TestCase):
 
 class PetWindowTests(unittest.TestCase):
     def setUp(self):
+        clock = patch("qiaoqiao.pet.monotonic", return_value=100.0)
+        self.now = clock.start()
+        self.addCleanup(clock.stop)
+        cursor = patch("qiaoqiao.pet.QCursor.pos", return_value=QPoint(-99999, -99999))
+        self.cursor = cursor.start()
+        self.addCleanup(cursor.stop)
         self.temp = tempfile.TemporaryDirectory()
         self.settings = QSettings(str(Path(self.temp.name) / "preferences.ini"), QSettings.Format.IniFormat)
         self.menu = QMenu()
@@ -77,10 +84,12 @@ class PetWindowTests(unittest.TestCase):
         self.pet._screen_name = APPLICATION.primaryScreen().name()
         QTest.mousePress(self.pet, Qt.MouseButton.LeftButton, pos=QPoint(32, 64))
         QTest.mouseMove(self.pet, QPoint(80, 64), delay=10)
-        self.assertEqual(self.pet._action, "drag")
+        self.assertEqual(self.pet._action, "drag.pickup")
+        self.pet._advance_animation(150)
+        self.assertEqual(self.pet._action, "drag.struggle")
         QTest.mouseRelease(self.pet, Qt.MouseButton.LeftButton, pos=QPoint(80, 64))
         self.assertEqual(self.pet._edge, "")
-        self.assertEqual(self.pet._action, "settle")
+        self.assertEqual(self.pet._action, "drag.release")
         self.assertEqual(self.settings.value("pet/edge"), "")
         self.assertEqual(self.settings.value("pet/screen"), APPLICATION.primaryScreen().name())
         self.assertTrue(area.contains(self.pet.geometry()))
@@ -107,8 +116,10 @@ class PetWindowTests(unittest.TestCase):
 
     def test_timer_runs_only_while_visible_and_resumes_resting_pose(self):
         self.pet._start_action("blink")
-        QTest.qWait(110)
-        self.assertGreater(self.pet._frame_index, 0)
+        with patch.object(self.pet, "_advance_animation", wraps=self.pet._advance_animation) as advance:
+            timeout = QSignalSpy(self.pet._animation_timer.timeout)
+            self.assertTrue(timeout.wait(2000))
+            advance.assert_called()
         self.assertTrue(self.pet._animation_timer.isActive())
         self.pet.hide()
         frame = self.pet._frame_index
@@ -176,7 +187,7 @@ class PetWindowTests(unittest.TestCase):
         self.assertEqual(self.pet.pos(), position)
         QTest.mousePress(self.pet, Qt.MouseButton.LeftButton, pos=press)
         QTest.mouseMove(self.pet, press + QPoint(40, 20), delay=10)
-        self.assertEqual(self.pet._action, "drag")
+        self.assertEqual(self.pet._action, "drag.pickup")
         self.assertEqual(self.pet.pos(), position + QPoint(40, 20))
         self.pet.hide()
         self.assertFalse(self.pet._dragging)
@@ -244,6 +255,226 @@ class PetWindowTests(unittest.TestCase):
             restored.close()
             restored.deleteLater()
 
+    def finish_action(self):
+        self.pet._advance_animation(self.pet._actions[self.pet._action].duration_ms)
+
+    def enter_pet(self):
+        self.pet.enterEvent(QEnterEvent(QPointF(64, 64), QPointF(64, 64),
+                                       QPointF(self.cursor.return_value)))
+
+    def test_key_burst_finishes_tap_then_loops_without_restarting_each_key(self):
+        self.pet.on_key_press()
+        self.pet._animate()
+        self.assertEqual(self.pet._action, "free.tap")
+        self.pet._advance_animation(100)
+        for _ in range(50):
+            self.now.return_value += 0.002
+            self.pet.on_key_press()
+            self.pet._animate()
+        self.finish_action()
+        self.assertEqual(self.pet._action, "free.typing")
+        with patch.object(self.pet, "_start_action", wraps=self.pet._start_action) as start:
+            for _ in range(100):
+                self.now.return_value += 0.002
+                self.pet.on_key_press()
+                self.pet._animate()
+            start.assert_not_called()
+        self.now.return_value += 0.7
+        self.pet._animate()
+        self.assertEqual(self.pet._action, "idle")
+        self.assertFalse(self.pet._key_pending)
+
+    def test_celebration_preempts_typing_merges_and_expires_during_drag(self):
+        self.pet.on_key_press()
+        self.pet._animate()
+        self.pet.celebrate(1000)
+        self.pet.celebrate(10000)
+        self.pet._animate()
+        self.assertEqual(self.pet._action, "free.celebrate_big")
+        self.pet.on_key_press()
+        self.pet._animate()
+        self.assertEqual(self.pet._action, "free.celebrate_big")
+        self.pet._dragging = True
+        self.pet._start_action("drag.struggle")
+        self.pet.celebrate(11000)
+        self.now.return_value += 6
+        self.pet._animate()
+        self.pet._dragging = False
+        self.pet._start_action("idle")
+        self.pet._animate()
+        self.assertIsNone(self.pet._pending_celebration)
+        self.assertEqual(self.pet._action, "idle")
+
+    def test_queued_celebration_after_short_drag_uses_new_edge(self):
+        self.pet._dragging = True
+        self.pet._start_action("drag.struggle")
+        self.pet.celebrate(1000)
+        self.pet._animate()
+        self.assertEqual(self.pet._action, "drag.struggle")
+        area = APPLICATION.primaryScreen().availableGeometry()
+        self.pet._place(area.topLeft(), area, "top")
+        self.pet._clear_press()
+        self.pet._animate()
+        self.assertEqual(self.pet._action, "top.celebrate")
+
+    def test_single_click_waits_for_double_click_interval_and_is_cancelled_by_double(self):
+        opened = QSignalSpy(self.pet.open_requested)
+        QTest.mouseClick(self.pet, Qt.MouseButton.LeftButton, pos=QPoint(64, 64))
+        self.pet._animate()
+        self.assertEqual(self.pet._action, "idle")
+        self.now.return_value += QApplication.doubleClickInterval() / 1000 + 0.01
+        self.pet._animate()
+        self.assertEqual(self.pet._action, "free.click")
+        self.assertEqual(opened.count(), 0)
+        self.finish_action()
+        QTest.mouseClick(self.pet, Qt.MouseButton.LeftButton, pos=QPoint(64, 64))
+        QTest.mouseDClick(self.pet, Qt.MouseButton.LeftButton, pos=QPoint(64, 64))
+        self.now.return_value += 1
+        self.pet._animate()
+        self.assertEqual(opened.count(), 1)
+        self.assertEqual(self.pet._click_due, 0)
+        self.assertEqual(self.pet._action, "idle")
+
+    def test_drag_cancels_single_click_and_does_not_open_main_window(self):
+        opened = QSignalSpy(self.pet.open_requested)
+        QTest.mouseClick(self.pet, Qt.MouseButton.LeftButton, pos=QPoint(64, 64))
+        QTest.mousePress(self.pet, Qt.MouseButton.LeftButton, pos=QPoint(64, 64))
+        QTest.mouseMove(self.pet, QPoint(94, 64), delay=10)
+        self.assertEqual(self.pet._click_due, 0)
+        self.now.return_value += 1
+        self.pet._animate()
+        self.assertEqual(opened.count(), 0)
+        self.assertEqual(self.pet._action, "drag.pickup")
+
+    def test_hover_debounce_gaze_and_leave_use_current_pose(self):
+        area = APPLICATION.primaryScreen().availableGeometry()
+        self.pet._place(area.center(), area, "right")
+        self.cursor.return_value = self.pet.mapToGlobal(QPoint(110, 64))
+        self.enter_pet()
+        self.pet._animate()
+        self.assertEqual(self.pet._action, "right")
+        self.now.return_value += 0.16
+        self.pet._animate()
+        self.assertEqual(self.pet._action, "right.hover")
+        self.finish_action()
+        self.assertEqual(self.pet._action, "right.hover_hold")
+        with patch.object(self.pet, "_gaze_motion", return_value="hover_left"):
+            self.pet._animate()
+        self.assertEqual(self.pet._action, "right.hover_left")
+        self.pet.leaveEvent(QEvent(QEvent.Type.Leave))
+        self.now.return_value += 0.16
+        self.pet._animate()
+        self.assertTrue(self.pet._hovered, "Moving alpha pixels must not end stationary hover")
+        self.cursor.return_value = QPoint(-99999, -99999)
+        self.pet.leaveEvent(QEvent(QEvent.Type.Leave))
+        self.now.return_value += 0.16
+        self.pet._animate()
+        self.assertEqual(self.pet._action, "right.hover_leave")
+        self.finish_action()
+        self.assertEqual(self.pet._action, "right")
+
+    def test_brief_hover_does_not_interrupt_and_click_returns_to_gaze(self):
+        self.cursor.return_value = self.pet.mapToGlobal(QPoint(64, 64))
+        self.enter_pet()
+        self.pet.leaveEvent(QEvent(QEvent.Type.Leave))
+        self.cursor.return_value = QPoint(-99999, -99999)
+        self.now.return_value += 0.2
+        self.pet._animate()
+        self.assertEqual(self.pet._action, "idle")
+        self.cursor.return_value = self.pet.mapToGlobal(QPoint(64, 64))
+        self.pet._hovered = True
+        self.pet._start_motion("hover_hold")
+        QTest.mouseClick(self.pet, Qt.MouseButton.LeftButton, pos=QPoint(64, 64))
+        self.now.return_value += QApplication.doubleClickInterval() / 1000 + 0.01
+        self.pet._animate()
+        self.assertEqual(self.pet._action, "free.click")
+        self.finish_action()
+        self.assertTrue(self.pet._behavior.startswith("hover_"))
+
+    def test_idle_variety_doze_sleep_and_key_wakeup(self):
+        self.now.return_value = 141
+        self.pet._animate()
+        first = self.pet._behavior
+        self.assertIn(first, ("look", "stretch", "play"))
+        self.finish_action()
+        self.now.return_value = 182
+        self.pet._animate()
+        self.assertIn(self.pet._behavior, ("look", "stretch", "play"))
+        self.assertNotEqual(self.pet._behavior, first)
+        self.finish_action()
+        self.now.return_value = 100 + DOZE_AFTER
+        self.pet._animate()
+        self.assertEqual(self.pet._action, "free.doze")
+        self.finish_action()
+        self.now.return_value = 100 + SLEEP_AFTER
+        self.pet._animate()
+        self.assertEqual(self.pet._action, "free.sleep")
+        self.pet.on_key_press()
+        self.pet._animate()
+        self.assertEqual(self.pet._action, "free.wake")
+        self.finish_action()
+        self.assertEqual(self.pet._action, "free.tap")
+        self.assertEqual(self.pet._last_activity, self.now.return_value)
+
+    def test_sleep_can_wake_for_hover_click_or_celebration(self):
+        for trigger, expected in (
+                (lambda: self.pet.celebrate(10000), "celebrate_big"),
+                (lambda: setattr(self.pet, "_click_due", self.now.return_value), "click"),
+                (lambda: setattr(self.pet, "_hovered", True), "hover")):
+            with self.subTest(expected=expected):
+                self.pet._reset_interactions()
+                self.pet._start_motion("sleep")
+                self.cursor.return_value = self.pet.mapToGlobal(QPoint(64, 64))
+                trigger()
+                self.pet._animate()
+                self.assertEqual(self.pet._action, "free.wake")
+                self.finish_action()
+                self.assertEqual(self.pet._action, f"free.{expected}")
+
+    def test_hidden_events_and_context_menu_do_not_queue_or_run_timers(self):
+        self.pet.on_key_press()
+        self.pet.celebrate(1000)
+        self.pet._click_due = 100.5
+        self.pet.hide()
+        self.pet.on_key_press()
+        self.pet.celebrate(10000)
+        self.assertIsNone(self.pet._pending_celebration)
+        self.assertFalse(self.pet._key_pending)
+        self.assertEqual(self.pet._click_due, 0)
+        self.assertFalse(self.pet._animation_timer.isActive())
+        self.pet.show()
+        self.assertEqual(self.pet._action, "idle")
+        self.pet._menu_opened()
+        self.pet.on_key_press()
+        self.pet.celebrate(1000)
+        self.assertFalse(self.pet._animation_timer.isActive())
+        self.assertIsNone(self.pet._pending_celebration)
+        self.pet._menu_closed()
+        self.assertTrue(self.pet._animation_timer.isActive())
+        self.assertEqual(self.pet._action, "idle")
+
+    def test_every_motion_preserves_placement_and_edge_contact(self):
+        area = QRect(-1920, -200, 1920, 1000)
+        for edge in ("left", "right", "top", "bottom"):
+            self.pet._place(area.center(), area, edge)
+            position = self.pet.pos()
+            for name, action in self.pet._actions.items():
+                if not name.startswith(f"{edge}."):
+                    continue
+                self.pet._start_action(name)
+                elapsed = 0
+                for frame in action.frames:
+                    with self.subTest(action=name, elapsed=elapsed):
+                        self.pet._advance_animation(elapsed)
+                        region = frame.mask.translated(action.offset)
+                        self.assertEqual(self.pet.pos(), position)
+                        self.assertEqual(self.pet.mask(), region)
+                        self.assertTrue(self.pet.rect().contains(region.boundingRect()))
+                        bounds = region.boundingRect().translated(position)
+                        side = {"left": "left", "right": "right", "top": "top", "bottom": "bottom"}[edge]
+                        self.assertEqual(getattr(bounds, side)(), getattr(area, side)())
+                    elapsed += frame.duration_ms
+
     @unittest.skipUnless(sys.platform == "win32", "Native window checks require Windows.")
     def test_native_topmost_no_focus_and_window_region(self):
         user32 = ctypes.windll.user32
@@ -299,7 +530,7 @@ class AssetLoadingTests(unittest.TestCase):
     def test_loading_does_not_depend_on_working_directory(self):
         with tempfile.TemporaryDirectory() as directory, chdir(directory):
             actions = load_actions()
-        self.assertEqual(len(actions), 8)
+        self.assertEqual(len(actions), 96)
         self.assertEqual(actions["left"].offset, QPoint(-48, 0))
         self.assertEqual(actions["right"].offset, QPoint(48, 0))
         self.assertEqual(actions["top"].offset, QPoint(0, -30))

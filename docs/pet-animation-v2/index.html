@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>敲敲 · 新动作评审</title>
+  <style>
+    :root { color-scheme: light; font-family: "Microsoft YaHei UI", sans-serif; color: #24232a; background: #f7f7f8; }
+    * { box-sizing: border-box; letter-spacing: 0; }
+    body { margin: 0; }
+    button, select, input { font: inherit; accent-color: #367f68; }
+    button, select { min-height: 36px; border: 1px solid #c7c7ce; border-radius: 4px; background: #fff; color: inherit; }
+    button { cursor: pointer; padding: 6px 12px; }
+    button:hover { background: #e9f4ee; border-color: #367f68; }
+    button:focus-visible, select:focus-visible, a:focus-visible { outline: 2px solid #367f68; outline-offset: 3px; }
+    button[aria-pressed="true"] { background: #d9eee4; border-color: #367f68; }
+    button:disabled { cursor: default; opacity: .45; }
+    select { max-width: 100%; padding: 5px 28px 5px 9px; }
+    a { color: #346c5d; text-underline-offset: 3px; }
+    header { border-bottom: 1px solid #d8d8de; background: #fff; }
+    .wrap { max-width: 1120px; padding: 22px 28px; margin: auto; }
+    header .wrap { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    h1 { font-size: 21px; margin: 0; font-weight: 650; }
+    .status { font-size: 13px; color: #775060; border-left: 3px solid #b97b94; padding-left: 10px; }
+    .filters { display: flex; gap: 18px; align-items: end; flex-wrap: wrap; margin-bottom: 20px; }
+    label.field { display: grid; gap: 7px; font-size: 13px; }
+    #action { min-width: 170px; }
+    .check { display: flex; align-items: center; gap: 6px; font-size: 13px; min-height: 36px; }
+    .title-row { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+    h2 { font-size: 18px; margin: 0; }
+    #metadata { font-size: 13px; color: #666570; }
+    #note { margin: 9px 0 18px; font-size: 13px; line-height: 1.7; min-height: 23px; }
+    .stages { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid #c7c7ce; }
+    .stage { margin: 0; min-width: 0; overflow: hidden; }
+    .stage:first-child { background: #171522; color: #f2ebf4; }
+    .stage:last-child { background: #d6d9e0; color: #292734; }
+    figcaption { padding: 12px 16px 0; font-size: 12px; }
+    .canvas-host { height: 286px; display: grid; place-items: center; overflow: hidden; }
+    canvas { display: block; image-rendering: pixelated; }
+    .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 14px 0; border-bottom: 1px solid #d8d8de; }
+    .icon { width: 38px; padding: 4px; font: 20px "Segoe UI Symbol", sans-serif; }
+    #frame-slider { flex: 1; min-width: 90px; }
+    #frame-counter { width: 106px; text-align: right; font-size: 13px; font-variant-numeric: tabular-nums; }
+    #phase { font-size: 12px; color: #666570; min-height: 22px; padding-top: 8px; }
+    .frames { display: flex; gap: 6px; overflow: auto; padding: 12px 0 16px; scrollbar-color: #a8b6ae #eee; }
+    .frame { flex: 0 0 78px; width: 78px; min-height: 96px; padding: 6px; font-size: 11px; font-variant-numeric: tabular-nums; }
+    .frame canvas { width: 64px; height: 64px; margin-bottom: 5px; }
+    .downloads { display: flex; gap: 12px 24px; flex-wrap: wrap; padding: 16px 0; border-top: 1px solid #d8d8de; font-size: 13px; }
+    .error { color: #a83636; white-space: pre-wrap; }
+    @media(max-width: 620px) {
+      .wrap { padding: 18px 16px; }
+      .filters { gap: 12px; }
+      .stages { grid-template-columns: 1fr; }
+      .canvas-host { height: 274px; }
+      #frame-counter { width: 90px; }
+    }
+    @media(prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <header><div class="wrap">
+    <h1>敲敲 · 新动作评审</h1>
+    <span class="status">待视觉确认 · 尚未接入程序</span>
+  </div></header>
+  <main class="wrap">
+    <div class="filters">
+      <label class="field">摆放位置<select id="pose"></select></label>
+      <label class="field">动作<select id="action"></select></label>
+      <label class="field">显示尺寸<select id="scale">
+        <option value="2">128 × 128（实际）</option>
+        <option value="3">192 × 192（150%）</option>
+        <option value="4">256 × 256（放大）</option>
+      </select></label>
+      <label class="field">速度<select id="speed">
+        <option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option>
+      </select></label>
+      <label class="check"><input id="guides" type="checkbox" checked>边界线</label>
+      <label class="check"><input id="repeat" type="checkbox" checked>重复预览</label>
+    </div>
+    <div class="title-row"><h2 id="label">载入素材</h2><span id="metadata"></span></div>
+    <p id="note"></p>
+    <div class="stages">
+      <figure class="stage"><figcaption>深色背景</figcaption><div class="canvas-host"><canvas id="dark" aria-label="深色背景动作预览"></canvas></div></figure>
+      <figure class="stage"><figcaption>浅色背景</figcaption><div class="canvas-host"><canvas id="light" aria-label="浅色背景动作预览"></canvas></div></figure>
+    </div>
+    <div class="controls">
+      <button id="play" class="icon" title="暂停" aria-label="暂停">&#10074;&#10074;</button>
+      <button id="restart" class="icon" title="重新播放" aria-label="重新播放">&#8634;</button>
+      <button id="previous" class="icon" title="上一帧" aria-label="上一帧">&#8249;</button>
+      <button id="next" class="icon" title="下一帧" aria-label="下一帧">&#8250;</button>
+      <input id="frame-slider" aria-label="当前帧" type="range" min="0" max="1" value="0">
+      <output id="frame-counter"></output>
+    </div>
+    <div id="phase" aria-live="off"></div>
+    <div id="frames" class="frames" aria-label="动作帧"></div>
+    <nav class="downloads" aria-label="素材预览文件">
+      <a href="interactions.gif" target="_blank">敲击、庆祝与鼠标动图</a>
+      <a href="idle.gif" target="_blank">玩耍与休息动图</a>
+      <a href="drag.gif" target="_blank">拖动动图</a>
+      <a id="contact" href="contact-free.png" target="_blank">逐帧对照图</a>
+      <a href="atlas.png" target="_blank">透明图集</a>
+      <a href="../pet-animation-v2.md" target="_blank">评审说明</a>
+    </nav>
+  </main>
+  <script src="review-data.js"></script>
+  <script>
+    "use strict";
+    const data = window.PET_REVIEW;
+    const el = Object.fromEntries(
+      ["pose", "action", "scale", "speed", "guides", "repeat", "label", "metadata", "note",
+       "dark", "light", "play", "restart", "previous", "next", "frame-slider",
+       "frame-counter", "frames", "phase", "contact"].map(id => [id, document.getElementById(id)]));
+    const image = new Image();
+    let selected = "free.tap", elapsed = 0, previousTime = 0, frameIndex = 0;
+    let playing = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let rendered = "", ready = false;
+    function setPlaying(value) {
+      playing = value;
+      el.play.textContent = value ? "\u275A\u275A" : "\u25B6";
+      el.play.title = value ? "暂停" : "播放";
+      el.play.setAttribute("aria-label", el.play.title);
+    }
+    function action() { return data.actions[selected]; }
+    function fillActions(behavior = "tap") {
+      el.action.replaceChildren();
+      const groups = new Map();
+      for (const [key, item] of Object.entries(data.actions)) {
+        if (item.pose !== el.pose.value) continue;
+        if (!groups.has(item.group)) {
+          const group = document.createElement("optgroup");
+          group.label = item.group;
+          groups.set(item.group, group);
+          el.action.append(group);
+        }
+        const option = new Option(item.label, key);
+        groups.get(item.group).append(option);
+      }
+      const wanted = `${el.pose.value}.${behavior}`;
+      el.action.value = data.actions[wanted] ? wanted : `${el.pose.value}.${el.pose.value === "drag" ? "pickup" : "tap"}`;
+      selectAction();
+    }
+    function drawSprite(canvas, name, index, scale, background = null) {
+      const size = 64 * scale;
+      canvas.width = canvas.height = size;
+      canvas.style.width = canvas.style.height = `${size}px`;
+      const ctx = canvas.getContext("2d");
+      ctx.imageSmoothingEnabled = false;
+      if (background) { ctx.fillStyle = background; ctx.fillRect(0, 0, size, size); }
+      const item = data.actions[name];
+      if (background && el.guides.checked && item.boundary) {
+        const [axis, value] = item.boundary;
+        ctx.strokeStyle = "#8A8994";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        if (axis === "x") {
+          ctx.moveTo(value * scale + .5, 3 * scale);
+          ctx.lineTo(value * scale + .5, 60 * scale);
+        } else {
+          ctx.moveTo(5 * scale, value * scale + .5);
+          ctx.lineTo(59 * scale, value * scale + .5);
+        }
+        ctx.stroke();
+      }
+      ctx.drawImage(image, ...item.frames[index].rect, 0, 0, size, size);
+    }
+    function selectAction() {
+      selected = el.action.value;
+      elapsed = 0; rendered = "";
+      const item = action();
+      el.label.textContent = item.label;
+      el.metadata.textContent = `${data.poses[item.pose]} · ${item.frames.length} 帧 · ${item.duration_ms} ms · ${item.loop ? "循环" : "单次"}`;
+      el.note.textContent = item.note || "注视方向采用一像素变化，保留当前摆放位置与支撑点。";
+      el["frame-slider"].max = item.frames.length - 1;
+      el.contact.href = `contact-${item.pose}.png`;
+      el.frames.replaceChildren();
+      item.frames.forEach((frame, index) => {
+        const button = document.createElement("button");
+        button.className = "frame";
+        button.title = `第 ${index + 1} 帧，${frame.duration_ms} 毫秒`;
+        button.setAttribute("aria-label", button.title);
+        button.setAttribute("aria-pressed", "false");
+        const thumb = document.createElement("canvas");
+        drawSprite(thumb, selected, index, 1);
+        button.append(thumb, `${index + 1} / ${frame.duration_ms} ms`);
+        button.onclick = () => seek(index);
+        el.frames.append(button);
+      });
+      renderSelected();
+    }
+    function seek(index) {
+      index = Math.max(0, Math.min(action().frames.length - 1, index));
+      setPlaying(false);
+      elapsed = action().frames.slice(0, index).reduce((total, frame) => total + frame.duration_ms, 0);
+      rendered = "";
+      renderSelected();
+    }
+    function findFrame(item, time) {
+      for (let i = 0; i < item.frames.length; i++) {
+        if (time < item.frames[i].duration_ms) return i;
+        time -= item.frames[i].duration_ms;
+      }
+      return item.frames.length - 1;
+    }
+    function sequence() {
+      const item = action();
+      const parts = [{name: selected, duration: item.duration_ms}];
+      if (!item.loop && item.next === "drag.struggle") {
+        parts.push({name: "drag.struggle", duration: data.actions["drag.struggle"].duration_ms * 2});
+        parts.push({name: "drag.release", duration: data.actions["drag.release"].duration_ms});
+        parts.push({name: "free.rest", duration: 1200});
+      } else if (!item.loop && item.next.endsWith(".hover_hold")) {
+        parts.push({name: item.next, duration: 1200});
+        parts.push({name: `${item.pose}.hover_leave`, duration: 200});
+        parts.push({name: `${item.pose}.rest`, duration: 900});
+      } else if (!item.loop) {
+        parts.push({name: item.next, duration: 1400});
+      }
+      return parts;
+    }
+    function renderSelected() {
+      if (!ready) return;
+      const parts = sequence();
+      const total = parts.reduce((sum, part) => sum + part.duration, 0);
+      if (elapsed >= total && !el.repeat.checked) {
+        elapsed = total - 1;
+        setPlaying(false);
+      }
+      let local = elapsed % total;
+      let name = parts[parts.length - 1].name;
+      for (const part of parts) {
+        if (local < part.duration) { name = part.name; break; }
+        local -= part.duration;
+      }
+      const item = data.actions[name];
+      const index = findFrame(item, item.loop ? local % item.duration_ms : Math.min(local, item.duration_ms - 1));
+      frameIndex = name === selected ? index : action().frames.length - 1;
+      const stamp = `${name}/${index}/${el.scale.value}/${el.guides.checked}`;
+      if (stamp === rendered) return;
+      rendered = stamp;
+      drawSprite(el.dark, name, index, Number(el.scale.value), "#171522");
+      drawSprite(el.light, name, index, Number(el.scale.value), "#D6D9E0");
+      el["frame-slider"].value = frameIndex;
+      el["frame-counter"].textContent = `${frameIndex + 1} / ${action().frames.length} 帧`;
+      el.phase.textContent = name === selected
+        ? `当前帧 ${item.frames[index].duration_ms} ms`
+        : `衔接预览：${item.label}`;
+      [...el.frames.children].forEach((button, i) => button.setAttribute("aria-pressed", String(i === frameIndex)));
+      el.dark.dataset.action = name;
+      el.dark.dataset.frame = String(index);
+    }
+    el.pose.onchange = () => fillActions(action().behavior);
+    el.action.onchange = selectAction;
+    el.scale.onchange = el.guides.onchange = () => { rendered = ""; renderSelected(); };
+    el.repeat.onchange = () => { elapsed = 0; rendered = ""; renderSelected(); };
+    el.play.onclick = () => {
+      if (!playing && elapsed >= sequence().reduce((sum, p) => sum + p.duration, 0) - 1) elapsed = 0;
+      setPlaying(!playing);
+    };
+    el.restart.onclick = () => { elapsed = 0; rendered = ""; setPlaying(true); renderSelected(); };
+    el.previous.onclick = () => seek(frameIndex - 1);
+    el.next.onclick = () => seek(frameIndex + 1);
+    el["frame-slider"].oninput = () => seek(Number(el["frame-slider"].value));
+    function animate(now) {
+      if (previousTime && playing && !document.hidden) elapsed += Math.min(now - previousTime, 100) * Number(el.speed.value);
+      previousTime = now;
+      renderSelected();
+      requestAnimationFrame(animate);
+    }
+    document.addEventListener("visibilitychange", () => { previousTime = 0; });
+    image.onload = () => {
+      ready = true;
+      for (const [value, label] of Object.entries(data.poses)) el.pose.append(new Option(label, value));
+      fillActions();
+      setPlaying(playing);
+      requestAnimationFrame(animate);
+    };
+    image.onerror = () => {
+      el.note.className = "error";
+      el.note.textContent = "图集加载失败。请在原目录打开 index.html，保留 atlas.png 与 review-data.js。";
+    };
+    image.src = window.PET_REVIEW_IMAGE || "atlas.png";
+  </script>
+</body>
+</html>

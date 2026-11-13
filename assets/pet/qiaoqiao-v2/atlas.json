@@ -1,19 +1,19 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "character": "qiaoqiao-keycap",
   "design_version": 2,
-  "status": "motion-review",
+  "status": "runtime",
   "image": "atlas.png",
   "frame_size": [
     64,
     64
   ],
   "atlas_size": [
-    512,
-    512
+    768,
+    6144
   ],
-  "columns": 8,
-  "rows": 8,
+  "columns": 12,
+  "rows": 96,
   "recommended_scale": 2,
   "sampling": "nearest",
   "palette": {
@@ -958,7 +958,9948 @@
           ]
         }
       ]
+    },
+    "free.tap": {
+      "label": "单次敲击",
+      "row": 8,
+      "loop": false,
+      "next": "idle",
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "duration_ms": 300,
+      "frames": [
+        {
+          "rect": [
+            0,
+            512,
+            64,
+            64
+          ],
+          "duration_ms": 30,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            512,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            6,
+            13,
+            49,
+            42
+          ]
+        },
+        {
+          "rect": [
+            128,
+            512,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            6,
+            14,
+            49,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            512,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            6,
+            11,
+            49,
+            44
+          ]
+        },
+        {
+          "rect": [
+            256,
+            512,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.typing": {
+      "label": "连续敲击",
+      "row": 9,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "duration_ms": 480,
+      "frames": [
+        {
+          "rect": [
+            0,
+            576,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            6,
+            13,
+            52,
+            42
+          ]
+        },
+        {
+          "rect": [
+            64,
+            576,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            6,
+            12,
+            49,
+            43
+          ]
+        },
+        {
+          "rect": [
+            128,
+            576,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            192,
+            576,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            6,
+            13,
+            51,
+            42
+          ]
+        },
+        {
+          "rect": [
+            256,
+            576,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            8,
+            12,
+            50,
+            43
+          ]
+        },
+        {
+          "rect": [
+            320,
+            576,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.celebrate": {
+      "label": "千次庆祝",
+      "row": 10,
+      "loop": false,
+      "next": "idle",
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [],
+      "boundary": null,
+      "duration_ms": 1400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            640,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            640,
+            64,
+            64
+          ],
+          "duration_ms": 160,
+          "bounds": [
+            6,
+            14,
+            52,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            640,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            6,
+            10,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            192,
+            640,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            6,
+            8,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            256,
+            640,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            6,
+            10,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            320,
+            640,
+            64,
+            64
+          ],
+          "duration_ms": 150,
+          "bounds": [
+            6,
+            14,
+            52,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            640,
+            64,
+            64
+          ],
+          "duration_ms": 230,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            448,
+            640,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.celebrate_big": {
+      "label": "万次庆祝",
+      "row": 11,
+      "loop": false,
+      "next": "idle",
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [],
+      "boundary": null,
+      "duration_ms": 2300,
+      "frames": [
+        {
+          "rect": [
+            0,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            6,
+            14,
+            52,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            6,
+            8,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            192,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            6,
+            10,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            256,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            8,
+            14,
+            47,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            6,
+            7,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            384,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            6,
+            9,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            448,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            6,
+            14,
+            52,
+            41
+          ]
+        },
+        {
+          "rect": [
+            512,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            6,
+            11,
+            52,
+            44
+          ]
+        },
+        {
+          "rect": [
+            576,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 460,
+          "bounds": [
+            6,
+            12,
+            52,
+            43
+          ]
+        },
+        {
+          "rect": [
+            640,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            704,
+            704,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.hover": {
+      "label": "悬停招呼",
+      "row": 12,
+      "loop": false,
+      "next": "free.hover_hold",
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "duration_ms": 660,
+      "frames": [
+        {
+          "rect": [
+            0,
+            768,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            768,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            128,
+            768,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            192,
+            768,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            256,
+            768,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            320,
+            768,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.hover_hold": {
+      "label": "悬停注视",
+      "row": 13,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            832,
+            64,
+            64
+          ],
+          "duration_ms": 800,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            832,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            128,
+            832,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            192,
+            832,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.hover_left": {
+      "label": "向左注视",
+      "row": 14,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            896,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            896,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            128,
+            896,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.hover_up": {
+      "label": "向上注视",
+      "row": 15,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            960,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            960,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            128,
+            960,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.hover_down": {
+      "label": "向下注视",
+      "row": 16,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1024,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1024,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1024,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.hover_leave": {
+      "label": "移开回望",
+      "row": 17,
+      "loop": false,
+      "next": "idle",
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "duration_ms": 200,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1088,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1088,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1088,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.click": {
+      "label": "单击回应",
+      "row": 18,
+      "loop": false,
+      "next": "idle",
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "duration_ms": 650,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1152,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1152,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            8,
+            13,
+            47,
+            42
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1152,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            9,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1152,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            9,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1152,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            320,
+            1152,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            6,
+            12,
+            49,
+            43
+          ]
+        },
+        {
+          "rect": [
+            384,
+            1152,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.look": {
+      "label": "左右张望",
+      "row": 19,
+      "loop": false,
+      "next": "idle",
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "duration_ms": 2200,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1216,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1216,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1216,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            7,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1216,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1216,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            320,
+            1216,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            9,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            384,
+            1216,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            448,
+            1216,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.stretch": {
+      "label": "伸个懒腰",
+      "row": 20,
+      "loop": false,
+      "next": "idle",
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1280,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1280,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            6,
+            13,
+            52,
+            42
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1280,
+            64,
+            64
+          ],
+          "duration_ms": 280,
+          "bounds": [
+            6,
+            11,
+            51,
+            44
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1280,
+            64,
+            64
+          ],
+          "duration_ms": 640,
+          "bounds": [
+            4,
+            9,
+            56,
+            46
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1280,
+            64,
+            64
+          ],
+          "duration_ms": 420,
+          "bounds": [
+            4,
+            10,
+            56,
+            45
+          ]
+        },
+        {
+          "rect": [
+            320,
+            1280,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            6,
+            12,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            384,
+            1280,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            6,
+            12,
+            52,
+            43
+          ]
+        },
+        {
+          "rect": [
+            448,
+            1280,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.play": {
+      "label": "摆手踢脚",
+      "row": 21,
+      "loop": false,
+      "next": "idle",
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [],
+      "boundary": null,
+      "duration_ms": 2200,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1344,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1344,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            5,
+            12,
+            52,
+            43
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1344,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            5,
+            12,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1344,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1344,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            7,
+            12,
+            51,
+            43
+          ]
+        },
+        {
+          "rect": [
+            320,
+            1344,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            7,
+            12,
+            52,
+            43
+          ]
+        },
+        {
+          "rect": [
+            384,
+            1344,
+            64,
+            64
+          ],
+          "duration_ms": 360,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            448,
+            1344,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.doze": {
+      "label": "打瞌睡",
+      "row": 22,
+      "loop": false,
+      "next": "idle",
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "duration_ms": 2800,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            8,
+            13,
+            47,
+            42
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 500,
+          "bounds": [
+            8,
+            14,
+            47,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 350,
+          "bounds": [
+            8,
+            14,
+            47,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            384,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            448,
+            1408,
+            64,
+            64
+          ],
+          "duration_ms": 270,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "free.sleep": {
+      "label": "浅睡呼吸",
+      "row": 23,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "duration_ms": 4000,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1472,
+            64,
+            64
+          ],
+          "duration_ms": 1400,
+          "bounds": [
+            8,
+            14,
+            47,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1472,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            8,
+            13,
+            47,
+            42
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1472,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            8,
+            13,
+            47,
+            42
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1472,
+            64,
+            64
+          ],
+          "duration_ms": 1200,
+          "bounds": [
+            8,
+            14,
+            47,
+            41
+          ]
+        }
+      ]
+    },
+    "free.wake": {
+      "label": "醒来",
+      "row": 24,
+      "loop": false,
+      "next": "idle",
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [
+        [
+          26,
+          55
+        ],
+        [
+          42,
+          55
+        ]
+      ],
+      "boundary": null,
+      "duration_ms": 260,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1536,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            8,
+            14,
+            47,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1536,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            8,
+            13,
+            47,
+            42
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1536,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1536,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1536,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
+    },
+    "left.tap": {
+      "label": "单次敲击",
+      "row": 25,
+      "loop": false,
+      "next": "left",
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 300,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1600,
+            64,
+            64
+          ],
+          "duration_ms": 30,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1600,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            24,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1600,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            24,
+            14,
+            20,
+            39
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1600,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1600,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.typing": {
+      "label": "连续敲击",
+      "row": 26,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 480,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1664,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            14,
+            24,
+            40
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1664,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1664,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1664,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1664,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            1664,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.celebrate": {
+      "label": "千次庆祝",
+      "row": 27,
+      "loop": false,
+      "next": "left",
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 1400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1728,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1728,
+            64,
+            64
+          ],
+          "duration_ms": 160,
+          "bounds": [
+            24,
+            14,
+            24,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1728,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1728,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1728,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            1728,
+            64,
+            64
+          ],
+          "duration_ms": 150,
+          "bounds": [
+            24,
+            14,
+            24,
+            39
+          ]
+        },
+        {
+          "rect": [
+            384,
+            1728,
+            64,
+            64
+          ],
+          "duration_ms": 230,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            1728,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.celebrate_big": {
+      "label": "万次庆祝",
+      "row": 28,
+      "loop": false,
+      "next": "left",
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 2300,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1792,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1792,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            24,
+            14,
+            24,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1792,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1792,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1792,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            24,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            320,
+            1792,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            1792,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            1792,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            24,
+            14,
+            24,
+            39
+          ]
+        },
+        {
+          "rect": [
+            512,
+            1792,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            576,
+            1792,
+            64,
+            64
+          ],
+          "duration_ms": 460,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            640,
+            1792,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            704,
+            1792,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.hover": {
+      "label": "悬停招呼",
+      "row": 29,
+      "loop": false,
+      "next": "left.hover_hold",
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 660,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1856,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1856,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1856,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1856,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            1856,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            1856,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.hover_hold": {
+      "label": "悬停注视",
+      "row": 30,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1920,
+            64,
+            64
+          ],
+          "duration_ms": 800,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1920,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1920,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            1920,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.hover_left": {
+      "label": "向左注视",
+      "row": 31,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            1984,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            1984,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            1984,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.hover_up": {
+      "label": "向上注视",
+      "row": 32,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            2048,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2048,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2048,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.hover_down": {
+      "label": "向下注视",
+      "row": 33,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            2112,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2112,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2112,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.hover_leave": {
+      "label": "移开回望",
+      "row": 34,
+      "loop": false,
+      "next": "left",
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 200,
+      "frames": [
+        {
+          "rect": [
+            0,
+            2176,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2176,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2176,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.click": {
+      "label": "单击回应",
+      "row": 35,
+      "loop": false,
+      "next": "left",
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 650,
+      "frames": [
+        {
+          "rect": [
+            0,
+            2240,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2240,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            24,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2240,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            21,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2240,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            24,
+            13,
+            21,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2240,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            21,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            2240,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            2240,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.look": {
+      "label": "左右张望",
+      "row": 36,
+      "loop": false,
+      "next": "left",
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 2200,
+      "frames": [
+        {
+          "rect": [
+            0,
+            2304,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2304,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2304,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2304,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2304,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            2304,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            2304,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            2304,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.stretch": {
+      "label": "伸个懒腰",
+      "row": 37,
+      "loop": false,
+      "next": "left",
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            2368,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2368,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            14,
+            24,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2368,
+            64,
+            64
+          ],
+          "duration_ms": 280,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2368,
+            64,
+            64
+          ],
+          "duration_ms": 640,
+          "bounds": [
+            24,
+            13,
+            33,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2368,
+            64,
+            64
+          ],
+          "duration_ms": 420,
+          "bounds": [
+            24,
+            13,
+            33,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            2368,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            2368,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            2368,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.play": {
+      "label": "摆手踢脚",
+      "row": 38,
+      "loop": false,
+      "next": "left",
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 2200,
+      "frames": [
+        {
+          "rect": [
+            0,
+            2432,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2432,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2432,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2432,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2432,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            24,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            2432,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            24,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            2432,
+            64,
+            64
+          ],
+          "duration_ms": 360,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            2432,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.doze": {
+      "label": "打瞌睡",
+      "row": 39,
+      "loop": false,
+      "next": "left",
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 2800,
+      "frames": [
+        {
+          "rect": [
+            0,
+            2496,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2496,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2496,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            24,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2496,
+            64,
+            64
+          ],
+          "duration_ms": 500,
+          "bounds": [
+            24,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2496,
+            64,
+            64
+          ],
+          "duration_ms": 350,
+          "bounds": [
+            24,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            320,
+            2496,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            2496,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            2496,
+            64,
+            64
+          ],
+          "duration_ms": 270,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "left.sleep": {
+      "label": "浅睡呼吸",
+      "row": 40,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 4000,
+      "frames": [
+        {
+          "rect": [
+            0,
+            2560,
+            64,
+            64
+          ],
+          "duration_ms": 1400,
+          "bounds": [
+            24,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2560,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            24,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2560,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            24,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2560,
+            64,
+            64
+          ],
+          "duration_ms": 1200,
+          "bounds": [
+            24,
+            14,
+            19,
+            39
+          ]
+        }
+      ]
+    },
+    "left.wake": {
+      "label": "醒来",
+      "row": 41,
+      "loop": false,
+      "next": "left",
+      "anchor": [
+        24,
+        46
+      ],
+      "contacts": [
+        [
+          24,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 24
+      },
+      "duration_ms": 260,
+      "frames": [
+        {
+          "rect": [
+            0,
+            2624,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            24,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2624,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            24,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2624,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2624,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2624,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            24,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.tap": {
+      "label": "单次敲击",
+      "row": 42,
+      "loop": false,
+      "next": "right",
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 300,
+      "frames": [
+        {
+          "rect": [
+            0,
+            2688,
+            64,
+            64
+          ],
+          "duration_ms": 30,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2688,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            20,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2688,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            20,
+            14,
+            20,
+            39
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2688,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2688,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.typing": {
+      "label": "连续敲击",
+      "row": 43,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 480,
+      "frames": [
+        {
+          "rect": [
+            0,
+            2752,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            16,
+            14,
+            24,
+            40
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2752,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2752,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2752,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            20,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2752,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            2752,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.celebrate": {
+      "label": "千次庆祝",
+      "row": 44,
+      "loop": false,
+      "next": "right",
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 1400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            2816,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2816,
+            64,
+            64
+          ],
+          "duration_ms": 160,
+          "bounds": [
+            16,
+            14,
+            24,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2816,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2816,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2816,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            2816,
+            64,
+            64
+          ],
+          "duration_ms": 150,
+          "bounds": [
+            16,
+            14,
+            24,
+            39
+          ]
+        },
+        {
+          "rect": [
+            384,
+            2816,
+            64,
+            64
+          ],
+          "duration_ms": 230,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            2816,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.celebrate_big": {
+      "label": "万次庆祝",
+      "row": 45,
+      "loop": false,
+      "next": "right",
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 2300,
+      "frames": [
+        {
+          "rect": [
+            0,
+            2880,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2880,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            16,
+            14,
+            24,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2880,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2880,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2880,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            21,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            320,
+            2880,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            2880,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            2880,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            16,
+            14,
+            24,
+            39
+          ]
+        },
+        {
+          "rect": [
+            512,
+            2880,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            576,
+            2880,
+            64,
+            64
+          ],
+          "duration_ms": 460,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            640,
+            2880,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            704,
+            2880,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.hover": {
+      "label": "悬停招呼",
+      "row": 46,
+      "loop": false,
+      "next": "right.hover_hold",
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 660,
+      "frames": [
+        {
+          "rect": [
+            0,
+            2944,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            2944,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            2944,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            2944,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            2944,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            2944,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.hover_hold": {
+      "label": "悬停注视",
+      "row": 47,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            3008,
+            64,
+            64
+          ],
+          "duration_ms": 800,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3008,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3008,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3008,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.hover_left": {
+      "label": "向左注视",
+      "row": 48,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            3072,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3072,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3072,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.hover_up": {
+      "label": "向上注视",
+      "row": 49,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            3136,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3136,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3136,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.hover_down": {
+      "label": "向下注视",
+      "row": 50,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            3200,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3200,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3200,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.hover_leave": {
+      "label": "移开回望",
+      "row": 51,
+      "loop": false,
+      "next": "right",
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 200,
+      "frames": [
+        {
+          "rect": [
+            0,
+            3264,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3264,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3264,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.click": {
+      "label": "单击回应",
+      "row": 52,
+      "loop": false,
+      "next": "right",
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 650,
+      "frames": [
+        {
+          "rect": [
+            0,
+            3328,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3328,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            20,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3328,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            19,
+            13,
+            21,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3328,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            19,
+            13,
+            21,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3328,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            19,
+            13,
+            21,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            3328,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            3328,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.look": {
+      "label": "左右张望",
+      "row": 53,
+      "loop": false,
+      "next": "right",
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 2200,
+      "frames": [
+        {
+          "rect": [
+            0,
+            3392,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3392,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3392,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3392,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3392,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            3392,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            3392,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            3392,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.stretch": {
+      "label": "伸个懒腰",
+      "row": 54,
+      "loop": false,
+      "next": "right",
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            3456,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3456,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            16,
+            14,
+            24,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3456,
+            64,
+            64
+          ],
+          "duration_ms": 280,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3456,
+            64,
+            64
+          ],
+          "duration_ms": 640,
+          "bounds": [
+            7,
+            13,
+            33,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3456,
+            64,
+            64
+          ],
+          "duration_ms": 420,
+          "bounds": [
+            7,
+            13,
+            33,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            3456,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            3456,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            3456,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.play": {
+      "label": "摆手踢脚",
+      "row": 55,
+      "loop": false,
+      "next": "right",
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 2200,
+      "frames": [
+        {
+          "rect": [
+            0,
+            3520,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3520,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3520,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3520,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3520,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            10,
+            13,
+            30,
+            41
+          ]
+        },
+        {
+          "rect": [
+            320,
+            3520,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            16,
+            13,
+            24,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            3520,
+            64,
+            64
+          ],
+          "duration_ms": 360,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            3520,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.doze": {
+      "label": "打瞌睡",
+      "row": 56,
+      "loop": false,
+      "next": "right",
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 2800,
+      "frames": [
+        {
+          "rect": [
+            0,
+            3584,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3584,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3584,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            20,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3584,
+            64,
+            64
+          ],
+          "duration_ms": 500,
+          "bounds": [
+            21,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3584,
+            64,
+            64
+          ],
+          "duration_ms": 350,
+          "bounds": [
+            21,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            320,
+            3584,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            384,
+            3584,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            448,
+            3584,
+            64,
+            64
+          ],
+          "duration_ms": 270,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "right.sleep": {
+      "label": "浅睡呼吸",
+      "row": 57,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 4000,
+      "frames": [
+        {
+          "rect": [
+            0,
+            3648,
+            64,
+            64
+          ],
+          "duration_ms": 1400,
+          "bounds": [
+            21,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3648,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            20,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3648,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            20,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3648,
+            64,
+            64
+          ],
+          "duration_ms": 1200,
+          "bounds": [
+            21,
+            14,
+            19,
+            39
+          ]
+        }
+      ]
+    },
+    "right.wake": {
+      "label": "醒来",
+      "row": 58,
+      "loop": false,
+      "next": "right",
+      "anchor": [
+        40,
+        46
+      ],
+      "contacts": [
+        [
+          40,
+          46
+        ]
+      ],
+      "boundary": {
+        "axis": "x",
+        "value": 40
+      },
+      "duration_ms": 260,
+      "frames": [
+        {
+          "rect": [
+            0,
+            3712,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            21,
+            14,
+            19,
+            39
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3712,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            20,
+            14,
+            20,
+            40
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3712,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3712,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3712,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            20,
+            13,
+            20,
+            41
+          ]
+        }
+      ]
+    },
+    "top.tap": {
+      "label": "单次敲击",
+      "row": 59,
+      "loop": false,
+      "next": "top",
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 300,
+      "frames": [
+        {
+          "rect": [
+            0,
+            3776,
+            64,
+            64
+          ],
+          "duration_ms": 30,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3776,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3776,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3776,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3776,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.typing": {
+      "label": "连续敲击",
+      "row": 60,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 480,
+      "frames": [
+        {
+          "rect": [
+            0,
+            3840,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3840,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3840,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3840,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3840,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            320,
+            3840,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.celebrate": {
+      "label": "千次庆祝",
+      "row": 61,
+      "loop": false,
+      "next": "top",
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 1400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            3904,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3904,
+            64,
+            64
+          ],
+          "duration_ms": 160,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3904,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            44
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3904,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            14,
+            15,
+            36,
+            44
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3904,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            44
+          ]
+        },
+        {
+          "rect": [
+            320,
+            3904,
+            64,
+            64
+          ],
+          "duration_ms": 150,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            384,
+            3904,
+            64,
+            64
+          ],
+          "duration_ms": 230,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            448,
+            3904,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.celebrate_big": {
+      "label": "万次庆祝",
+      "row": 62,
+      "loop": false,
+      "next": "top",
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 2300,
+      "frames": [
+        {
+          "rect": [
+            0,
+            3968,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            3968,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            128,
+            3968,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            44
+          ]
+        },
+        {
+          "rect": [
+            192,
+            3968,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            14,
+            15,
+            36,
+            44
+          ]
+        },
+        {
+          "rect": [
+            256,
+            3968,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            320,
+            3968,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            14,
+            15,
+            36,
+            44
+          ]
+        },
+        {
+          "rect": [
+            384,
+            3968,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            44
+          ]
+        },
+        {
+          "rect": [
+            448,
+            3968,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            512,
+            3968,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            576,
+            3968,
+            64,
+            64
+          ],
+          "duration_ms": 460,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            640,
+            3968,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            704,
+            3968,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.hover": {
+      "label": "悬停招呼",
+      "row": 63,
+      "loop": false,
+      "next": "top.hover_hold",
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 660,
+      "frames": [
+        {
+          "rect": [
+            0,
+            4032,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4032,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4032,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4032,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4032,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            320,
+            4032,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.hover_hold": {
+      "label": "悬停注视",
+      "row": 64,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            4096,
+            64,
+            64
+          ],
+          "duration_ms": 800,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4096,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4096,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4096,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.hover_left": {
+      "label": "向左注视",
+      "row": 65,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            4160,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4160,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4160,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.hover_up": {
+      "label": "向上注视",
+      "row": 66,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            4224,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4224,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4224,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.hover_down": {
+      "label": "向下注视",
+      "row": 67,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            4288,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4288,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4288,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.hover_leave": {
+      "label": "移开回望",
+      "row": 68,
+      "loop": false,
+      "next": "top",
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 200,
+      "frames": [
+        {
+          "rect": [
+            0,
+            4352,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4352,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4352,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.click": {
+      "label": "单击回应",
+      "row": 69,
+      "loop": false,
+      "next": "top",
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 650,
+      "frames": [
+        {
+          "rect": [
+            0,
+            4416,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4416,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4416,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            15,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4416,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            15,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4416,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            320,
+            4416,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            384,
+            4416,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.look": {
+      "label": "左右张望",
+      "row": 70,
+      "loop": false,
+      "next": "top",
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 2200,
+      "frames": [
+        {
+          "rect": [
+            0,
+            4480,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4480,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4480,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            13,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4480,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4480,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            320,
+            4480,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            15,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            384,
+            4480,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            448,
+            4480,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.stretch": {
+      "label": "伸个懒腰",
+      "row": 71,
+      "loop": false,
+      "next": "top",
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            4544,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4544,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4544,
+            64,
+            64
+          ],
+          "duration_ms": 280,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4544,
+            64,
+            64
+          ],
+          "duration_ms": 640,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4544,
+            64,
+            64
+          ],
+          "duration_ms": 420,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            320,
+            4544,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            384,
+            4544,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            448,
+            4544,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.play": {
+      "label": "摆手踢脚",
+      "row": 72,
+      "loop": false,
+      "next": "top",
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 2200,
+      "frames": [
+        {
+          "rect": [
+            0,
+            4608,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4608,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            13,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4608,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            13,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4608,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4608,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            15,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            320,
+            4608,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            15,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            384,
+            4608,
+            64,
+            64
+          ],
+          "duration_ms": 360,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            448,
+            4608,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.doze": {
+      "label": "打瞌睡",
+      "row": 73,
+      "loop": false,
+      "next": "top",
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 2800,
+      "frames": [
+        {
+          "rect": [
+            0,
+            4672,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4672,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4672,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4672,
+            64,
+            64
+          ],
+          "duration_ms": 500,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4672,
+            64,
+            64
+          ],
+          "duration_ms": 350,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            320,
+            4672,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            384,
+            4672,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            448,
+            4672,
+            64,
+            64
+          ],
+          "duration_ms": 270,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "top.sleep": {
+      "label": "浅睡呼吸",
+      "row": 74,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 4000,
+      "frames": [
+        {
+          "rect": [
+            0,
+            4736,
+            64,
+            64
+          ],
+          "duration_ms": 1400,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4736,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4736,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4736,
+            64,
+            64
+          ],
+          "duration_ms": 1200,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        }
+      ]
+    },
+    "top.wake": {
+      "label": "醒来",
+      "row": 75,
+      "loop": false,
+      "next": "top",
+      "anchor": [
+        32,
+        15
+      ],
+      "contacts": [
+        [
+          21,
+          15
+        ],
+        [
+          44,
+          15
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 15
+      },
+      "duration_ms": 260,
+      "frames": [
+        {
+          "rect": [
+            0,
+            4800,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            14,
+            15,
+            36,
+            48
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4800,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            14,
+            15,
+            36,
+            47
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4800,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            15,
+            36,
+            45
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4800,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4800,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            15,
+            36,
+            46
+          ]
+        }
+      ]
+    },
+    "bottom.tap": {
+      "label": "单次敲击",
+      "row": 76,
+      "loop": false,
+      "next": "bottom",
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 300,
+      "frames": [
+        {
+          "rect": [
+            0,
+            4864,
+            64,
+            64
+          ],
+          "duration_ms": 30,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4864,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4864,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4864,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4864,
+            64,
+            64
+          ],
+          "duration_ms": 70,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.typing": {
+      "label": "连续敲击",
+      "row": 77,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 480,
+      "frames": [
+        {
+          "rect": [
+            0,
+            4928,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4928,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4928,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4928,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4928,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            320,
+            4928,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.celebrate": {
+      "label": "千次庆祝",
+      "row": 78,
+      "loop": false,
+      "next": "bottom",
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 1400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            4992,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            4992,
+            64,
+            64
+          ],
+          "duration_ms": 160,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            128,
+            4992,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            11,
+            36,
+            40
+          ]
+        },
+        {
+          "rect": [
+            192,
+            4992,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            14,
+            11,
+            36,
+            40
+          ]
+        },
+        {
+          "rect": [
+            256,
+            4992,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            11,
+            36,
+            40
+          ]
+        },
+        {
+          "rect": [
+            320,
+            4992,
+            64,
+            64
+          ],
+          "duration_ms": 150,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            384,
+            4992,
+            64,
+            64
+          ],
+          "duration_ms": 230,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            448,
+            4992,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.celebrate_big": {
+      "label": "万次庆祝",
+      "row": 79,
+      "loop": false,
+      "next": "bottom",
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 2300,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5056,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5056,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5056,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            11,
+            36,
+            40
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5056,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            14,
+            11,
+            36,
+            40
+          ]
+        },
+        {
+          "rect": [
+            256,
+            5056,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            320,
+            5056,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            14,
+            11,
+            36,
+            40
+          ]
+        },
+        {
+          "rect": [
+            384,
+            5056,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            11,
+            36,
+            40
+          ]
+        },
+        {
+          "rect": [
+            448,
+            5056,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            512,
+            5056,
+            64,
+            64
+          ],
+          "duration_ms": 240,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            576,
+            5056,
+            64,
+            64
+          ],
+          "duration_ms": 460,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            640,
+            5056,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            704,
+            5056,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.hover": {
+      "label": "悬停招呼",
+      "row": 80,
+      "loop": false,
+      "next": "bottom.hover_hold",
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 660,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5120,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5120,
+            64,
+            64
+          ],
+          "duration_ms": 120,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5120,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5120,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            256,
+            5120,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            320,
+            5120,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.hover_hold": {
+      "label": "悬停注视",
+      "row": 81,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5184,
+            64,
+            64
+          ],
+          "duration_ms": 800,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5184,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5184,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5184,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.hover_left": {
+      "label": "向左注视",
+      "row": 82,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5248,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5248,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5248,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.hover_up": {
+      "label": "向上注视",
+      "row": 83,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5312,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5312,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5312,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.hover_down": {
+      "label": "向下注视",
+      "row": 84,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5376,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5376,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5376,
+            64,
+            64
+          ],
+          "duration_ms": 900,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.hover_leave": {
+      "label": "移开回望",
+      "row": 85,
+      "loop": false,
+      "next": "bottom",
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 200,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5440,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5440,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5440,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.click": {
+      "label": "单击回应",
+      "row": 86,
+      "loop": false,
+      "next": "bottom",
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 650,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5504,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5504,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5504,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            15,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5504,
+            64,
+            64
+          ],
+          "duration_ms": 140,
+          "bounds": [
+            15,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            256,
+            5504,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            320,
+            5504,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            384,
+            5504,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.look": {
+      "label": "左右张望",
+      "row": 87,
+      "loop": false,
+      "next": "bottom",
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 2200,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5568,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5568,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5568,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            13,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5568,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            256,
+            5568,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            320,
+            5568,
+            64,
+            64
+          ],
+          "duration_ms": 600,
+          "bounds": [
+            15,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            384,
+            5568,
+            64,
+            64
+          ],
+          "duration_ms": 100,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            448,
+            5568,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.stretch": {
+      "label": "伸个懒腰",
+      "row": 88,
+      "loop": false,
+      "next": "bottom",
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 2400,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5632,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5632,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5632,
+            64,
+            64
+          ],
+          "duration_ms": 280,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5632,
+            64,
+            64
+          ],
+          "duration_ms": 640,
+          "bounds": [
+            14,
+            11,
+            36,
+            40
+          ]
+        },
+        {
+          "rect": [
+            256,
+            5632,
+            64,
+            64
+          ],
+          "duration_ms": 420,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            320,
+            5632,
+            64,
+            64
+          ],
+          "duration_ms": 260,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            384,
+            5632,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            448,
+            5632,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.play": {
+      "label": "摆手踢脚",
+      "row": 89,
+      "loop": false,
+      "next": "bottom",
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 2200,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5696,
+            64,
+            64
+          ],
+          "duration_ms": 200,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5696,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            13,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5696,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            13,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5696,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            256,
+            5696,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            15,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            320,
+            5696,
+            64,
+            64
+          ],
+          "duration_ms": 320,
+          "bounds": [
+            15,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            384,
+            5696,
+            64,
+            64
+          ],
+          "duration_ms": 360,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            448,
+            5696,
+            64,
+            64
+          ],
+          "duration_ms": 220,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.doze": {
+      "label": "打瞌睡",
+      "row": 90,
+      "loop": false,
+      "next": "bottom",
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 2800,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5760,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5760,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5760,
+            64,
+            64
+          ],
+          "duration_ms": 450,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5760,
+            64,
+            64
+          ],
+          "duration_ms": 500,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            256,
+            5760,
+            64,
+            64
+          ],
+          "duration_ms": 350,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            320,
+            5760,
+            64,
+            64
+          ],
+          "duration_ms": 180,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            384,
+            5760,
+            64,
+            64
+          ],
+          "duration_ms": 300,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            448,
+            5760,
+            64,
+            64
+          ],
+          "duration_ms": 270,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "bottom.sleep": {
+      "label": "浅睡呼吸",
+      "row": 91,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 4000,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5824,
+            64,
+            64
+          ],
+          "duration_ms": 1400,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5824,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5824,
+            64,
+            64
+          ],
+          "duration_ms": 700,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5824,
+            64,
+            64
+          ],
+          "duration_ms": 1200,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        }
+      ]
+    },
+    "bottom.wake": {
+      "label": "醒来",
+      "row": 92,
+      "loop": false,
+      "next": "bottom",
+      "anchor": [
+        32,
+        51
+      ],
+      "contacts": [
+        [
+          22,
+          51
+        ],
+        [
+          44,
+          51
+        ]
+      ],
+      "boundary": {
+        "axis": "y",
+        "value": 51
+      },
+      "duration_ms": 260,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5888,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            14,
+            15,
+            36,
+            36
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5888,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            14,
+            14,
+            36,
+            37
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5888,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            12,
+            36,
+            39
+          ]
+        },
+        {
+          "rect": [
+            192,
+            5888,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        },
+        {
+          "rect": [
+            256,
+            5888,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            14,
+            13,
+            36,
+            38
+          ]
+        }
+      ]
+    },
+    "drag.pickup": {
+      "label": "提起一惊",
+      "row": 93,
+      "loop": false,
+      "next": "drag.struggle",
+      "anchor": [
+        32,
+        24
+      ],
+      "contacts": [],
+      "boundary": null,
+      "duration_ms": 150,
+      "frames": [
+        {
+          "rect": [
+            0,
+            5952,
+            64,
+            64
+          ],
+          "duration_ms": 40,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        },
+        {
+          "rect": [
+            64,
+            5952,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            6,
+            9,
+            52,
+            43
+          ]
+        },
+        {
+          "rect": [
+            128,
+            5952,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            6,
+            8,
+            52,
+            44
+          ]
+        }
+      ]
+    },
+    "drag.struggle": {
+      "label": "拖动挣扎",
+      "row": 94,
+      "loop": true,
+      "next": null,
+      "anchor": [
+        32,
+        24
+      ],
+      "contacts": [],
+      "boundary": null,
+      "duration_ms": 720,
+      "frames": [
+        {
+          "rect": [
+            0,
+            6016,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            5,
+            10,
+            52,
+            42
+          ]
+        },
+        {
+          "rect": [
+            64,
+            6016,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            3,
+            9,
+            53,
+            43
+          ]
+        },
+        {
+          "rect": [
+            128,
+            6016,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            6,
+            10,
+            51,
+            42
+          ]
+        },
+        {
+          "rect": [
+            192,
+            6016,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            7,
+            9,
+            54,
+            43
+          ]
+        },
+        {
+          "rect": [
+            256,
+            6016,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            7,
+            10,
+            51,
+            42
+          ]
+        },
+        {
+          "rect": [
+            320,
+            6016,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            6,
+            10,
+            52,
+            42
+          ]
+        },
+        {
+          "rect": [
+            384,
+            6016,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            3,
+            9,
+            53,
+            43
+          ]
+        },
+        {
+          "rect": [
+            448,
+            6016,
+            64,
+            64
+          ],
+          "duration_ms": 90,
+          "bounds": [
+            6,
+            10,
+            52,
+            42
+          ]
+        }
+      ]
+    },
+    "drag.release": {
+      "label": "放下回弹",
+      "row": 95,
+      "loop": false,
+      "next": "idle",
+      "anchor": [
+        32,
+        55
+      ],
+      "contacts": [],
+      "boundary": null,
+      "duration_ms": 300,
+      "frames": [
+        {
+          "rect": [
+            0,
+            6080,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            8,
+            10,
+            47,
+            45
+          ]
+        },
+        {
+          "rect": [
+            64,
+            6080,
+            64,
+            64
+          ],
+          "duration_ms": 50,
+          "bounds": [
+            8,
+            13,
+            47,
+            42
+          ]
+        },
+        {
+          "rect": [
+            128,
+            6080,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            8,
+            14,
+            47,
+            41
+          ]
+        },
+        {
+          "rect": [
+            192,
+            6080,
+            64,
+            64
+          ],
+          "duration_ms": 60,
+          "bounds": [
+            8,
+            11,
+            47,
+            44
+          ]
+        },
+        {
+          "rect": [
+            256,
+            6080,
+            64,
+            64
+          ],
+          "duration_ms": 80,
+          "bounds": [
+            8,
+            12,
+            47,
+            43
+          ]
+        }
+      ]
     }
   },
-  "sha256": "3884a5b6935140415c4bdd774f42afa148469dd9f20dd01899e790d0624f3257"
+  "sha256": "78063b2a060904b8dae8754210027406a73e5c3b52bc3075c0cd6a7066932b8c"
 }

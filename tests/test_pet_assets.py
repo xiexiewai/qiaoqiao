@@ -53,12 +53,17 @@ class PetAssetTests(unittest.TestCase):
         self.assertEqual(self.manifest["frame_size"], [64, 64])
         self.assertEqual([self.image.width(), self.image.height()], self.manifest["atlas_size"])
         self.assertEqual(hashlib.sha256(self.path.read_bytes()).hexdigest(), self.manifest["sha256"])
-        self.assertEqual(set(self.actions), {"idle", "blink", "drag", "left", "right", "bottom", "top", "settle"})
+        self.assertEqual(self.manifest["schema_version"], 2)
+        self.assertEqual(len(self.actions), 96)
+        self.assertEqual(sum(len(action["frames"]) for action in self.actions.values()), 571)
         for row, (name, action) in enumerate(self.actions.items()):
             self.assertEqual(action["row"], row)
             self.assertLessEqual(len(action["frames"]), self.manifest["columns"])
             self.assertEqual(sum(f["duration_ms"] for f in action["frames"]), action["duration_ms"])
-            self.assertEqual(action["next"], None if action["loop"] else "idle")
+            if action["loop"]:
+                self.assertIsNone(action["next"])
+            else:
+                self.assertIn(action["next"], self.actions)
             for col, frame in enumerate(action["frames"]):
                 self.assertEqual(frame["rect"], [col * 64, row * 64, 64, 64])
                 self.assertGreater(frame["duration_ms"], 0)
@@ -120,6 +125,29 @@ class PetAssetTests(unittest.TestCase):
                         self.assertTrue(all(y >= 15 for _, y in occupied))
                     else:
                         self.assertEqual(max(y for _, y in occupied), 54)
+        support = {
+            "left": [(24, 42, 5, 8)], "right": [(35, 42, 5, 8)],
+            "top": [(18, 15, 7, 4), (41, 15, 7, 4)],
+            "bottom": [(17, 48, 10, 3), (39, 48, 10, 3)],
+        }
+        for name, action in self.actions.items():
+            if "." not in name or name.split(".")[0] not in support:
+                continue
+            pose = name.split(".")[0]
+            rest = self.frames(pose)[0]
+            for index, image in enumerate(self.frames(name)):
+                with self.subTest(action=name, frame=index):
+                    for rect in support[pose]:
+                        self.assertEqual(image.copy(*rect), rest.copy(*rect))
+                    x, y, width, height = action["frames"][index]["bounds"]
+                    if pose == "left":
+                        self.assertEqual(x, 24)
+                    elif pose == "right":
+                        self.assertEqual(x + width, 40)
+                    elif pose == "top":
+                        self.assertEqual(y, 15)
+                    else:
+                        self.assertEqual(y + height, 51)
 
     def test_motion_varies_and_one_shots_return_to_idle(self):
         for name in self.actions:
@@ -132,6 +160,21 @@ class PetAssetTests(unittest.TestCase):
         self.assertEqual(self.frames("settle")[0], self.frames("drag")[0])
         for left, right in zip(self.frames("left"), self.frames("right")):
             self.assertEqual(right, left.flipped(Qt.Orientation.Horizontal))
+        for name, action in self.actions.items():
+            if "." not in name or action["loop"]:
+                continue
+            if action["next"] in ("idle", "left", "right", "top", "bottom"):
+                with self.subTest(action=name):
+                    self.assertEqual(self.frames(name)[-1], self.frames(action["next"])[0])
+
+    def test_runtime_matches_reproducible_approved_drawing_sources(self):
+        from tools.build_pet_runtime import runtime_actions
+
+        for action in runtime_actions():
+            for index, (actual, expected) in enumerate(zip(self.frames(action.name), action.images, strict=True)):
+                with self.subTest(action=action.name, frame=index):
+                    self.assertEqual(actual.convertToFormat(QImage.Format.Format_ARGB32),
+                                     expected.convertToFormat(QImage.Format.Format_ARGB32))
 
 
 if __name__ == "__main__":

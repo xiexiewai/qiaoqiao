@@ -132,6 +132,22 @@ class AppTests(unittest.TestCase):
         self.assertTrue(self.controller.window.isVisible())
         self.assertFalse(self.controller.pet.isVisible())
 
+    def test_pet_only_receives_accepted_physical_presses_without_callback_painting(self):
+        controller = self.controller
+        controller.window.close()
+        with patch.object(controller.pet, "on_key_press", wraps=controller.pet.on_key_press) as feedback, \
+                patch.object(controller.pet, "_start_action") as start:
+            down = PhysicalEvent(1, "1e", True)
+            for _ in range(10):
+                controller._key(down)
+            controller._key(PhysicalEvent(1, "1e", False))
+            controller._key(PhysicalEvent(2, "1e", True))
+            self.assertEqual(feedback.call_count, 2)
+            start.assert_not_called()
+        self.assertEqual(sum(controller.model.totals("day", date.today()).values()), 2)
+        controller.pet._animate()
+        self.assertIn(controller.pet._behavior, ("tap", "typing"))
+
     def test_pet_preference_survives_controller_recreation(self):
         self.controller.topmost_action.setChecked(False)
         self.controller.pet_action.setChecked(False)
@@ -635,6 +651,50 @@ class MilestoneAppTests(unittest.TestCase):
         self.assertFalse(controller.window.isVisible())
         self.assertEqual(controller.settings.value("milestones/last_threshold"), 1000)
         self.assertEqual(controller.settings.value("milestones/last_day"), self.today.isoformat())
+
+    def test_pet_celebrates_new_threshold_once_even_without_system_notifications(self):
+        controller = self.make_controller(9999)
+        controller.window.close()
+        self.supports_messages.return_value = False
+        with patch.object(controller.pet, "celebrate", wraps=controller.pet.celebrate) as celebrate:
+            self.tap(controller)
+            self.tap(controller, 20)
+            celebrate.assert_called_once_with(10000)
+        controller.pet._animate()
+        self.assertEqual(controller.pet._behavior, "celebrate_big")
+        with self.assertLogs("qiaoqiao", level="WARNING"):
+            controller.tick()
+        self.notifications.assert_not_called()
+        self.assertEqual(controller.milestones.handled, 10000)
+
+    def test_hidden_pet_does_not_replay_threshold_on_show_or_tray_delivery(self):
+        controller = self.make_controller(999)
+        self.tap(controller)
+        self.assertIsNone(controller.pet._pending_celebration)
+        controller.window.close()
+        controller.tick()
+        controller.pet._animate()
+        self.assertIsNone(controller.pet._pending_celebration)
+        self.assertEqual(controller.pet._behavior, "idle")
+        self.notifications.assert_called_once()
+
+    def test_disabling_milestones_cancels_pet_and_new_day_clears_deferred_celebration(self):
+        controller = self.make_controller(999)
+        controller.window.close()
+        self.tap(controller)
+        controller.pet._animate()
+        self.assertEqual(controller.pet._behavior, "celebrate")
+        controller.milestone_action.setChecked(False)
+        self.assertEqual(controller.pet._behavior, "idle")
+        self.tap(controller, 1000)
+        self.assertIsNone(controller.pet._pending_celebration)
+        controller.milestone_action.setChecked(True)
+        self.assertIsNone(controller.pet._pending_celebration)
+        self.tap(controller, 1000)
+        self.assertIsNotNone(controller.pet._pending_celebration)
+        self.clock.now.return_value = self.now + timedelta(days=1)
+        controller.tick()
+        self.assertIsNone(controller.pet._pending_celebration)
 
     def test_repeat_and_release_do_not_retrigger_but_other_device_counts(self):
         controller = self.make_controller(998)
